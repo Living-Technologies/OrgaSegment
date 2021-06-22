@@ -39,11 +39,10 @@ def main():
                                stack_num_down=2, stack_num_up=1,
                                activation='GELU', output_activation='Softmax', 
                                batch_norm=True, pool='max', unpool='nearest', name='unet')
+
+        model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(lr=1e-2))
     
     logger.info(model.summary())
-
-    ##Compile model
-    model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(lr=1e-2))
 
     ##Set tensorlogging
     log_dir = "log/fit/" + jobnumber
