@@ -22,6 +22,7 @@ val_factor = 0.20
 epochs = 50
 batch_size = 5
 img_size = (1024, 1024)
+img_bit_depth = 8
 
 logger.info(f'Check tensorflow backend: {device_lib.list_local_devices()}')
 if len(list_physical_devices("GPU")) == 0:
@@ -35,8 +36,8 @@ def main():
     train_image_names, train_label_names, val_image_names, val_label_names = load_train_val_names(data_dir, image_filter=image_filter, mask_filter=mask_filter, val_factor=val_factor)
 
     #Get data generator
-    train_gen = OrganoidGen(batch_size, img_size, train_image_names, train_label_names)
-    val_gen = OrganoidGen(batch_size, img_size, val_image_names, val_label_names)
+    train_gen = OrganoidGen(batch_size, img_size, img_bit_depth, train_image_names, train_label_names)
+    val_gen = OrganoidGen(batch_size, img_size, img_bit_depth, val_image_names, val_label_names)
 
     ##Build model and use all available GPU's
     strategy = MirroredStrategy()
@@ -69,6 +70,9 @@ def main():
               validation_steps = val_steps,
               callbacks = callbacks,
               verbose=1)
+
+    logger.info('Saving model...')
+    model.save('log/models/' + jobnumber)
 
 if __name__ == "__main__":
     logger.info('Start training...')

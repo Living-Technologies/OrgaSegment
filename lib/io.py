@@ -125,9 +125,10 @@ class OrganoidGen(keras.utils.Sequence):
     https://keras.io/examples/vision/oxford_pets_image_segmentation/
     """
 
-    def __init__(self, batch_size, img_size, image_paths, label_paths):
+    def __init__(self, batch_size, img_size, img_bit_depth, image_paths, label_paths):
         self.batch_size = batch_size
         self.img_size = img_size
+        self.bit = img_bit_depth
         self.image_paths = image_paths
         self.label_paths = label_paths
 
@@ -142,6 +143,7 @@ class OrganoidGen(keras.utils.Sequence):
         x = np.zeros((self.batch_size,) + self.img_size + (1,), dtype="uint16")
         for j, path in enumerate(batch_image_paths):
             img = load_img(path, target_size=self.img_size, color_mode="grayscale")
+            img /= ((2 ** self.bit))
             x[j] = np.expand_dims(img, 2)
         y = np.zeros((self.batch_size,) + self.img_size + (1,), dtype="uint16")
         for j, path in enumerate(batch_label_paths):
