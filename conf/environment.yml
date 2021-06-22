@@ -3,15 +3,15 @@ channels:
   - conda-forge
   - anaconda
 dependencies:
-  - python=3.9
+  - python=3.8
   - ipykernel=5.3.4
+  - pylint=2.8.3
   - pip=21.1.2
   - tensorflow-gpu=2.4.1
   - keras=2.4.3
-  - pylint=2.8.3
-  - numpy=1.19.5
+  - numpy=1.20.3
   - natsort=7.1.1
   - pillow=8.2.0
   - matplotlib=3.4.2
   - pip:
-    - keras-unet-collection==0.1.8
+    # - keras-unet-collection==0.1.8

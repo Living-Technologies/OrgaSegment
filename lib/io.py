@@ -5,10 +5,10 @@ logger = logging.getLogger(__name__)
 #Import functions
 import os, glob
 from natsort import natsorted
-from tensorflow import keras
+import keras
 import numpy as np
 import random
-from tensorflow.keras.preprocessing.image import load_img
+from keras.preprocessing.image import load_img
 
 def get_image_names(folder, mask_filter, image_filter=None):
     """

@@ -6,7 +6,7 @@ logger = logging.getLogger(__file__)
 
 import matplotlib.pyplot as plt
 from lib import load_train_val_names, OrganoidGen
-from keras_unet_collection import models
+# from keras_unet_collection import models
 from keras.callbacks import ModelCheckpoint, TensorBoard
 from tensorflow.distribute import MirroredStrategy
 from tensorflow.python.client import device_lib
@@ -45,30 +45,30 @@ def main():
     #logger.info(f'Number of devices: {strategy.num_replicas_in_sync}')
     #with strategy.scope():
 
-    model = models.unet_2d((None, None, 1), [64, 128, 256, 512, 1024], n_labels=2,
-                           stack_num_down=2, stack_num_up=1,
-                           activation='GELU', output_activation='Softmax', 
-                           batch_norm=True, pool='max', unpool='nearest', name='unet')
+    # model = models.unet_2d((None, None, 1), [64, 128, 256, 512, 1024], n_labels=2,
+    #                        stack_num_down=2, stack_num_up=1,
+    #                        activation='GELU', output_activation='Softmax', 
+    #                        batch_norm=True, pool='max', unpool='nearest', name='unet')
 
-    model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(lr=1e-2))
+    # model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(lr=1e-2))
     
-    logger.info(model.summary())
+    # logger.info(model.summary())
 
-    ##Set tensorlogging
-    log_dir = "log/fit/" + jobnumber
-    tensorboard_callback = TensorBoard(log_dir=log_dir, histogram_freq=1)    
+    # ##Set tensorlogging
+    # log_dir = "log/fit/" + jobnumber
+    # tensorboard_callback = TensorBoard(log_dir=log_dir, histogram_freq=1)    
 
-    best_weights_file="log/checkpoints/weights.best.hdf5"
-    checkpoint = ModelCheckpoint(best_weights_file, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+    # best_weights_file="log/checkpoints/weights.best.hdf5"
+    # checkpoint = ModelCheckpoint(best_weights_file, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
     
-    callbacks = [tensorboard_callback, checkpoint]
+    # callbacks = [tensorboard_callback, checkpoint]
 
-    ##Train model
-    model.fit(train_gen, 
-              epochs=epochs,
-              validation_data=val_gen,
-              callbacks=callbacks,
-              verbose=1)
+    # ##Train model
+    # model.fit(train_gen, 
+    #           epochs=epochs,
+    #           validation_data=val_gen,
+    #           callbacks=callbacks,
+    #           verbose=1)
 
 if __name__ == "__main__":
     logger.info('Start training...')
