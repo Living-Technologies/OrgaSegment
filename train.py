@@ -7,7 +7,7 @@ logger = logging.getLogger(__file__)
 import matplotlib.pyplot as plt
 from lib import load_train_val_names, OrganoidGen
 from keras_unet_collection import models
-from keras.callbacks import ModelCheckpoint, TensorBoard
+from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
 from tensorflow.distribute import MirroredStrategy
 from tensorflow import keras
 
