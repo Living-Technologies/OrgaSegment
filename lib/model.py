@@ -85,7 +85,7 @@ def UNet(input_size, n_filters):
 
     # compile
     model.compile(optimizer=Adam(),
-                  loss='binary_crossentropy', 
+                  loss='categorical_crossentropy', 
                   metrics=['accuracy'])
         
     return model
