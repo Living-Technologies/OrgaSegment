@@ -37,7 +37,7 @@ def main():
     #logger.info(f'Number of devices: {strategy.num_replicas_in_sync}')
     #with strategy.scope():
     
-    logger.info("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+    logger.info(f'Num GPUs Available: {len(tf.config.list_physical_devices("GPU"))}')
 
     model = models.unet_2d((None, None, 1), [64, 128, 256, 512, 1024], n_labels=2,
                            stack_num_down=2, stack_num_up=1,
