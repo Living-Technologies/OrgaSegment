@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
-#SBATCH--gpus-per-node=RTX6000:2
+#SBATCH--gpus-per-node=RTX6000:1
 #SBATCH --time=12:00:00
 #SBATCH --mem=128G
 #SBATCH --mail-user=s.vanbeuningen@umcutrecht.nl

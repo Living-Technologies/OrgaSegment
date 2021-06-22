@@ -10,6 +10,7 @@ from keras_unet_collection import models
 from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
 from tensorflow.distribute import MirroredStrategy
 from tensorflow import keras
+import tensorflow as tf
 
 #inputs
 data_dir= 'data/20210615/train/'
@@ -32,15 +33,18 @@ def main():
     val_gen = OrganoidGen(batch_size, img_size, val_image_names, val_label_names)
 
     ##Build model (use unet lib) and use all available GPU's
-    strategy = MirroredStrategy()
-    logger.info(f'Number of devices: {strategy.num_replicas_in_sync}')
-    with strategy.scope():
-        model = models.unet_2d((None, None, 1), [64, 128, 256, 512, 1024], n_labels=2,
-                               stack_num_down=2, stack_num_up=1,
-                               activation='GELU', output_activation='Softmax', 
-                               batch_norm=True, pool='max', unpool='nearest', name='unet')
+    #strategy = MirroredStrategy()
+    #logger.info(f'Number of devices: {strategy.num_replicas_in_sync}')
+    #with strategy.scope():
+    
+    logger.info("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
-        model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(lr=1e-2))
+    model = models.unet_2d((None, None, 1), [64, 128, 256, 512, 1024], n_labels=2,
+                           stack_num_down=2, stack_num_up=1,
+                           activation='GELU', output_activation='Softmax', 
+                           batch_norm=True, pool='max', unpool='nearest', name='unet')
+
+    model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(lr=1e-2))
     
     logger.info(model.summary())
 
