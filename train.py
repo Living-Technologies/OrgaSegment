@@ -5,13 +5,11 @@ logging.config.fileConfig('conf/logging.conf')
 logger = logging.getLogger(__file__)
 
 import matplotlib.pyplot as plt
-from lib import load_train_val_names, OrganoidGen
-# from keras_unet_collection import models
+from lib import load_train_val_names, OrganoidGen, UNet
 from keras.callbacks import ModelCheckpoint, TensorBoard
 from tensorflow.distribute import MirroredStrategy
 from tensorflow.python.client import device_lib
 from tensorflow.config import list_physical_devices
-import keras
 
 #inputs
 data_dir= 'data/20210615/train/'
@@ -28,7 +26,7 @@ img_size = (1024, 1024)
 logger.info(f'Check tensorflow backend: {device_lib.list_local_devices()}')
 if len(list_physical_devices("GPU")) == 0:
     logger.error(f'No GPUs available')
-    exit(1)
+    # exit(1)
 else:
     logger.info(f'Num GPUs Available: {len(list_physical_devices("GPU"))}')
 
@@ -40,35 +38,37 @@ def main():
     train_gen = OrganoidGen(batch_size, img_size, train_image_names, train_label_names)
     val_gen = OrganoidGen(batch_size, img_size, val_image_names, val_label_names)
 
-    ##Build model (use unet lib) and use all available GPU's
-    #strategy = MirroredStrategy()
-    #logger.info(f'Number of devices: {strategy.num_replicas_in_sync}')
-    #with strategy.scope():
+    ##Build model and use all available GPU's
+    strategy = MirroredStrategy()
+    logger.info(f'Number of devices: {strategy.num_replicas_in_sync}')
+    with strategy.scope():
 
-    # model = models.unet_2d((None, None, 1), [64, 128, 256, 512, 1024], n_labels=2,
-    #                        stack_num_down=2, stack_num_up=1,
-    #                        activation='GELU', output_activation='Softmax', 
-    #                        batch_norm=True, pool='max', unpool='nearest', name='unet')
-
-    # model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(lr=1e-2))
+        model = UNet(input_size = (None, None, 1), 
+                     n_filters = 64)
     
-    # logger.info(model.summary())
+    logger.info(model.summary())
 
-    # ##Set tensorlogging
-    # log_dir = "log/fit/" + jobnumber
-    # tensorboard_callback = TensorBoard(log_dir=log_dir, histogram_freq=1)    
+    ##Set tensorlogging
+    log_dir = "log/fit/" + jobnumber
+    tensorboard_callback = TensorBoard(log_dir=log_dir, histogram_freq=1)    
 
-    # best_weights_file="log/checkpoints/weights.best.hdf5"
-    # checkpoint = ModelCheckpoint(best_weights_file, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+    best_weights_file="log/checkpoints/weights.best.hdf5"
+    checkpoint = ModelCheckpoint(best_weights_file, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
     
-    # callbacks = [tensorboard_callback, checkpoint]
+    callbacks = [tensorboard_callback, checkpoint]
 
-    # ##Train model
-    # model.fit(train_gen, 
-    #           epochs=epochs,
-    #           validation_data=val_gen,
-    #           callbacks=callbacks,
-    #           verbose=1)
+    ##Define steps per epoch
+    train_steps = len(train_image_names) // batch_size
+    val_steps = len(val_image_names) // batch_size
+    
+    ##Train model
+    model.fit(train_gen, 
+              epochs = epochs,
+              steps_per_epoch = train_steps,
+              validation_data = val_gen,
+              validation_steps = val_steps,
+              callbacks = callbacks,
+              verbose=1)
 
 if __name__ == "__main__":
     logger.info('Start training...')
