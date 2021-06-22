@@ -140,14 +140,14 @@ class OrganoidGen(keras.utils.Sequence):
         i = idx * self.batch_size
         batch_image_paths = self.image_paths[i : i + self.batch_size]
         batch_label_paths = self.label_paths[i : i + self.batch_size]
-        x = np.zeros((self.batch_size,) + self.img_size + (1,), dtype="uint16")
+        x = np.zeros((self.batch_size,) + self.img_size + (1,), dtype='float32')
         for j, path in enumerate(batch_image_paths):
-            img = load_img(path, target_size=self.img_size, color_mode="grayscale")
+            img = load_img(path, target_size=self.img_size, color_mode='grayscale')
             img = np.asarray(img) / ((2 ** self.bit))
             x[j] = np.expand_dims(img, 2)
-        y = np.zeros((self.batch_size,) + self.img_size + (1,), dtype="uint16")
+        y = np.zeros((self.batch_size,) + self.img_size + (1,), dtype='uint16')
         for j, path in enumerate(batch_label_paths):
-            img = load_img(path, target_size=self.img_size, color_mode="grayscale")
+            img = load_img(path, target_size=self.img_size, color_mode='grayscale')
             y[j] = np.expand_dims(img, 2)
             # Ground truth labels are 1, 2, 3. Subtract one to make them 0, 1, 2:
             # y[j] -= 1
