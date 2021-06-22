@@ -7,6 +7,7 @@ dependencies:
   - ipykernel=5.3.4
   - pip=21.1.2
   - tensorflow-gpu=2.4.1
+  - keras=2.4.3
   - pylint=2.8.3
   - numpy=1.19.5
   - natsort=7.1.1
@@ -24,5 +25,3 @@ dependencies:
   # - trackpy=0.4.2
   - pip:
     - keras-unet-collection==0.1.8
-  #   - argschema==2.0.2
-    # - cellpose==0.6.1 --install-option="--no-deps"

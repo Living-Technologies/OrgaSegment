@@ -7,10 +7,11 @@ logger = logging.getLogger(__file__)
 import matplotlib.pyplot as plt
 from lib import load_train_val_names, OrganoidGen
 from keras_unet_collection import models
-from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
+from keras.callbacks import ModelCheckpoint, TensorBoard
 from tensorflow.distribute import MirroredStrategy
-from tensorflow import keras
-import tensorflow as tf
+from tensorflow.python.client import device_lib
+from tensorflow.config import list_physical_devices
+import keras
 
 #inputs
 data_dir= 'data/20210615/train/'
@@ -24,6 +25,13 @@ epochs = 50
 batch_size = 5
 img_size = (1024, 1024)
 
+logger.info(f'Check tensorflow backend: {device_lib.list_local_devices()}')
+if len(list_physical_devices("GPU")) == 0:
+    logger.error(f'No GPUs available')
+    exit(1)
+else:
+    logger.info(f'Num GPUs Available: {len(list_physical_devices("GPU"))}')
+
 def main():
     ##Build dataset
     train_image_names, train_label_names, val_image_names, val_label_names = load_train_val_names(data_dir, image_filter=image_filter, mask_filter=mask_filter, val_factor=val_factor)
@@ -36,8 +44,6 @@ def main():
     #strategy = MirroredStrategy()
     #logger.info(f'Number of devices: {strategy.num_replicas_in_sync}')
     #with strategy.scope():
-    
-    logger.info(f'Num GPUs Available: {len(tf.config.list_physical_devices("GPU"))}')
 
     model = models.unet_2d((None, None, 1), [64, 128, 256, 512, 1024], n_labels=2,
                            stack_num_down=2, stack_num_up=1,
