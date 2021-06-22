@@ -111,7 +111,7 @@ def load_train_val_names(data_dir, image_filter=None, mask_filter='_masks', val_
     for image, label in zip(train_image_names, train_label_names):
         logger.debug(f'{image} | {label}')
 
-    logger.info(f'Number of Validation samples: {len(train_image_names)}')
+    logger.info(f'Number of Validation samples: {len(train_label_names)}')
 
     for image, label in zip(val_image_names, val_label_names):
         logger.debug(f'{image} | {label}')
