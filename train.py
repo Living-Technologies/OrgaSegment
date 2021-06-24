@@ -54,7 +54,7 @@ def main():
     tensorboard_callback = TensorBoard(log_dir=log_dir, histogram_freq=1)    
 
     best_weights_file="log/checkpoints/weights.best.hdf5"
-    checkpoint = ModelCheckpoint(best_weights_file, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
+    checkpoint = ModelCheckpoint(best_weights_file, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
     
     callbacks = [tensorboard_callback, checkpoint]
 

@@ -30,7 +30,7 @@ def _merge(input1, input2):
 
 # function that defines one convolutional layer with certain number of filters
 def _output(input_tensor, n_filters, kernel_size):
-    x = Conv2D(filters = n_filters, kernel_size = (kernel_size, kernel_size), activation = 'softmax')(input_tensor)
+    x = Conv2D(filters = n_filters, kernel_size = (kernel_size, kernel_size), activation = 'sigmoid')(input_tensor)
     return x
 
 def UNet(input_size, n_filters):
@@ -84,7 +84,7 @@ def UNet(input_size, n_filters):
     model = Model(inputs = input, outputs = output)
 
     # compile
-    model.compile(optimizer=Adam(),
+    model.compile(optimizer=Adam(learning_rate = 0.001),
                   loss='categorical_crossentropy', 
                   metrics=['accuracy'])
         

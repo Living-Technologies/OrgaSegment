@@ -7,8 +7,16 @@ dependencies:
   - ipykernel=5.3.4
   - pylint=2.8.3
   - tensorflow-gpu=2.2.0
-  - keras=2.4.3
+  - keras=2.4.3s
   - numpy=1.20.3
+  - scipy=1.6
+  - cython=0.29
+  - scikit-image=0.18
+  - h5py=3.3
+  - imgaug=0.4
   - natsort=7.1.1
   - pillow=8.2.0
   - matplotlib=3.4.2
+  - pip:
+     - git+https://github.com/UMCU-BeekmanLab/Mask_RCNN.git
+     - opencv-python==4.5.2.54

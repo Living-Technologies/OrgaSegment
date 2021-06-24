@@ -22,7 +22,7 @@ conda activate $ENV
 
 conda info --envs
 
-nvidia-smi -q
+nvidia-smi
 
 ## execute python script
 python train.py
