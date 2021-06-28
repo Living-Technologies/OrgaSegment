@@ -18,6 +18,6 @@ dependencies:
   - natsort=7.1.1
   - pillow=8.2.0
   - matplotlib=3.4.2
- # - pip:
- #    - git+https://github.com/UMCU-BeekmanLab/Mask_RCNN.git
- #    - opencv-python==4.5.2.54
+  - pip:
+    - git+https://github.com/UMCU-BeekmanLab/Mask_RCNN.git
+    - opencv-python==4.5.2.54
