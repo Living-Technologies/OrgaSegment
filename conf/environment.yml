@@ -11,13 +11,13 @@ dependencies:
   - keras=2.4.3
   - numpy=1.19.5
   - scipy=1.6.3
-  - cython=0.29.23
+  #- cython=0.29.23
   - scikit-image=0.18.
-  - h5py=3.1.0
-  - imgaug=0.4.0
+  #- h5py=3.1.0
+  #- imgaug=0.4.0
   - natsort=7.1.1
   - pillow=8.2.0
   - matplotlib=3.4.2
-  - pip:
-     - git+https://github.com/UMCU-BeekmanLab/Mask_RCNN.git
-     - opencv-python==4.5.2.54
+ # - pip:
+ #    - git+https://github.com/UMCU-BeekmanLab/Mask_RCNN.git
+ #    - opencv-python==4.5.2.54
