@@ -9,6 +9,9 @@ import keras
 import numpy as np
 import random
 from keras.preprocessing.image import load_img
+from mrcnn import utils
+import re
+import os
 
 def get_image_names(folder, mask_filter, image_filter=None):
     """
@@ -153,16 +156,77 @@ class OrganoidGen(keras.utils.Sequence):
             # y[j] -= 1
         return x, y
 
-#Test image gen
-# x = train_gen.__getitem__(0)
+class OrganoidDataset(utils.Dataset):
+    '''
+    Load organoid images and masks
+    Create dataset for Mask RCNN training
+    '''
+    
 
-#     for i in range(len(x[0])):
-#         image = x[0][i]
-#         plt.imshow(image)
-#         plt.savefig(f'test/{i}-image.png')
+    def load_data(self, data_dir, classes, image_filter, mask_filter, img_size, img_bit_depth):
+        '''Load data.
+        count: number of images to generate.
+        height, width: the size of the generated images.
+        '''
+        # Add classes
+        for i, val in enumerate(classes):
+            self.add_class('organoids', i + 1, val)
 
-#         label = x[1][i]
-#         plt.imshow(label)
-#         plt.savefig(f'test/{i}-label.png')
+        # Get data information
+        image_names = get_image_names(data_dir, mask_filter=mask_filter, image_filter=image_filter)
+    
+        for i in image_names:
+            image_id = re.search(f'^{data_dir}(.*){image_filter}\..*$', i).group(1)
+        
+            masks = []
+            for c in (c for c in classes if os.path.isfile(f'{data_dir}{image_id}{mask_filter}{c}.png')):
+                mask = {'class': c,
+                        'path': f'{data_dir}{image_id}{mask_filter}{c}.png'}
+                masks.append(mask)
+            
+            self.add_image('organoids', image_id=image_id, path=i, height=img_size[0], width=img_size[1], img_bit_depth=img_bit_depth, masks=masks)
 
-#     print('succes')
+    def load_image(self, image_id):
+        """Generate an image from the specs of the given image ID.
+        Typically this function loads the image from a file, but
+        in this case it generates the image on the fly from the
+        specs in image_info.
+        """
+        info = self.image_info[image_id]
+        img = load_img(info['path'], target_size=(info['height'], info['width']), color_mode='grayscale')
+        img = np.asarray(img)# / ((2 ** info['img_bit_depth']))
+
+        return img
+
+    def info(self, image_id):
+        """Return the shapes data of the image."""
+        info = self.image_info[image_id]
+        if info["source"] == 'organoids':
+            return info
+        else:
+            super(self.__class__).image_reference(self, image_id)
+    
+    def load_mask(self, image_id):
+        """
+        Generate instance masks for shapes of the given image ID.
+        """
+        info = self.image_info[image_id]
+        
+        masks = info['masks']
+
+        mask = np.zeros([info['height'], info['width'], 1], dtype=np.uint8)
+        class_names = []
+        
+        #Split masks into numpy dimensions
+        for i in masks:
+            msk = load_img(i['path'], target_size=(info['height'], info['width']), color_mode='grayscale')
+            msk = np.asarray(msk)
+            for u in np.unique(msk):
+                m = np.where(msk == u, 1, 0)
+                m = np.expand_dims(m, axis=-1)
+                mask = np.append(mask, m, 2)
+                class_names.append(i['class'])
+            
+        # Map class names to class IDs.
+        class_ids = np.array([self.class_names.index(i) for i in class_names])
+        return mask.astype(np.bool), class_ids.astype(np.int32)
