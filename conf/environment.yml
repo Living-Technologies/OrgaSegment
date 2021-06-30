@@ -11,12 +11,12 @@ dependencies:
   - keras=2.4.3
   - numpy=1.19.5
   - scipy=1.6.3
-  - cython=0.29.23
+  - cython
   - scikit-image=0.18.1
-  - h5py=2.10.0
-  - imgaug=0.4.0
+  - h5py
+  - imgaug
   - natsort=7.1.1
-  - pillow=8.2.0
+  - pillow
   - matplotlib=3.4.2
   - pip:
     - git+https://github.com/UMCU-BeekmanLab/Mask_RCNN.git
