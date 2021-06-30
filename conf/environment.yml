@@ -19,5 +19,5 @@ dependencies:
   - pillow
   - matplotlib
   - pip:
-   - git+https://github.com/UMCU-BeekmanLab/Mask_RCNN.git
-   - opencv-python
+    - git+https://github.com/UMCU-BeekmanLab/Mask_RCNN.git
+    - opencv-python
