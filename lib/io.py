@@ -221,7 +221,7 @@ class OrganoidDataset(utils.Dataset):
         for i in masks:
             msk = load_img(i['path'], target_size=(info['height'], info['width']), color_mode='grayscale')
             msk = np.asarray(msk)
-            for u in np.unique(msk):
+            for u in (u for u in np.unique(msk) if u > 0):
                 m = np.where(msk == u, 1, 0)
                 if not isinstance(mask, np.ndarray):
                     mask = m
