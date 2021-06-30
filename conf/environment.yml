@@ -4,13 +4,13 @@ channels:
   - anaconda
 dependencies:
   - python=3.6.13
-  - ipykernel=5.5.5
-  - pylint=2.8.3
-  - pip=21.1.2
+  - ipykernel
+  - pylint
+  - pip
   - tensorflow-gpu=1.15.0
   - keras=2.3.1
-  - numpy=1.19.5
-  - scipy=1.6.3
+  - numpy
+  - scipy
   #- cython=0.29.23
   #- scikit-image=0.18.1
   #- h5py
