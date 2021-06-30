@@ -4,20 +4,20 @@ channels:
   - anaconda
 dependencies:
   - python=3.6.13
-  - ipykernel
-  - pylint
+  - ipykernel=5.5.5
+  - pylint=2.9.0
   - pip
   - tensorflow-gpu=1.15.0
   - keras=2.3.1
-  - numpy
-  - scipy
-  #- cython=0.29.23
-  #- scikit-image=0.18.1
-  #- h5py
-  #- imgaug=0.4.0
-  #- natsort=7.1.1
-  #- pillow=8.2.0
-  #- matplotlib=3.4.2
-  #- pip:
-  #  - git+https://github.com/UMCU-BeekmanLab/Mask_RCNN.git
-  #  - opencv-python==4.5.2.54
+  - numpy=1.19.5
+  - scipy=1.5.3
+  - cython
+  - scikit-image
+  - h5py=3.1.0
+  - imgaug
+  - natsort
+  - pillow
+  - matplotlib
+  - pip:
+   - git+https://github.com/UMCU-BeekmanLab/Mask_RCNN.git
+   - opencv-python
