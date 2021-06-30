@@ -214,7 +214,7 @@ class OrganoidDataset(utils.Dataset):
         
         masks = info['masks']
 
-        mask = np.zeros([info['height'], info['width']], dtype=np.uint8)
+        mask = None
         class_names = []
         
         #Split masks into numpy dimensions
@@ -223,7 +223,10 @@ class OrganoidDataset(utils.Dataset):
             msk = np.asarray(msk)
             for u in np.unique(msk):
                 m = np.where(msk == u, 1, 0)
-                mask = np.dstack((mask, m))
+                if not isinstance(mask, np.ndarray):
+                    mask = m
+                else:
+                    mask = np.dstack((mask, m))
                 class_names.append(i['class'])
             
         # Map class names to class IDs.
