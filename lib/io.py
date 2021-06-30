@@ -163,7 +163,7 @@ class OrganoidDataset(utils.Dataset):
     '''
     
 
-    def load_data(self, data_dir, classes, image_filter, mask_filter, img_size, img_bit_depth):
+    def load_data(self, data_dir, classes, image_filter, mask_filter, img_size, color_mode='rgb', img_bit_depth=None):
         '''Load data.
         count: number of images to generate.
         height, width: the size of the generated images.
@@ -184,7 +184,7 @@ class OrganoidDataset(utils.Dataset):
                         'path': f'{data_dir}{image_id}{mask_filter}{c}.png'}
                 masks.append(mask)
             
-            self.add_image('organoids', image_id=image_id, path=i, height=img_size[0], width=img_size[1], img_bit_depth=img_bit_depth, masks=masks)
+            self.add_image('organoids', image_id=image_id, path=i, height=img_size[0], width=img_size[1], color_mode=color_mode, img_bit_depth=img_bit_depth, masks=masks)
 
     def load_image(self, image_id):
         """Generate an image from the specs of the given image ID.
@@ -193,8 +193,11 @@ class OrganoidDataset(utils.Dataset):
         specs in image_info.
         """
         info = self.image_info[image_id]
-        img = load_img(info['path'], target_size=(info['height'], info['width']), color_mode='grayscale')
-        img = np.asarray(img)# / ((2 ** info['img_bit_depth']))
+        img = load_img(info['path'], target_size=(info['height'], info['width']), color_mode=color_mode)
+        if img_bit_depth:
+            img = np.asarray(img) / ((2 ** info['img_bit_depth']))
+        else:
+            img = np.asarray(img)
 
         return img
 
