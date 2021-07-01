@@ -4,6 +4,10 @@ import logging.config
 logging.config.fileConfig('conf/logging.conf')
 logger = logging.getLogger(__file__)
 
+#Temp
+import os
+print(f'Current working directory: {os.getcwd()}')
+
 #Import Mask RCNN packages
 import mrcnn.model as modellib
 # from mrcnn import utils
