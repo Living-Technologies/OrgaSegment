@@ -20,6 +20,7 @@ from conf import SegmentConfig
 #Import other packages
 import tensorflow as tf
 import sys
+from pathlib import Path
 
 #Set Tensorflow logging
 logger.info(f'Tensorflow version: {tf.__version__}')
@@ -64,6 +65,7 @@ def main():
 
     #Save config
     logger.info('Saving config')
+    Path(model.log_dir).mkdir(parents=True, exist_ok=True)
     sys.stdout = open(f'{model.log_dir}/config.txt', "w")
     config.display()
     sys.stdout.close()
