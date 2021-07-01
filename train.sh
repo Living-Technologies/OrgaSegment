@@ -25,6 +25,6 @@ conda info --envs
 nvidia-smi
 
 ## execute python script
-python train.py
+python scripts/train_mrcnn.py
 
 conda deactivate
