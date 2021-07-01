@@ -11,7 +11,7 @@ import mrcnn.model as modellib
 # from mrcnn.model import log
 
 #Import OrgaSwell functions
-from lib import *
+from lib import OrganoidDataset
 from conf import SegmentConfig
 
 #Import other packages
