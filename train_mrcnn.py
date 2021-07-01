@@ -73,11 +73,17 @@ def main():
     log_dir = model.log_dir
 
     ##Train model
-    logger.info('Start training model')
+    logger.info('Start training heads')
     model.train(data_train, data_val, 
                 learning_rate=config.LEARNING_RATE, 
-                epochs=config.EPOCHS,
-                layers=config.LAYERS)
+                epochs=10,
+                layers='heads')
+
+    logger.info('Start from stage 4 and up')
+    model.train(data_train, data_val, 
+                learning_rate=config.LEARNING_RATE, 
+                epochs=100,
+                layers='4+')
 
 if __name__ == "__main__":
     logger.info('Start training...')

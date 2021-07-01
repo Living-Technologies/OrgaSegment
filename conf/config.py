@@ -11,13 +11,12 @@ class SegmentConfig(Config):
     # Give the configuration a recognizable name
     NAME = 'ORGANOIDS'
 
-    # Backbone (resnet101 is default)
-    BACKBONE = "resnet50"
-    LAYERS = 'all'
+    # Backbone
+    BACKBONE = 'resnet50'
     
     # Number of GPU, images per GPU and batchsize
     GPU_COUNT = 2
-    IMAGES_PER_GPU = 1
+    IMAGES_PER_GPU = 5
     BATCHSIZE = GPU_COUNT * IMAGES_PER_GPU
 
     # Number of classes (including background)
@@ -31,10 +30,9 @@ class SegmentConfig(Config):
     RPN_ANCHOR_SCALES = (32, 64, 128, 256, 512)
     
     # TRAIN ROIS PER IMAGE
-    TRAIN_ROIS_PER_IMAGE = 5
+    TRAIN_ROIS_PER_IMAGE = 20
 
     # Steps per epoch and validation steps
-    EPOCHS = 1
     STEPS_PER_EPOCH = 50
     VALIDATION_STEPS = 5
 

@@ -2,8 +2,8 @@
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --gpus-per-node=RTX6000:2
-#SBATCH --time=4:00:00
-#SBATCH --mem=64G
+#SBATCH --time=18:00:00
+#SBATCH --mem=128G
 #SBATCH --mail-user=s.vanbeuningen@umcutrecht.nl
 #SBATCH --mail-type=begin
 #SBATCH --mail-type=end
