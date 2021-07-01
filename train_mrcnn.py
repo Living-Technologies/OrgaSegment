@@ -16,7 +16,7 @@ import mrcnn.model as modellib
 
 print(f'Current working directory: {os.getcwd()}')
 #Import OrgaSwell functions
-from fun import OrganoidDataset
+from lib import OrganoidDataset
 from conf import SegmentConfig
 
 #Import other packages
