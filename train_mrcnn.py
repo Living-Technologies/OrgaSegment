@@ -27,7 +27,7 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 
 #Check Tensorflow GPU
 if tf.test.is_gpu_available():
-    logger.info(f'Num GPUs Available: {len(tf.config.experimental_list_devices())}')
+    logger.info(f'GPU devices: {tf.config.experimental_list_devices()}')
 else:
     logger.error(f'No GPUs available')
     exit(1)
@@ -49,7 +49,7 @@ def main():
     data_train.prepare()
 
     data_val = OrganoidDataset()
-    data_valload_data(config.VAL_DIR,
+    data_val.load_data(config.VAL_DIR,
                       config.CLASSES,
                       config.IMAGE_FILTER,
                       config.MASK_FILTER,
