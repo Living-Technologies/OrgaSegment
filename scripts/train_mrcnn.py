@@ -14,6 +14,7 @@ import mrcnn.model as modellib
 # from mrcnn import visualize
 # from mrcnn.model import log
 
+print(f'Current working directory: {os.getcwd()}')
 #Import OrgaSwell functions
 from lib import OrganoidDataset
 from conf import SegmentConfig
