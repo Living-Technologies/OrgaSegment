@@ -20,7 +20,7 @@ from conf import SegmentConfig
 #Import other packages
 import tensorflow as tf
 import sys
-from pathlib import Path
+import shutil
 
 #Set Tensorflow logging
 logger.info(f'Tensorflow version: {tf.__version__}')
@@ -32,6 +32,11 @@ if tf.test.is_gpu_available():
 else:
     logger.error(f'No GPUs available')
     exit(1)
+
+#Get Job ID
+job_id=sys.argv[1]
+#Set log_dir
+log_dir = None
 
 def main():
     #Get config, display and save config
@@ -63,13 +68,10 @@ def main():
     model = modellib.MaskRCNN(mode='training', config=config, model_dir=config.MODEL_DIR)
     model.load_weights(model.get_imagenet_weights(), by_name=True)
 
-    #Save config
-    logger.info('Saving config')
-    Path(model.log_dir).mkdir(parents=True, exist_ok=True)
-    sys.stdout = open(f'{model.log_dir}/config.txt', "w")
-    config.display()
-    sys.stdout.close()
-    
+    #Update log_dir
+    global log_dir
+    log_dir = model.log_dir
+
     ##Train model
     logger.info('Start training model')
     model.train(data_train, data_val, 
@@ -81,3 +83,6 @@ if __name__ == "__main__":
     logger.info('Start training...')
     main()
     logger.info('Training completed!')
+    ##Copy logging to model log dir
+    shutil.copy(f'log/JobName.{job_id}.out', f'{log_dir}/JobName.{job_id}.out')
+    shutil.copy(f'log/JobName.{job_id}.err', f'{log_dir}/JobName.{job_id}.err')
