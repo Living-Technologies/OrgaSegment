@@ -6,7 +6,6 @@ logger = logging.getLogger(__file__)
 
 #Temp
 import os
-print(f'Current working directory: {os.getcwd()}')
 
 #Import Mask RCNN packages
 import mrcnn.model as modellib
@@ -14,7 +13,6 @@ import mrcnn.model as modellib
 # from mrcnn import visualize
 # from mrcnn.model import log
 
-print(f'Current working directory: {os.getcwd()}')
 #Import OrgaSwell functions
 from lib import OrganoidDataset
 from conf import SegmentConfig
@@ -29,10 +27,10 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 
 #Check Tensorflow GPU
 if tf.test.is_gpu_available():
+    logger.info(f'Num GPUs Available: {len(tf.config.experimental_list_devices())}')
+else:
     logger.error(f'No GPUs available')
     exit(1)
-else:
-    logger.info(f'Num GPUs Available: {len(tf.config.experimental_list_devices())}')
 
 def main():
     #Get config, display and save config
