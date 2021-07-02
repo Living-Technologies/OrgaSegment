@@ -66,7 +66,7 @@ def main():
     #Compile model
     logger.info('Compiling model')
     model = modellib.MaskRCNN(mode='training', config=config, model_dir=config.MODEL_DIR)
-    model.load_weights(model.get_imagenet_weights(), by_name=True)
+    model.load_weights(config.PRETRAINED_WEIGHTS, by_name=True)
 
     #Update log_dir
     global log_dir
@@ -76,14 +76,14 @@ def main():
     logger.info('Start training heads')
     model.train(data_train, data_val, 
                 learning_rate=config.LEARNING_RATE, 
-                epochs=10,
+                epochs=100,
                 layers='heads')
 
-    logger.info('Start from stage 4 and up')
+    logger.info('Start training all layers')
     model.train(data_train, data_val, 
                 learning_rate=config.LEARNING_RATE, 
-                epochs=100,
-                layers='4+')
+                epochs=500,
+                layers='all')
 
 if __name__ == "__main__":
     logger.info('Start training...')
