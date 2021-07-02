@@ -22,20 +22,42 @@ class SegmentConfig(Config):
     # Number of classes (including background)
     NUM_CLASSES = 1 + 2  # background + 2 classes (organoid and unhealthy structure)
 
-    # Set image dimensions for rescaling
-    IMAGE_MIN_DIM = 1024
-    IMAGE_MAX_DIM = 1024
+    # Input image resizing
+    # Random crops of size 512x512
+    IMAGE_RESIZE_MODE = 'crop'
+    IMAGE_MIN_DIM = 512
+    IMAGE_MAX_DIM = 512
+    IMAGE_MIN_SCALE = 2.0
+
+    # ROIs kept after non-maximum supression (training and inference)
+    POST_NMS_ROIS_TRAINING = 1000
+    POST_NMS_ROIS_INFERENCE = 2000
+
+    # Non-max suppression threshold to filter RPN proposals.
+    # You can increase this during training to generate more propsals.
+    RPN_NMS_THRESHOLD=0.99
+
+    # How many anchors per image to use for RPN training
+    RPN_TRAIN_ANCHORS_PER_IMAGE = 128
+
+    # Image mean (RGB)
+    MEAN_PIXEL = np.array([126,126,126])
 
     # RPN ANCHOR scales
     RPN_ANCHOR_SCALES = (8, 16, 32, 64, 128)
     
     # TRAIN ROIS PER IMAGE
-    TRAIN_ROIS_PER_IMAGE = 20
+    TRAIN_ROIS_PER_IMAGE = 128
 
     # If enabled, resizes instance masks to a smaller size to reduce
     # memory load. Recommended when using high-resolution images.
     USE_MINI_MASK = True
     MINI_MASK_SHAPE = (100,100)
+
+    # Maximum number of ground truth instances to use in one image
+    MAX_GT_INSTANCES = 200
+    # Max number of final detections per image
+    DETECTION_MAX_INSTANCES = 400
 
     # Steps per epoch and validation steps
     STEPS_PER_EPOCH = 50
@@ -46,7 +68,7 @@ class SegmentConfig(Config):
     VAL_DIR= '/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20210701/val'
     MODEL_DIR='/hpc/umc_beekman/orgasegment/models/'
     PRETRAINED_WEIGHTS = '/hpc/umc_beekman/orgasegment/models/coco/mask_rcnn_coco.h5'
-    EXCLUDE_LAYERS = [ 'mrcnn_class_logits', 'mrcnn_bbox_fc', 'mrcnn_bbox', 'mrcnn_mask']
+    EXCLUDE_LAYERS = ['mrcnn_class_logits', 'mrcnn_bbox_fc', 'mrcnn_bbox', 'mrcnn_mask']
     IMAGE_FILTER = '_img'
     MASK_FILTER = '_masks_'
     CLASSES = ['organoid', 'unhealthy_structure']

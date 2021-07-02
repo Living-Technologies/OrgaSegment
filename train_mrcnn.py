@@ -4,14 +4,8 @@ import logging.config
 logging.config.fileConfig('conf/logging.conf')
 logger = logging.getLogger(__file__)
 
-#Temp
-import os
-
 #Import Mask RCNN packages
 import mrcnn.model as modellib
-# from mrcnn import utils
-# from mrcnn import visualize
-# from mrcnn.model import log
 
 #Import OrgaSwell functions
 from lib import OrganoidDataset
@@ -50,7 +44,6 @@ def main():
                          config.CLASSES,
                          config.IMAGE_FILTER,
                          config.MASK_FILTER,
-                         (config.IMAGE_SHAPE[0], config.IMAGE_SHAPE[1]),
                          config.COLOR_MODE)
     data_train.prepare()
 
@@ -59,7 +52,6 @@ def main():
                       config.CLASSES,
                       config.IMAGE_FILTER,
                       config.MASK_FILTER,
-                      (config.IMAGE_SHAPE[0], config.IMAGE_SHAPE[1]),
                       config.COLOR_MODE)
     data_val.prepare()
 
@@ -78,13 +70,13 @@ def main():
     logger.info('Start training heads')
     model.train(data_train, data_val, 
                 learning_rate=config.LEARNING_RATE, 
-                epochs=100,
+                epochs=10,
                 layers='heads')
 
     logger.info('Start training all layers')
     model.train(data_train, data_val, 
                 learning_rate=config.LEARNING_RATE, 
-                epochs=500,
+                epochs=20,
                 layers='all')
 
 if __name__ == "__main__":
