@@ -12,11 +12,11 @@ class SegmentConfig(Config):
     NAME = 'ORGANOIDS'
 
     # Backbone
-    BACKBONE = 'resnet50'
+    BACKBONE = 'resnet101'
     
     # Number of GPU, images per GPU and batchsize
     GPU_COUNT = 2
-    IMAGES_PER_GPU = 2
+    IMAGES_PER_GPU = 1
     BATCHSIZE = GPU_COUNT * IMAGES_PER_GPU
 
     # Number of classes (including background)
@@ -27,10 +27,15 @@ class SegmentConfig(Config):
     IMAGE_MAX_DIM = 1024
 
     # RPN ANCHOR scales
-    RPN_ANCHOR_SCALES = (32, 64, 128, 256, 512)
+    RPN_ANCHOR_SCALES = (8, 16, 32, 64, 128)
     
     # TRAIN ROIS PER IMAGE
-    TRAIN_ROIS_PER_IMAGE = 10
+    TRAIN_ROIS_PER_IMAGE = 20
+
+    # If enabled, resizes instance masks to a smaller size to reduce
+    # memory load. Recommended when using high-resolution images.
+    USE_MINI_MASK = True
+    MINI_MASK_SHAPE = (100,100)
 
     # Steps per epoch and validation steps
     STEPS_PER_EPOCH = 50
