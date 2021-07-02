@@ -46,6 +46,7 @@ class SegmentConfig(Config):
     VAL_DIR= '/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20210701/val'
     MODEL_DIR='/hpc/umc_beekman/orgasegment/models/'
     PRETRAINED_WEIGHTS = '/hpc/umc_beekman/orgasegment/models/coco/mask_rcnn_coco.h5'
+    EXCLUDE_LAYERS = [ 'mrcnn_class_logits', 'mrcnn_bbox_fc', 'mrcnn_bbox', 'mrcnn_mask']
     IMAGE_FILTER = '_img'
     MASK_FILTER = '_masks_'
     CLASSES = ['organoid', 'unhealthy_structure']

@@ -66,7 +66,9 @@ def main():
     #Compile model
     logger.info('Compiling model')
     model = modellib.MaskRCNN(mode='training', config=config, model_dir=config.MODEL_DIR)
-    model.load_weights(config.PRETRAINED_WEIGHTS, by_name=True)
+    model.load_weights(config.PRETRAINED_WEIGHTS,
+                       by_name=True,
+                       exclude=config.EXCLUDE_LAYERS)
 
     #Update log_dir
     global log_dir
