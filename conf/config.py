@@ -1,4 +1,5 @@
 from mrcnn.config import Config
+import numpy as np
 
 ##Config
 class SegmentConfig(Config):
