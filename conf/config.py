@@ -16,7 +16,7 @@ class SegmentConfig(Config):
     
     # Number of GPU, images per GPU and batchsize
     GPU_COUNT = 2
-    IMAGES_PER_GPU = 5
+    IMAGES_PER_GPU = 2
     BATCHSIZE = GPU_COUNT * IMAGES_PER_GPU
 
     # Number of classes (including background)
@@ -30,7 +30,7 @@ class SegmentConfig(Config):
     RPN_ANCHOR_SCALES = (32, 64, 128, 256, 512)
     
     # TRAIN ROIS PER IMAGE
-    TRAIN_ROIS_PER_IMAGE = 20
+    TRAIN_ROIS_PER_IMAGE = 10
 
     # Steps per epoch and validation steps
     STEPS_PER_EPOCH = 50
