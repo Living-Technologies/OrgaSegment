@@ -16,7 +16,7 @@ class SegmentConfig(Config):
     BACKBONE = 'resnet101'
     
     # Number of GPU, images per GPU and batchsize
-    GPU_COUNT = 2
+    GPU_COUNT = 4
     IMAGES_PER_GPU = 1
     BATCHSIZE = GPU_COUNT * IMAGES_PER_GPU
 
