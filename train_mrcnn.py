@@ -76,7 +76,7 @@ def main():
     logger.info('Start training all layers')
     model.train(data_train, data_val, 
                 learning_rate=config.LEARNING_RATE, 
-                epochs=20,
+                epochs=100,
                 layers='all')
 
 if __name__ == "__main__":
