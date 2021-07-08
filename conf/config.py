@@ -23,12 +23,17 @@ class SegmentConfig(Config):
     # Number of classes (including background)
     NUM_CLASSES = 1 + 2  # background + 2 classes (organoid and unhealthy structure)
 
+    #Class weights
+    CLASS_WEIGHTS = {0: 1.,
+                     1: 1.,
+                     2: 5.}
+
     # Input image resizing
     # Random crops of size 512x512
-    IMAGE_RESIZE_MODE = 'crop'
-    IMAGE_MIN_DIM = 512
-    IMAGE_MAX_DIM = 512
-    IMAGE_MIN_SCALE = 2.0
+    # IMAGE_RESIZE_MODE = 'crop'
+    IMAGE_MIN_DIM = 1024
+    IMAGE_MAX_DIM = 1024
+    # IMAGE_MIN_SCALE = 2.0
 
     # ROIs kept after non-maximum supression (training and inference)
     POST_NMS_ROIS_TRAINING = 1000
