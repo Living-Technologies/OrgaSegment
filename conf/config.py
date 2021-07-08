@@ -23,11 +23,6 @@ class SegmentConfig(Config):
     # Number of classes (including background)
     NUM_CLASSES = 1 + 2  # background + 2 classes (organoid and unhealthy structure)
 
-    #Class weights
-    CLASS_WEIGHTS = {0: 1.,
-                     1: 1.,
-                     2: 5.}
-
     # Input image resizing
     # Random crops of size 512x512
     # IMAGE_RESIZE_MODE = 'crop'

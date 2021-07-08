@@ -70,14 +70,12 @@ def main():
     logger.info('Start training heads')
     model.train(data_train, data_val, 
                 learning_rate=config.LEARNING_RATE,
-                class_weight=config.CLASS_WEIGHTS,
                 epochs=10,
                 layers='heads')
 
     logger.info('Start training all layers')
     model.train(data_train, data_val, 
                 learning_rate=config.LEARNING_RATE,
-                class_weight=config.CLASS_WEIGHTS,
                 epochs=100,
                 layers='all')
 
