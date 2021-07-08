@@ -70,13 +70,13 @@ def main():
     logger.info('Start training heads')
     model.train(data_train, data_val, 
                 learning_rate=config.LEARNING_RATE,
-                epochs=10,
+                epochs=100,
                 layers='heads')
 
     logger.info('Start training all layers')
     model.train(data_train, data_val, 
                 learning_rate=config.LEARNING_RATE,
-                epochs=100,
+                epochs=500,
                 layers='all')
 
 if __name__ == "__main__":
