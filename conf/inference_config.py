@@ -22,5 +22,5 @@ class InferenceConfig(TrainConfig):
     # IMAGE_FILTER = '_img'
     INFERENCE_DIR= os.path.join('/hpc/umc_beekman/DIS/20210526/DIS', '')
     IMAGE_FILTER = None
-    CLASSES = ['organoid']
+    # CLASSES = ['organoid']
     COLOR_MODE = 'rgb'
