@@ -17,6 +17,7 @@ import sys
 import shutil
 from skimage.io import imsave
 import pandas as pd
+import numpy as np
 
 #Set Tensorflow logging
 logger.info(f'Tensorflow version: {tf.__version__}')
@@ -73,7 +74,9 @@ def main():
                           'class': pd.Series([], dtype=np.int16)})
 
     #Run on images
+    logger.info('Start predictions')
     for i in data.image_ids:
+        logger.info(f'Processing {data.info(i)["id"]}')
         original_image, image_meta, gt_class_id, gt_bbox, gt_mask =\
         modellib.load_image_gt(data,
                                config, 
@@ -113,9 +116,9 @@ def main():
     bbox.to_csv(f'{config.INFERENCE_DIR}orgaseg_bbox.csv', ignore_index=True)
         
 if __name__ == "__main__":
-    logger.info('Start training...')
+    logger.info('Start inference...')
     main()
-    logger.info('Training completed!')
+    logger.info('Inference completed!')
     ##Copy logging to model log dir
     shutil.copy(f'log/JobName.{job_id}.out', f'{log_dir}/JobName.{job_id}.out')
     shutil.copy(f'log/JobName.{job_id}.err', f'{log_dir}/JobName.{job_id}.err')
