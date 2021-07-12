@@ -18,7 +18,7 @@ class InferenceConfig(TrainConfig):
     # OrgaSegment specific config
     MODEL_DIR = os.path.join('/hpc/umc_beekman/orgasegment/models/', '')
     MODEL = '/hpc/umc_beekman/orgasegment/models/organoids20210708T1343/mask_rcnn_organoids_0500.h5'
-    INFERENCE_DIR= os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20210701/train/', '')
+    INFERENCE_DIR= os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20210701/test/', '')
     IMAGE_FILTER = '_img'
     # INFERENCE_DIR= os.path.join('/hpc/umc_beekman/DIS/20210526/DIS', '')
     # IMAGE_FILTER = ''
