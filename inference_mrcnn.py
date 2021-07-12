@@ -90,9 +90,9 @@ def main():
         mask_name = f'{config.INFERENCE_DIR}{data.info(i)["id"]}_orgaseg_masks.png'
 
         #Process masks
-        for count, i in enumerate(range(len_masks)):
+        for count, m in enumerate(range(len_masks)):
             #Get mask information
-            msk = gt_mask[:,:,i].astype(int)
+            msk = gt_mask[:,:,m].astype(int)
             size = np.sum(msk)
             num = values.pop(random.randrange(len(values))) #Get a random number for mask
             msk = np.where(msk != 0, num, msk)
@@ -106,11 +106,11 @@ def main():
                     'mask': mask_name,
                     'name': data.info(i)['id'],
                     'mask_id': num,
-                    'y1': gt_bbox[i,0],
-                    'x1': gt_bbox[i,1],
-                    'y2': gt_bbox[i,2],
-                    'x2': gt_bbox[i,3],
-                    'class': gt_class_id[i],
+                    'y1': gt_bbox[m,0],
+                    'x1': gt_bbox[m,1],
+                    'y2': gt_bbox[m,2],
+                    'x2': gt_bbox[m,3],
+                    'class': gt_class_id[m],
                     'size': size}
             results = results.append(info, ignore_index=True)
         
