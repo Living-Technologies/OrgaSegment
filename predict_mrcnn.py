@@ -25,7 +25,7 @@ from keras.preprocessing.image import load_img
 
 #Set Tensorflow logging
 logger.info(f'Tensorflow version: {tf.__version__}')
-tf.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 #Check Tensorflow GPU
 if tf.test.is_gpu_available():
