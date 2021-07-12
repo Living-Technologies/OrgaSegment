@@ -79,7 +79,7 @@ def main():
         mask_path = config.INFERENCE_DIR + mask_name
 
         #Load image
-        img = load_img(i, color_mode=config.COLOR_MODE)
+        img = np.asarray(load_img(i, color_mode=config.COLOR_MODE))
 
         #Predict organoids
         pred = model.detect([img], verbose=1)
