@@ -72,7 +72,7 @@ def main():
     #Run on images
     logger.info('Start predictions')
     for i in images:
-        logger.info(f'Processing {image[i]}')
+        logger.info(f'Processing {i}')
         image_name = re.search(f'^{config.INFERENCE_DIR}(.*)\..*$', i).group(1)
         mask_name = f'{image_name}_orgaseg_masks.png'
         mask_path = config.INFERENCE_DIR + mask_name
