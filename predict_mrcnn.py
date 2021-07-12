@@ -8,8 +8,8 @@ logger = logging.getLogger(__file__)
 import mrcnn.model as modellib
 
 #Import OrgaSegment functions
-from lib import get_image_names, OrganoidDataset
-from conf import InferenceConfig
+from lib import get_image_names
+from conf import PredictConfig
 
 #Import other packages
 import tensorflow as tf
@@ -35,21 +35,24 @@ else:
 
 #Get Job ID
 job_id=sys.argv[1]
-#Set log_dir
-log_dir = None
+
+#Data folder
+data_dir=sys.argv[1]
+if os.path.isdir(data_dir) == False:
+            logger.error(f'Incorrect data path specified: {data_dir}')
+            exit(1)
+else:
+    data_dir=os.path.join(data_dir, '')
+    logger.info(f'Data dir: {data_dir}')
 
 def main():
     #Get config, display and save config
     config = InferenceConfig()
     logger.info(config.display())
 
-    #Update log_dir
-    global log_dir
-    log_dir = config.INFERENCE_DIR
-
     #Get data
     logger.info('Get image names')
-    images = get_image_names(config.INFERENCE_DIR, '_orgaseg_masks', config.IMAGE_FILTER)
+    images = get_image_names(data_dir, '_orgaseg_masks')
 
     #Load model
     logger.info('Loading model')
@@ -60,23 +63,24 @@ def main():
 
     #Create empty data frame for results
     results =  pd.DataFrame({'image': pd.Series([], dtype='str'),
-                          'mask': pd.Series([], dtype='str'),
-                          'name': pd.Series([], dtype='str'),
-                          'y1':  pd.Series([], dtype=np.int16),
-                          'x1': pd.Series([], dtype=np.int16), 
-                          'y2': pd.Series([], dtype=np.int16), 
-                          'x2': pd.Series([], dtype=np.int16),
-                          'class': pd.Series([], dtype=np.int16),
-                          'score':  pd.Series([], dtype=np.float32),
-                          'size': pd.Series([], dtype=np.int16)})
+                            'mask': pd.Series([], dtype='str'),
+                            'name': pd.Series([], dtype='str'),
+                            'id': pd.Series([], dtype=np.int16),
+                            'y1':  pd.Series([], dtype=np.int16),
+                            'x1': pd.Series([], dtype=np.int16), 
+                            'y2': pd.Series([], dtype=np.int16), 
+                            'x2': pd.Series([], dtype=np.int16),
+                            'class': pd.Series([], dtype=np.int16),
+                            'score':  pd.Series([], dtype=np.float32),
+                            'size': pd.Series([], dtype=np.int16)})
 
     #Run on images
     logger.info('Start predictions')
     for i in images:
         logger.info(f'Processing {i}')
-        image_name = re.search(f'^{config.INFERENCE_DIR}(.*)\..*$', i).group(1)
+        image_name = re.search(f'^{data_dir}(.*)\..*$', i).group(1)
         mask_name = f'{image_name}_orgaseg_masks.png'
-        mask_path = config.INFERENCE_DIR + mask_name
+        mask_path = data_dir + mask_name
 
         #Load image
         img = np.asarray(load_img(i, color_mode=config.COLOR_MODE))
@@ -94,7 +98,8 @@ def main():
             #Get mask information
             msk = p['masks'][:,:,l].astype(np.uint8)
             size = np.sum(msk)
-            num = values.pop(random.randrange(len(values))) #Get a random number for mask
+            # num = values.pop(random.randrange(len(values))) #Get a random number for mask
+            num = l + 1
             msk = np.where(msk != 0, num, msk)
             if count == 0:
                 mask = msk
@@ -105,7 +110,7 @@ def main():
             info = {'image': i,
                     'mask': mask_path,
                     'name': image_name,
-                    'mask_id': num,
+                    'id': num,
                     'y1': p['rois'][l,0],
                     'x1': p['rois'][l,1],
                     'y2': p['rois'][l,2],
@@ -119,12 +124,12 @@ def main():
         imsave(mask_path, mask)
 
     #Save results
-    results.to_csv(f'{config.INFERENCE_DIR}orgaseg_results.csv', index=False)
+    results.to_csv(f'{data_dir}orgaseg_results.csv', index=False)
         
 if __name__ == "__main__":
-    logger.info('Start inference...')
+    logger.info('Start prediction job...')
     main()
-    logger.info('Inference completed!')
-    ##Copy logging to model log dir
-    shutil.copy(f'log/JobName.{job_id}.out', f'{log_dir}/JobName.{job_id}.out')
-    shutil.copy(f'log/JobName.{job_id}.err', f'{log_dir}/JobName.{job_id}.err')
+    logger.info('Predictions completed!')
+    ##Copy logging to data dir
+    shutil.copy(f'log/JobName.{job_id}.out', f'{data_dir}/JobName.{job_id}.out')
+    shutil.copy(f'log/JobName.{job_id}.err', f'{data_dir}/JobName.{job_id}.err')

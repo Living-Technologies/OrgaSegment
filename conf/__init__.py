@@ -1,2 +1,2 @@
 from .train_config import *
-from .inference_config import *
+from .predict_config import *
