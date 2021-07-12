@@ -8,7 +8,7 @@ logger = logging.getLogger(__file__)
 import mrcnn.model as modellib
 
 #Import OrgaSegment functions
-from lib import OrganoidDataset
+from lib import get_image_names OrganoidDataset
 from conf import InferenceConfig
 
 #Import other packages
@@ -19,6 +19,7 @@ from skimage.io import imsave
 import pandas as pd
 import numpy as np
 import random
+from keras.preprocessing.image import load_img
 
 #Set Tensorflow logging
 logger.info(f'Tensorflow version: {tf.__version__}')
@@ -46,25 +47,17 @@ def main():
     log_dir = config.INFERENCE_DIR
 
     #Get data
-    logger.info('Preparing data')
-    data = OrganoidDataset()
-    data.load_data(config.INFERENCE_DIR,
-                   config.CLASSES,
-                   config.IMAGE_FILTER,
-                   config.MASK_FILTER,
-                   config.COLOR_MODE)
-    data.prepare()
+    logger.info('Get image names')
+    images = get_image_names(config.INFERENCE_DIR, mask_filter = '_orgaseg_masks', config.IMAGE_FILTER)
 
     #Load model
     logger.info('Loading model')
-    
-    # Recreate the model in inference mode
     model = modellib.MaskRCNN(mode='inference', 
                               config=config,
                               model_dir=config.MODEL_DIR)
     model.load_weights(config.MODEL, by_name=True)
 
-
+    #Create empty data frame for results
     results =  pd.DataFrame({'image': pd.Series([], dtype='str'),
                           'mask': pd.Series([], dtype='str'),
                           'name': pd.Series([], dtype='str'),
@@ -72,27 +65,33 @@ def main():
                           'x1': pd.Series([], dtype=np.int16), 
                           'y2': pd.Series([], dtype=np.int16), 
                           'x2': pd.Series([], dtype=np.int16),
-                          'class': pd.Series([], dtype=np.int16)})
+                          'class': pd.Series([], dtype=np.int16),
+                          'score':  pd.Series([], dtype=np.float32),
+                          'size': pd.Series([], dtype=np.int16)})
 
     #Run on images
     logger.info('Start predictions')
-    for i in data.image_ids:
-        logger.info(f'Processing {data.info(i)["id"]}')
-        original_image, image_meta, gt_class_id, gt_bbox, gt_mask =\
-        modellib.load_image_gt(data,
-                               config, 
-                               i, 
-                               use_mini_mask=False)
-        
-        #Create mask
-        len_masks = gt_mask.shape[-1]
-        values = list(range(1, len_masks + 1)) #Create a list of values from 1 to number of masks per label
-        mask_name = f'{config.INFERENCE_DIR}{data.info(i)["id"]}_orgaseg_masks.png'
+    for i in images:
+        logger.info(f'Processing {image[i]}')
+        image_name = re.search(f'^{config.INFERENCE_DIR}(.*)\..*$', i).group(1)
+        mask_name = f'{image_name}_orgaseg_masks.png'
+        mask_path = config.INFERENCE_DIR + mask_name
 
-        #Process masks
-        for count, m in enumerate(range(len_masks)):
+        #Load image
+        img = load_img(i, color_mode=config.COLOR_MODE)
+
+        #Predict organoids
+        pred = model.detect([img], verbose=1)
+        p = pred[0]
+
+        #Create length of predictions
+        length = len(p['rois'])
+        values = list(range(1, length + 1)) #Create a list of values from 1 to number of masks per label
+
+        #Process predictions
+        for count, l in enumerate(range(length)):
             #Get mask information
-            msk = gt_mask[:,:,m].astype(np.uint8)
+            msk = p['masks'][:,:,l].astype(np.uint8)
             size = np.sum(msk)
             num = values.pop(random.randrange(len(values))) #Get a random number for mask
             msk = np.where(msk != 0, num, msk)
@@ -102,20 +101,21 @@ def main():
                 mask = np.maximum(mask, msk) #Combine previous mask with new mask
 
             #Set all information
-            info = {'image': data.info(i)['path'],
-                    'mask': mask_name,
-                    'name': data.info(i)['id'],
+            info = {'image': i,
+                    'mask': mask_path,
+                    'name': image_name,
                     'mask_id': num,
-                    'y1': gt_bbox[m,0],
-                    'x1': gt_bbox[m,1],
-                    'y2': gt_bbox[m,2],
-                    'x2': gt_bbox[m,3],
-                    'class': gt_class_id[m],
+                    'y1': p['rois'][l,0],
+                    'x1': p['rois'][l,1],
+                    'y2': p['rois'][l,2],
+                    'x2': p['rois'][l,3],
+                    'class': p['class_ids'][l],
+                    'score': p['scores'][l],
                     'size': size}
             results = results.append(info, ignore_index=True)
         
         #Save mask
-        imsave(mask_name, mask)
+        imsave(mask_path, mask)
 
     #Save results
     results.to_csv(f'{config.INFERENCE_DIR}orgaseg_results.csv', index=False)
