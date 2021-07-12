@@ -115,7 +115,7 @@ def main():
             results = results.append(info, ignore_index=True)
         
         #Save mask
-        imsave(mask_name)
+        imsave(mask_name, mask)
 
     #Save results
     results.to_csv(f'{config.INFERENCE_DIR}orgaseg_results.csv', ignore_index=True)
