@@ -163,7 +163,7 @@ class OrganoidDataset(utils.Dataset):
     '''
     
 
-    def load_data(self, data_dir, classes, image_filter, mask_filter, color_mode='rgb', img_bit_depth=None):
+    def load_data(self, data_dir, classes, image_filter='', mask_filter='', color_mode='rgb', img_bit_depth=None):
         '''Load data.
         count: number of images to generate.
         height, width: the size of the generated images.

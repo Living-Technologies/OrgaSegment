@@ -1,8 +1,9 @@
 from mrcnn.config import Config
 import numpy as np
+import os
 
 ##Config
-class SegmentConfig(Config):
+class TrainConfig(Config):
     '''
     Configuration for training on the Organoid dataset.
     Derives from the base Config class and overrides values specific
@@ -65,9 +66,9 @@ class SegmentConfig(Config):
     VALIDATION_STEPS = 5
 
     # OrgaSegment specific config
-    TRAIN_DIR= '/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20210701/train'
-    VAL_DIR= '/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20210701/val'
-    MODEL_DIR='/hpc/umc_beekman/orgasegment/models/'
+    TRAIN_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20210701/train', '')
+    VAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20210701/val', '')
+    MODEL_DIR = os.path.join('/hpc/umc_beekman/orgasegment/models/', '')
     PRETRAINED_WEIGHTS = '/hpc/umc_beekman/orgasegment/models/coco/mask_rcnn_coco.h5'
     EXCLUDE_LAYERS = ['mrcnn_class_logits', 'mrcnn_bbox_fc', 'mrcnn_bbox', 'mrcnn_mask']
     IMAGE_FILTER = '_img'

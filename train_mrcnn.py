@@ -9,7 +9,7 @@ import mrcnn.model as modellib
 
 #Import OrgaSwell functions
 from lib import OrganoidDataset
-from conf import SegmentConfig
+from conf import TrainConfig
 
 #Import other packages
 import tensorflow as tf
@@ -34,7 +34,7 @@ log_dir = None
 
 def main():
     #Get config, display and save config
-    config = SegmentConfig()
+    config = TrainConfig()
     logger.info(config.display())
 
     #Get data
