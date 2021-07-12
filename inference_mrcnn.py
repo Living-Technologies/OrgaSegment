@@ -105,7 +105,7 @@ def main():
             info = {'image': data.image_info(i)['path'],
                     'mask': mask_name,
                     'name': data.info(i)['id'],
-                    'mask_id': num
+                    'mask_id': num,
                     'y1': gt_bbox[i,0],
                     'x1': gt_bbox[i,1],
                     'y2': gt_bbox[i,2],
