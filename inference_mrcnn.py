@@ -102,12 +102,11 @@ def main():
             bb = {'image': data.image_info(i)['path'],
                   'mask': mask_name,
                   'name': data.info(i)['id'],
-                  'y1': gt_bbox[i,0]
-                  'x1': gt_bbox[i,1]
-                  'y2': gt_bbox[i,2]
-                  'x2': gt_bbox[i,3]
-                  'class': gt_class_id[i]
-                  }
+                  'y1': gt_bbox[i,0],
+                  'x1': gt_bbox[i,1],
+                  'y2': gt_bbox[i,2],
+                  'x2': gt_bbox[i,3],
+                  'class': gt_class_id[i]}
             bbox = bbox.append(bb, ignore_index=True)
     
     #Save bbox information
