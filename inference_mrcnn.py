@@ -92,7 +92,7 @@ def main():
         #Process masks
         for count, m in enumerate(range(len_masks)):
             #Get mask information
-            msk = gt_mask[:,:,m].astype(int)
+            msk = gt_mask[:,:,m].astype(np.uint8)
             size = np.sum(msk)
             num = values.pop(random.randrange(len(values))) #Get a random number for mask
             msk = np.where(msk != 0, num, msk)
@@ -118,7 +118,7 @@ def main():
         imsave(mask_name, mask)
 
     #Save results
-    results.to_csv(f'{config.INFERENCE_DIR}orgaseg_results.csv', ignore_index=True)
+    results.to_csv(f'{config.INFERENCE_DIR}orgaseg_results.csv', index=False)
         
 if __name__ == "__main__":
     logger.info('Start inference...')
