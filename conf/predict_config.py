@@ -1,5 +1,4 @@
 from conf import TrainConfig
-import os
 
 ##Config
 class PredictConfig(TrainConfig):
@@ -16,6 +15,6 @@ class PredictConfig(TrainConfig):
     IMAGE_RESIZE_MODE = 'none'
 
     # OrgaSegment specific config
-    MODEL_DIR = os.path.join('/hpc/umc_beekman/orgasegment/models/', '')
+    MODEL_DIR = '/hpc/umc_beekman/orgasegment/models/'
     MODEL = '/hpc/umc_beekman/orgasegment/models/organoids20210708T1343/mask_rcnn_organoids_0500.h5'
     COLOR_MODE = 'rgb'
