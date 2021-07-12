@@ -48,7 +48,7 @@ else:
 
 def main():
     #Get config, display and save config
-    config = InferenceConfig()
+    config = PredictConfig()
     logger.info(config.display())
 
     #Get data
