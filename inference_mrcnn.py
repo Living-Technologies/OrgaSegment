@@ -19,6 +19,7 @@ from skimage.io import imsave
 import pandas as pd
 import numpy as np
 import random
+import re
 from keras.preprocessing.image import load_img
 
 #Set Tensorflow logging
