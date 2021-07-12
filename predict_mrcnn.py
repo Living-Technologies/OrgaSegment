@@ -38,7 +38,7 @@ else:
 job_id=sys.argv[1]
 
 #Data folder
-data_dir=sys.argv[1]
+data_dir=sys.argv[2]
 if os.path.isdir(data_dir) == False:
             logger.error(f'Incorrect data path specified: {data_dir}')
             exit(1)
