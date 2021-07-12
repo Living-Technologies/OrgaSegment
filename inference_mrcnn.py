@@ -102,7 +102,7 @@ def main():
                 mask = np.maximum(mask, msk) #Combine previous mask with new mask
 
             #Set all information
-            info = {'image': data.image_info(i)['path'],
+            info = {'image': data.info(i)['path'],
                     'mask': mask_name,
                     'name': data.info(i)['id'],
                     'mask_id': num,
