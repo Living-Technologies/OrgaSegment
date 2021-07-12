@@ -8,7 +8,7 @@ logger = logging.getLogger(__file__)
 import mrcnn.model as modellib
 
 #Import OrgaSegment functions
-from lib import get_image_names OrganoidDataset
+from lib import get_image_names, OrganoidDataset
 from conf import InferenceConfig
 
 #Import other packages
