@@ -1,4 +1,4 @@
-import TrainConfig
+from conf import TrainConfig
 import os
 
 ##Config
