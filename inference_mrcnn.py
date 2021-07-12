@@ -48,7 +48,7 @@ def main():
 
     #Get data
     logger.info('Get image names')
-    images = get_image_names(config.INFERENCE_DIR, mask_filter = '_orgaseg_masks', config.IMAGE_FILTER)
+    images = get_image_names(config.INFERENCE_DIR, '_orgaseg_masks', config.IMAGE_FILTER)
 
     #Load model
     logger.info('Loading model')
