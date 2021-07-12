@@ -93,7 +93,7 @@ def main():
             else:
                 mask = np.maximum(mask, msk) #Combine previous mask with new mask
         
-        mask_name = f'{config.INFERENCE_DIR}{data.info(i)['id']}_masks.png'
+        mask_name = f'{config.INFERENCE_DIR}{data.info(i)["id"]}_masks.png'
         #Save mask file
         imsave(mask_name)
 
@@ -111,7 +111,7 @@ def main():
             bbox = bbox.append(bb, ignore_index=True)
     
     #Save bbox information
-    bbox.to_csv(f'{config.INFERENCE_DIR}bbox.csv')
+    bbox.to_csv(f'{config.INFERENCE_DIR}bbox.csv', ignore_index=True)
         
 if __name__ == "__main__":
     logger.info('Start training...')
