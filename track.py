@@ -33,6 +33,7 @@ def main():
     results = pd.read_csv(f'{data_dir}orgaseg_results.csv')
 
     #Enrich data
+    logger.info(f'Used regex: {regex}')
     results['well'] = results['name'].apply(lambda x: re.search(regex, x).group('WELL'))
     results['t'] = results['name'].apply(lambda x: re.search(regex, x).group('T'))
     
@@ -56,3 +57,10 @@ if __name__ == "__main__":
     ##Copy logging to data dir
     shutil.copy(f'log/JobName.{job_id}.out', f'{data_dir}/JobName.{job_id}.out')
     shutil.copy(f'log/JobName.{job_id}.err', f'{data_dir}/JobName.{job_id}.err')
+
+
+
+results = pd.DataFrame({'name': pd.Series(['DIS_C11 Position1_t15_ch00', 'DIS_A1 Position1_t00_ch00', 'DIS_D11 Position1_t20_ch00'], dtype='str')})
+regex = 'DIS_(?P<WELL>[A-Z][0-9]+) P.*_t(?P<T>[0-9]+)_ch.*'
+results['well'] = results['name'].apply(lambda x: re.search(regex, x).group('WELL'))
+results['t'] = results['name'].apply(lambda x: re.search(regex, x).group('T'))
