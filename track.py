@@ -34,7 +34,7 @@ def main():
 
     #Enrich data
     results['well'] = results['name'].apply(lambda x: re.search(regex, x).group('WELL'))
-    results['t'] = results['name'].apply(lambda x: re.search(regex, x).group('WELL'))
+    results['t'] = results['name'].apply(lambda x: re.search(regex, x).group('T'))
     
     ## Calculate centers and track organoids over time
     logger.info('Start tracking organoids')
