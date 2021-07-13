@@ -195,16 +195,16 @@ class OrganoidDataset(utils.Dataset):
         info = self.image_info[image_id]
         img = load_img(info['path'], color_mode=info['color_mode'])
         
-        #Set extra axis if color mode is grayscale
-        if info['color_mode'] == 'grayscale':
-            img = img[..., np.newaxis]
-        
         #Convert to a 0-1 scale
         if info['img_bit_depth']:
             img = np.asarray(img) / ((2 ** info['img_bit_depth']))
         else:
             img = np.asarray(img)
 
+        #Set extra axis if color mode is grayscale
+        if info['color_mode'] == 'grayscale':
+            img = img[..., np.newaxis]
+        
         return img
 
     def info(self, image_id):

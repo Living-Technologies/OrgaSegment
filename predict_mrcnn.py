@@ -85,6 +85,8 @@ def main():
 
         #Load image
         img = np.asarray(load_img(i, color_mode=config.COLOR_MODE))
+        if config.COLOR_MODE == 'grayscale':
+            img = img[..., np.newaxis]
 
         #Predict organoids
         pred = model.detect([img], verbose=1)
