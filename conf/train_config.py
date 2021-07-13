@@ -22,7 +22,7 @@ class TrainConfig(Config):
     BATCHSIZE = GPU_COUNT * IMAGES_PER_GPU
 
     # Number of classes (including background)
-    NUM_CLASSES = 1 + 2  # background + 2 classes (organoid and unhealthy structure)
+    NUM_CLASSES = 1 + 1 #2  # background + 2 classes (organoid and unhealthy structure)
 
     # Input image resizing
     # Random crops of size 512x512
@@ -43,7 +43,7 @@ class TrainConfig(Config):
     RPN_TRAIN_ANCHORS_PER_IMAGE = 128
 
     # Image mean (RGB)
-    MEAN_PIXEL = np.array([126,126,126])
+    # MEAN_PIXEL = np.array([126,126,126])
 
     # RPN ANCHOR scales
     RPN_ANCHOR_SCALES = (8, 16, 32, 64, 128)
@@ -70,8 +70,8 @@ class TrainConfig(Config):
     VAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20210701/val', '')
     MODEL_DIR = os.path.join('/hpc/umc_beekman/orgasegment/models/', '')
     PRETRAINED_WEIGHTS = '/hpc/umc_beekman/orgasegment/models/coco/mask_rcnn_coco.h5'
-    EXCLUDE_LAYERS = ['mrcnn_class_logits', 'mrcnn_bbox_fc', 'mrcnn_bbox', 'mrcnn_mask']
+    EXCLUDE_LAYERS = ['conv1', 'mrcnn_class_logits', 'mrcnn_bbox_fc', 'mrcnn_bbox', 'mrcnn_mask']
     IMAGE_FILTER = '_img'
     MASK_FILTER = '_masks_'
-    CLASSES = ['organoid', 'unhealthy_structure']
-    COLOR_MODE = 'rgb'
+    CLASSES = ['organoid']#, 'unhealthy_structure']
+    COLOR_MODE = 'grayscale'
