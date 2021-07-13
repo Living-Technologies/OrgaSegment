@@ -30,6 +30,7 @@ class TrainConfig(Config):
     IMAGE_MIN_DIM = 512
     IMAGE_MAX_DIM = 512
     IMAGE_MIN_SCALE = 2.0
+    IMAGE_CHANNEL_COUNT = 1
 
     # ROIs kept after non-maximum supression (training and inference)
     POST_NMS_ROIS_TRAINING = 1000
