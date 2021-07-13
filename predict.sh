@@ -2,7 +2,6 @@
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --gpus-per-node=RTX6000:1
-#SBATCH --cpus-per-gpu=4
 #SBATCH --time=08:00:00
 #SBATCH --mem=32G
 #SBATCH --mail-user=s.vanbeuningen@umcutrecht.nl
