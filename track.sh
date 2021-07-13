@@ -12,7 +12,7 @@
 
 ENV=OrgaSegment
 DATA_DIR='/hpc/umc_beekman/DIS/20210526/DIS_COPY'
-REGEX='DIS_(?P<WELL>[A-Z][0-9]+) P.*_t(?P<T>[0-9]+)_ch.*'
+REGEX='DIS_(?P<WELL>[A-Z][0-9]+).*_t(?P<T>[0-9]+)_ch.*'
 
 source ~/.bashrc
 
@@ -23,8 +23,6 @@ echo $ENV
 conda activate $ENV
 
 conda info --envs
-
-nvidia-smi
 
 ## execute python script
 python track.py $SLURM_JOB_ID $DATA_DIR $REGEX
