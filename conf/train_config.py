@@ -30,6 +30,8 @@ class TrainConfig(Config):
     IMAGE_MIN_DIM = 512
     IMAGE_MAX_DIM = 512
     IMAGE_MIN_SCALE = 2.0
+
+    #Graysclae channel count
     IMAGE_CHANNEL_COUNT = 1
 
     # ROIs kept after non-maximum supression (training and inference)
@@ -45,6 +47,9 @@ class TrainConfig(Config):
 
     # Image mean (RGB)
     # MEAN_PIXEL = np.array([126,126,126])
+    
+    #Image mean (Grayscale)
+    MEAN_PIXEL = np.array([0])
 
     # RPN ANCHOR scales
     RPN_ANCHOR_SCALES = (8, 16, 32, 64, 128)
