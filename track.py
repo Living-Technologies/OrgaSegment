@@ -33,8 +33,8 @@ def main():
     results = pd.read_csv(f'{data_dir}orgaseg_results.csv')
 
     #Enrich data
-    results['well'] = df['name'].apply(lambda x: re.search(regex, x).group('WELL'))
-    results['t'] = df['name'].apply(lambda x: re.search(regex, x).group('WELL'))
+    results['well'] = results['name'].apply(lambda x: re.search(regex, x).group('WELL'))
+    results['t'] = results['name'].apply(lambda x: re.search(regex, x).group('WELL'))
     
     ## Calculate centers and track organoids over time
     logger.info('Start tracking organoids')
