@@ -74,6 +74,7 @@ class TrainConfig(Config):
     # OrgaSegment specific config
     TRAIN_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20210701/train', '')
     VAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20210701/val', '')
+    EVAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20210701/eval', '')
     MODEL_DIR = os.path.join('/hpc/umc_beekman/orgasegment/models/', '')
     PRETRAINED_WEIGHTS = '/hpc/umc_beekman/orgasegment/models/coco/mask_rcnn_coco.h5'
     EXCLUDE_LAYERS = ['conv1', 'mrcnn_class_logits', 'mrcnn_bbox_fc', 'mrcnn_bbox', 'mrcnn_mask']
@@ -81,3 +82,4 @@ class TrainConfig(Config):
     MASK_FILTER = '_masks_'
     CLASSES = ['organoid']#, 'unhealthy_structure']
     COLOR_MODE = 'grayscale'
+    EVAL_IOU = 0.75

@@ -25,7 +25,10 @@ conda info --envs
 
 nvidia-smi
 
-## execute python script
+## Train model
 python train_mrcnn.py $SLURM_JOB_ID
+
+##Eval model
+python eval_mrcnn.py $SLURM_JOB_ID ''
 
 conda deactivate
