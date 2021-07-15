@@ -26,7 +26,7 @@ conda info --envs
 nvidia-smi
 
 ## Train model
-python train_mrcnn.py $SLURM_JOB_ID
+# python train_mrcnn.py $SLURM_JOB_ID
 
 ##Eval model
 python eval_mrcnn.py $SLURM_JOB_ID ''
