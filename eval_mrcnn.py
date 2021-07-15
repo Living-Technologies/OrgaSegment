@@ -41,9 +41,7 @@ class EvalConfig(TrainConfig):
 job_id=sys.argv[1]
 
 #Model
-model_file=sys.argv[2]
-if os.path.isfile(model_file) == False:
-    model_file = None
+model_path=sys.argv[2]
 
 #Set log_dir
 log_dir = None
@@ -69,11 +67,14 @@ def main():
                               config=config,
                               model_dir=config.MODEL_DIR)
     
-    if model_file is None:
-        model_file = model.find_last()
-
-    model.load_weights(model_file, by_name=True)
-
+    if os.path.isfile(model_path) and model_path.endswith('.h5'):
+        model.load_weights(model_path, by_name=True)
+        logger.info(f'Model loaded: {model_path}')
+    else:
+        last_model = model.find_last()
+        model.load_weights(last_model, by_name=True)
+        logger.info(f'Model loaded: {last_model}')
+    
     #Update log_dir
     global log_dir
     log_dir = model.log_dir
