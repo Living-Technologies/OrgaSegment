@@ -117,7 +117,7 @@ def main():
     logger.info(f'Model: {model_name} || mAP @ IoU 0.75: {evaluation["AP"].mean()}')
 
     #Save results
-    results.to_csv(model_name.replace('.h5', '_evaluation.csv'), index=False)
+    evaluation.to_csv(model_name.replace('.h5', '_evaluation.csv'), index=False)
         
 if __name__ == "__main__":
     logger.info('Start evaluation...')
