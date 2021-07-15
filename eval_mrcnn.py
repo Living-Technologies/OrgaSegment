@@ -68,12 +68,13 @@ def main():
                               model_dir=config.MODEL_DIR)
     
     if os.path.isfile(model_path) and model_path.endswith('.h5'):
+        model_name = model_path
         model.load_weights(model_path, by_name=True)
-        logger.info(f'Model loaded: {model_path}')
+        logger.info(f'Model loaded: {model_name}')
     else:
-        last_model = model.find_last()
-        model.load_weights(last_model, by_name=True)
-        logger.info(f'Model loaded: {last_model}')
+        model_name = model.find_last()
+        model.load_weights(model_name, by_name=True)
+        logger.info(f'Model loaded: {model_name}')
     
     #Update log_dir
     global log_dir
@@ -113,10 +114,10 @@ def main():
         evaluation = evaluation.append(info, ignore_index=True)
 
     #Log mean AP
-    logger.info(f'Model: {model_path} || mAP @ IoU 0.75: {evaluation["AP"].mean()}')
+    logger.info(f'Model: {model_name} || mAP @ IoU 0.75: {evaluation["AP"].mean()}')
 
     #Save results
-    results.to_csv(model_path.replace('.h5', '_evaluation.csv'), index=False)
+    results.to_csv(model_name.replace('.h5', '_evaluation.csv'), index=False)
         
 if __name__ == "__main__":
     logger.info('Start evaluation...')
