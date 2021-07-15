@@ -31,6 +31,13 @@ else:
     logger.error(f'No GPUs available')
     exit(1)
 
+
+#Set config
+class EvalConfig(TrainConfig):
+    GPU_COUNT = 1
+    IMAGES_PER_GPU = 1
+    IMAGE_RESIZE_MODE = 'none'
+
 #Get Job ID
 job_id=sys.argv[1]
 
@@ -39,12 +46,6 @@ model_path = sys.argv[2]
 
 #Set log_dir
 log_dir = None
-
-#Set config
-class EvalConfig(TrainConfig):
-    GPU_COUNT = 1
-    IMAGES_PER_GPU = 1
-    IMAGE_RESIZE_MODE = 'none'
 
 def main():
     #Get config, display and save config
