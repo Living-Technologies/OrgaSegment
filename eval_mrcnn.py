@@ -6,6 +6,7 @@ logger = logging.getLogger(__file__)
 
 #Import Mask RCNN packages
 import mrcnn.model as modellib
+from mrcnn import utils
 
 #Import OrgaSwell functions
 from lib import OrganoidDataset
@@ -14,6 +15,7 @@ from conf import TrainConfig
 #Import other packages
 import tensorflow as tf
 import sys
+import os
 import shutil
 import pandas as pd
 import numpy as np
@@ -113,7 +115,7 @@ def main():
     logger.info(f'Model: {model_path} || mAP @ IoU 0.75: {evaluation["AP"].mean()}')
 
     #Save results
-    results.to_csv(mode_path.replace('.h5', '_evaluation.csv'), index=False)
+    results.to_csv(model_path.replace('.h5', '_evaluation.csv'), index=False)
         
 if __name__ == "__main__":
     logger.info('Start evaluation...')
