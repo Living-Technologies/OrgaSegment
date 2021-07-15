@@ -35,7 +35,7 @@ else:
 job_id=sys.argv[1]
 
 #Model
-model=sys.argv[2]
+model_path = sys.argv[2]
 
 #Set log_dir
 log_dir = None
@@ -67,9 +67,7 @@ def main():
                               config=config,
                               model_dir=config.MODEL_DIR)
     
-    if os.path.isfile(model) == True:
-        model_path = model
-    else:
+    if os.path.isfile(model_path) == False:
         model_path = model.find_last()
     
     model.load_weights(model_path, by_name=True)
