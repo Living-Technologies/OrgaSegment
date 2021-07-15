@@ -71,7 +71,7 @@ def main():
     
     if model_file is None:
         model_file = model.find_last()
-    
+
     model.load_weights(model_file, by_name=True)
 
     #Update log_dir
