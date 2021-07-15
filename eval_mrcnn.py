@@ -82,9 +82,9 @@ def main():
     #Create empty data frame for results
     evaluation =  pd.DataFrame({'image': pd.Series([], dtype='str'),
                                 'AP': pd.Series([], dtype=np.float32),
-                                'precisions': pd.Series([], dtype=np.array),
-                                'recalls': pd.Series([], dtype=np.array),
-                                'overlaps': pd.Series([], dtype=np.array)})
+                                'precisions': pd.Series([], dtype='object'),
+                                'recalls': pd.Series([], dtype='object'),
+                                'overlaps': pd.Series([], dtype='object')})
 
     # Compute VOC-Style mAP @ IoU=0.75
     for i in data_eval.image_ids:
