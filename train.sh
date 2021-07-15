@@ -29,7 +29,6 @@ nvidia-smi
 # python train_mrcnn.py $SLURM_JOB_ID
 
 ##Eval model
-python eval_mrcnn.py $SLURM_JOB_ID None 
-# '/hpc/umc_beekman/orgasegment/models/organoids20210708T1343/mask_rcnn_organoids_0500.h5'
+python eval_mrcnn.py $SLURM_JOB_ID '/hpc/umc_beekman/orgasegment/models/organoids20210708T1343/mask_rcnn_organoids_0500.h5'
 
 conda deactivate
