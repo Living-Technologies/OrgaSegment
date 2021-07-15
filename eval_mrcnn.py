@@ -31,7 +31,6 @@ else:
     logger.error(f'No GPUs available')
     exit(1)
 
-
 #Set config
 class EvalConfig(TrainConfig):
     GPU_COUNT = 1
@@ -42,7 +41,7 @@ class EvalConfig(TrainConfig):
 job_id=sys.argv[1]
 
 #Model
-model_path = sys.argv[2]
+model_path=sys.argv[2]
 
 #Set log_dir
 log_dir = None
