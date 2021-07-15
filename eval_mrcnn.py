@@ -41,7 +41,9 @@ class EvalConfig(TrainConfig):
 job_id=sys.argv[1]
 
 #Model
-model_path=sys.argv[2]
+model_file=sys.argv[2]
+if os.path.isfile(model_file) == False:
+    model_file = None
 
 #Set log_dir
 log_dir = None
@@ -67,10 +69,10 @@ def main():
                               config=config,
                               model_dir=config.MODEL_DIR)
     
-    if os.path.isfile(model_path) == False:
-        model_path = model.find_last()
+    if model_file is None:
+        model_file = model.find_last()
     
-    model.load_weights(model_path, by_name=True)
+    model.load_weights(model_file, by_name=True)
 
     #Update log_dir
     global log_dir

@@ -29,6 +29,6 @@ nvidia-smi
 # python train_mrcnn.py $SLURM_JOB_ID
 
 ##Eval model
-python eval_mrcnn.py $SLURM_JOB_ID 'latest'
+python eval_mrcnn.py $SLURM_JOB_ID None
 
 conda deactivate
