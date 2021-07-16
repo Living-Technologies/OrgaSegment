@@ -11,7 +11,6 @@
 #SBATCH --output=log/JobName.%J.out
 
 ENV=OrgaSegment
-DATA_DIR='/hpc/umc_beekman/DIS/20210526/DIS_COPY'
 
 source ~/.bashrc
 
@@ -25,7 +24,9 @@ conda info --envs
 
 nvidia-smi
 
-## execute python script
-python predict_mrcnn.py $SLURM_JOB_ID $DATA_DIR
+for INPUTDIR in /hpc/umc_beekman/orgaswell/data/Livia_20201110_HNEC0116 /hpc/umc_beekman/orgaswell/data/Lisa_LR-035B
+do
+    python predict_mrcnn.py $SLURM_JOB_ID $INPUTDIR
+done
 
 conda deactivate

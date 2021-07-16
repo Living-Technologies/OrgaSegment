@@ -18,7 +18,6 @@ import shutil
 from skimage.io import imsave
 import pandas as pd
 import numpy as np
-import random
 import re
 import os
 from keras.preprocessing.image import load_img
@@ -37,14 +36,16 @@ else:
 #Get Job ID
 job_id=sys.argv[1]
 
-#Data folder
-data_dir=sys.argv[2]
-if os.path.isdir(data_dir) == False:
-    logger.error(f'Incorrect data path specified: {data_dir}')
+#Data folders
+input_dir=sys.argv[2]
+if os.path.isdir(input_dir) == False:
+    logger.error(f'Incorrect input path specified: {input_dir}')
     exit(1)
 else:
-    data_dir=os.path.join(data_dir, '')
-    logger.info(f'Data dir: {data_dir}')
+    input_dir=os.path.join(input_dir, '')
+    logger.info(f'Input dir: {input_dir}')
+    output_dir=os.path.join(input_dir, 'orgasegment', '')
+    logger.info(f'Output dir: {output_dir}')
 
 def main():
     #Get config, display and save config
@@ -53,7 +54,7 @@ def main():
 
     #Get data
     logger.info('Get image names')
-    images = get_image_names(data_dir, '_orgaseg_masks')
+    images = get_image_names(input_dir, '_masks')
 
     #Load model
     logger.info('Loading model')
@@ -79,9 +80,9 @@ def main():
     logger.info('Start predictions')
     for i in images:
         logger.info(f'Processing {i}')
-        image_name = re.search(f'^{data_dir}(.*)\..*$', i).group(1)
-        mask_name = f'{image_name}_orgaseg_masks.png'
-        mask_path = data_dir + mask_name
+        image_name = re.search(f'^{input_dir}(.*)\..*$', i).group(1)
+        mask_name = f'{image_name}_masks.png'
+        mask_path = output_dir + mask_name
 
         #Load image
         img = np.asarray(load_img(i, color_mode=config.COLOR_MODE))
@@ -94,14 +95,12 @@ def main():
 
         #Create length of predictions
         length = len(p['rois'])
-        values = list(range(1, length + 1)) #Create a list of values from 1 to number of masks per label
-
+        
         #Process predictions
         for count, l in enumerate(range(length)):
             #Get mask information
             msk = p['masks'][:,:,l].astype(np.uint8)
             size = np.sum(msk)
-            # num = values.pop(random.randrange(len(values))) #Get a random number for mask
             num = l + 1
             msk = np.where(msk != 0, num, msk)
             if count == 0:
@@ -127,12 +126,12 @@ def main():
         imsave(mask_path, mask)
 
     #Save results
-    results.to_csv(f'{data_dir}orgaseg_results.csv', index=False)
+    results.to_csv(f'{output_dir}results.csv', index=False)
         
 if __name__ == "__main__":
     logger.info('Start prediction job...')
     main()
     logger.info('Predictions completed!')
     ##Copy logging to data dir
-    shutil.copy(f'log/JobName.{job_id}.out', f'{data_dir}/JobName.{job_id}.out')
-    shutil.copy(f'log/JobName.{job_id}.err', f'{data_dir}/JobName.{job_id}.err')
+    shutil.copy(f'log/JobName.{job_id}.out', f'{output_dir}JobName.{job_id}.out')
+    shutil.copy(f'log/JobName.{job_id}.err', f'{output_dir}JobName.{job_id}.err')
