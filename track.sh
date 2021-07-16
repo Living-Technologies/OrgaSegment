@@ -12,7 +12,7 @@
 
 ENV=OrgaSegment
 DATA_DIR='/hpc/umc_beekman/orgaswell/data/Lisa_LR-035B'
-REGEX='^(?P<WELL>[A-Z]{1}_[0-9]{1,2})_t(?P<T>[0-9]{1,2})_.*\\.jpg$'
+REGEX='^(?P<WELL>[A-Z]{1}_[0-9]{1,2})_t(?P<T>[0-9]{1,2})_.*\.jpg$'
 
 source ~/.bashrc
 
