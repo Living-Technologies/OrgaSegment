@@ -22,7 +22,7 @@ class TrainConfig(Config):
     BATCHSIZE = GPU_COUNT * IMAGES_PER_GPU
 
     # Number of classes (including background)
-    NUM_CLASSES = 1 + 1 #2  # background + 2 classes (organoid and unhealthy structure)
+    NUM_CLASSES = 1 + 2 #1 #2  # background + 2 classes (organoid and unhealthy structure)
 
     # Input image resizing
     # Random crops of size 512x512
@@ -32,7 +32,7 @@ class TrainConfig(Config):
     IMAGE_MIN_SCALE = 2.0
 
     #Graysclae channel count
-    IMAGE_CHANNEL_COUNT = 1
+    # IMAGE_CHANNEL_COUNT = 1
 
     # ROIs kept after non-maximum supression (training and inference)
     POST_NMS_ROIS_TRAINING = 1000
@@ -46,10 +46,10 @@ class TrainConfig(Config):
     RPN_TRAIN_ANCHORS_PER_IMAGE = 128
 
     # Image mean (RGB)
-    # MEAN_PIXEL = np.array([126,126,126])
+    MEAN_PIXEL = np.array([126,126,126])
     
     #Image mean (Grayscale)
-    MEAN_PIXEL = np.array([0])
+    # MEAN_PIXEL = np.array([0])
 
     # RPN ANCHOR scales
     RPN_ANCHOR_SCALES = (8, 16, 32, 64, 128)
@@ -81,5 +81,6 @@ class TrainConfig(Config):
     IMAGE_FILTER = '_img'
     MASK_FILTER = '_masks_'
     CLASSES = ['organoid']#, 'unhealthy_structure']
-    COLOR_MODE = 'grayscale'
+    # COLOR_MODE = 'grayscale'
+    COLOR_MODE = 'rgb'
     EVAL_IOU = 0.75
