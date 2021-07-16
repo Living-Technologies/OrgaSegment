@@ -80,7 +80,7 @@ class TrainConfig(Config):
     EXCLUDE_LAYERS = ['conv1', 'mrcnn_class_logits', 'mrcnn_bbox_fc', 'mrcnn_bbox', 'mrcnn_mask']
     IMAGE_FILTER = '_img'
     MASK_FILTER = '_masks_'
-    CLASSES = ['organoid']#, 'unhealthy_structure']
+    CLASSES = ['organoid', 'unhealthy_structure']
     # COLOR_MODE = 'grayscale'
     COLOR_MODE = 'rgb'
     EVAL_IOU = 0.75
