@@ -11,8 +11,8 @@
 #SBATCH --output=log/JobName.%J.out
 
 ENV=OrgaSegment
-DATA_DIR='/hpc/umc_beekman/DIS/20210526/DIS_COPY'
-REGEX='DIS_(?P<WELL>[A-Z][0-9]+).*_t(?P<T>[0-9]+)_ch.*'
+DATA_DIR='/hpc/umc_beekman/orgaswell/data/Lisa_LR-035B'
+REGEX='^(?P<WELL>[A-Z]{1}_[0-9]{1,2})_t(?P<T>[0-9]{1,2})_.*\\.jpg$'
 
 source ~/.bashrc
 
