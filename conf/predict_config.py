@@ -12,7 +12,7 @@ class PredictConfig(TrainConfig):
     IMAGES_PER_GPU = 1
 
     # Input image resizing
-    IMAGE_RESIZE_MODE = 'none'
+    IMAGE_RESIZE_MODE = 'pad64'
 
     # OrgaSegment specific config
     MODEL_DIR = '/hpc/umc_beekman/orgasegment/models/'
