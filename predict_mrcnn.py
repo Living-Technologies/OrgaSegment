@@ -20,6 +20,7 @@ import pandas as pd
 import numpy as np
 import re
 import os
+from pathlib import Path
 from keras.preprocessing.image import load_img
 
 #Set Tensorflow logging
@@ -45,6 +46,7 @@ else:
     input_dir=os.path.join(input_dir, '')
     logger.info(f'Input dir: {input_dir}')
     output_dir=os.path.join(input_dir, 'orgasegment', '')
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
     logger.info(f'Output dir: {output_dir}')
 
 def main():
