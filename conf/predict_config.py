@@ -16,5 +16,5 @@ class PredictConfig(TrainConfig):
 
     # OrgaSegment specific config
     MODEL_DIR = '/hpc/umc_beekman/orgasegment/models/'
-    MODEL = '/hpc/umc_beekman/orgasegment/models/organoids20210713T1200/mask_rcnn_organoids_0500.h5'
+    MODEL = '/hpc/umc_beekman/orgasegment/models/organoids20210721T1013/mask_rcnn_organoids_0500.h5'
     COLOR_MODE = 'grayscale'
