@@ -101,7 +101,7 @@ def main():
         length = len(p['rois'])
         
         #Reset mask
-        mask =  np.zeros(img.shape)
+        mask =  np.zeros((img.shape[0], img.shape[1]))
 
         logger.info(f'Init mask shape: {mask.shape}')
 
