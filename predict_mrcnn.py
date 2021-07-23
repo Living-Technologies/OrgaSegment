@@ -91,7 +91,8 @@ def main():
         if config.COLOR_MODE == 'grayscale':
             img = img[..., np.newaxis]
 
-        logger.info(f'IMG shape: {img.shape}')
+        #Reset mask
+        mask =  np.zeros((img.shape[0], img.shape[1]))
 
         #Predict organoids
         pred = model.detect([img], verbose=1)
@@ -100,11 +101,6 @@ def main():
         #Create length of predictions
         length = len(p['rois'])
         
-        #Reset mask
-        mask =  np.zeros((img.shape[0], img.shape[1]))
-
-        logger.info(f'Init mask shape: {mask.shape}')
-
         #Process predictions
         for count, l in enumerate(range(length)):
             #Get mask information
@@ -116,8 +112,6 @@ def main():
                 mask = msk
             else:
                 mask = np.maximum(mask, msk) #Combine previous mask with new mask
-            
-            logger.info(f'Mask shape: {mask.shape} ')
 
             #Set all information
             info = {'image': i,
