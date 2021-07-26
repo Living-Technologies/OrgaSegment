@@ -24,7 +24,7 @@ conda info --envs
 
 nvidia-smi
 
-for INPUTDIR in /hpc/umc_beekman/data_organoids/AIRWAY_21062021_FIS_BF_TEST_1 /hpc/umc_beekman/orgaswell/data/Livia_20201110_HNEC0116 /hpc/umc_beekman/orgaswell/data/Lisa_LR-035B
+for INPUTDIR in /hpc/umc_beekman/SnippertLabCollab/data/20210429_input_tif_bfonly #/hpc/umc_beekman/data_organoids/AIRWAY_21062021_FIS_BF_TEST_1 /hpc/umc_beekman/orgaswell/data/Livia_20201110_HNEC0116 /hpc/umc_beekman/orgaswell/data/Lisa_LR-035B
 do
     python predict_mrcnn.py $SLURM_JOB_ID $INPUTDIR
 done
