@@ -88,6 +88,12 @@ def main():
 
         #Load image
         img = np.asarray(load_img(i, color_mode=config.COLOR_MODE))
+        if np.amax(img) < 255:
+            logger.info('Orginal image is 8 bit')
+        else:
+            logger.info('Converting image to a full range 8 bit image')
+            img = ((img - np.amax(img)) * 255).astype('uint8')
+
         if config.COLOR_MODE == 'grayscale':
             img = img[..., np.newaxis]
 
