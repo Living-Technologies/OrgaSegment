@@ -11,6 +11,7 @@ import pandas as pd
 import trackpy as tp
 import re
 import os
+import json
 
 #Get Job ID
 job_id=sys.argv[1]
@@ -28,27 +29,37 @@ else:
 regex=sys.argv[3]
 
 def main():
-    #Get data
-    logger.info('Get Orgasegment Results')
-    results = pd.read_csv(f'{data_dir}results.csv')
+    #Load config
+    config = f'{data_dir}track-config.json'
+    if os.path.isfile(config):
+        config = json.load(open(config))
+        regex = config['regex']
+    
+        #Get data
+        logger.info('Get Orgasegment Results')
+        results = pd.read_csv(f'{data_dir}results.csv')
 
-    #Enrich data
-    logger.info(f'Used regex: {regex}')
-    results['well'] = results['name'].apply(lambda x: re.search(regex, x).group('WELL'))
-    results['t'] = results['name'].apply(lambda x: re.search(regex, x).group('T'))
-    
-    ## Calculate centers and track organoids over time
-    logger.info('Start tracking organoids')
+        #Enrich data
+        logger.info(f'Used regex: {regex}')
+        results['well'] = results['name'].apply(lambda x: re.search(regex, x).group('WELL'))
+        results['t'] = results['name'].apply(lambda x: re.search(regex, x).group('T'))
+        
+        ## Calculate centers and track organoids over time
+        logger.info('Start tracking organoids')
 
-    results['x'] = (results['x2'] + results['x1']) / 2
-    results['y'] = (results['y2'] + results['y1']) / 2
-    results = results.groupby('well').apply(tp.link, search_range=20, memory=2, t_column='t').reset_index(drop=True)
+        results['x'] = (results['x2'] + results['x1']) / 2
+        results['y'] = (results['y2'] + results['y1']) / 2
+        results = results.groupby('well').apply(tp.link, search_range=20, memory=2, t_column='t').reset_index(drop=True)
+        
+        ## Filter out particles that are seen less than 50% of the time
+        results = results[results.groupby(['well','particle'])['t'].transform('count') >= (max(results['t']) / 2)]
+        
+        #Save results
+        results.to_csv(f'{data_dir}tracked.csv', index=False)
     
-    ## Filter out particles that are seen less than 50% of the time
-    results = results[results.groupby(['well','particle'])['t'].transform('count') >= (max(results['t']) / 2)]
-    
-    #Save results
-    results.to_csv(f'{data_dir}tracked.csv', index=False)
+    else:
+        logger.warning(f'No tracking config detected. Results in {data_dir} will not be tracked')
+        exit(0) 
         
 if __name__ == "__main__":
     logger.info('Start tracking job...')
