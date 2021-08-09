@@ -12,7 +12,6 @@
 
 ENV=OrgaSegment
 DATA_DIR='/hpc/umc_beekman/orgaswell/data/Lisa_LR-035B'
-REGEX='(?P<WELL>[A-Z]{1}_[0-9]{1,2})_t(?P<T>[0-9]{1,2})_.*'
 
 source ~/.bashrc
 
@@ -25,6 +24,6 @@ conda activate $ENV
 conda info --envs
 
 ## execute python script
-python track.py $SLURM_JOB_ID $DATA_DIR $REGEX
+python track.py $SLURM_JOB_ID $DATA_DIR
 
 conda deactivate
