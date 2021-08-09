@@ -25,9 +25,6 @@ else:
     data_dir=os.path.join(data_dir, 'orgasegment', '')
     logger.info(f'Data dir: {data_dir}')
 
-#Regex
-regex=sys.argv[3]
-
 def main():
     #Load config
     config = f'{data_dir}track-config.json'
