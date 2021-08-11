@@ -24,9 +24,7 @@ conda info --envs
 
 nvidia-smi
 
-#/hpc/umc_beekman/data_organoids/boekhout_20210806/
-#/hpc/umc_beekman/data_organoids/20210727_DIS_BF_VALIDATION/Bassay_01_Thunder_BF/ /hpc/umc_beekman/data_organoids/20210727_DIS_BF_VALIDATION/DIS_BF_ValidationDonors_01_Thunder_BF/
-for INPUTDIR in /hpc/umc_beekman/data_organoids/20210727_DIS_BF_VALIDATION/Bassay_01_Zeiss_ESID/ /hpc/umc_beekman/data_organoids/20210727_DIS_BF_VALIDATION/DIS_BF_ValidationDonors_01_Zeiss_ESID/
+for INPUTDIR in /hpc/umc_beekman/data_organoids/boekhout_20210806/
 do
     # python predict_mrcnn.py $SLURM_JOB_ID $INPUTDIR
     python track.py $SLURM_JOB_ID $INPUTDIR
