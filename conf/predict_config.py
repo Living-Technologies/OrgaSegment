@@ -13,7 +13,6 @@ class PredictConfig(TrainConfig):
 
     # Input image resizing
     IMAGE_RESIZE_MODE = 'pad64'
-    IMAGE_MAX_DIM = 2048 #To prevent OOM on GPU
 
     # OrgaSegment specific config
     MODEL_DIR = '/hpc/umc_beekman/orgasegment/models/'
