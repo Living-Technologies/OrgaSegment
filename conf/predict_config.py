@@ -13,7 +13,7 @@ class PredictConfig(TrainConfig):
 
     # Input image resizing
     IMAGE_RESIZE_MODE = 'pad64'
-    IMAGE_MAX_DIM = 4096
+    IMAGE_MAX_DIM = 3520
 
     # OrgaSegment specific config
     MODEL_DIR = '/hpc/umc_beekman/orgasegment/models/'
