@@ -16,6 +16,7 @@ import tensorflow as tf
 import sys
 import shutil
 from skimage.io import imsave
+from skimage.color import label2rgb
 import pandas as pd
 import numpy as np
 import re
@@ -48,6 +49,9 @@ else:
     output_dir=os.path.join(input_dir, 'orgasegment', '')
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     logger.info(f'Output dir: {output_dir}')
+    preview_dir=os.path.join(input_dir, 'orgasegment', 'preview', '')
+    Path(preview_dir).mkdir(parents=True, exist_ok=True)
+    logger.info(f'Preview dir: {preview_dir}')
 
 def main():
     #Get config, display and save config
@@ -85,6 +89,8 @@ def main():
         image_name = re.search(f'^{input_dir}(.*)\..*$', i).group(1)
         mask_name = f'{image_name}_masks.png'
         mask_path = output_dir + mask_name
+        preview_name = f'{image_name}_preview.jpg'
+        preview_path = preview_dir + preview_name
 
         #Load image
         img = np.asarray(load_img(i, color_mode=config.COLOR_MODE))
@@ -135,6 +141,10 @@ def main():
         
         #Save mask
         imsave(mask_path, mask)
+
+        #Combine image and mask and create preview
+        combined = label2rgb(mask, img, bg_label = 0)
+        imsave(preview_path, combined)
 
     #Save results
     results.to_csv(f'{output_dir}results.csv', index=False)
