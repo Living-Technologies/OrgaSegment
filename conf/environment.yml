@@ -22,4 +22,5 @@ dependencies:
   - trackpy
   - pip:
     - git+https://github.com/UMCU-BeekmanLab/Mask_RCNN.git@v2.1.1
+    - cellpose==0.6.5
     - opencv-python==4.5.2.54

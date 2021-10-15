@@ -8,6 +8,9 @@ logger = logging.getLogger(__file__)
 import mrcnn.model as modellib
 from mrcnn import utils
 
+#Import cellpose
+import cellpose
+
 #Import OrgaSwell functions
 from lib import OrganoidDataset
 from conf import TrainConfig
@@ -99,25 +102,28 @@ def main():
         results = model.detect([image], verbose=1)
         r = results[0]
         
+        #for i in gt_class_id:
+        
         # Compute
-        AP, precisions, recalls, overlaps =\
-                utils.compute_ap(gt_bbox, gt_class_id, gt_mask,
-                                 r["rois"], r["class_ids"], r["scores"], r['masks'],
-                                 config.EVAL_IOU)
+        #cellpose.metrics.average_precision(gt_mask, )
+        # AP, precisions, recalls, overlaps =\
+        #         utils.compute_ap(gt_bbox, gt_class_id, gt_mask,
+        #                          r["rois"], r["class_ids"], r["scores"], r['masks'],
+        #                          config.EVAL_IOU)
     
-        info = {'image': data_eval.info(i)['path'],
-                'AP': AP,
-                'precisions': precisions,
-                'recalls': recalls,
-                'overlaps': overlaps}
+        # info = {'image': data_eval.info(i)['path'],
+        #         'AP': AP,
+        #         'precisions': precisions,
+        #         'recalls': recalls,
+        #         'overlaps': overlaps}
 
-        evaluation = evaluation.append(info, ignore_index=True)
+        # evaluation = evaluation.append(info, ignore_index=True)
 
     #Log mean AP
-    logger.info(f'Model: {model_name} || mAP @ IoU 0.75: {evaluation["AP"].mean()}')
+    # logger.info(f'Model: {model_name} || mAP @ IoU 0.75: {evaluation["AP"].mean()}')
 
     #Save results
-    evaluation.to_csv(model_name.replace('.h5', '_evaluation.csv'), index=False)
+    # evaluation.to_csv(model_name.replace('.h5', '_evaluation.csv'), index=False)
         
 if __name__ == "__main__":
     logger.info('Start evaluation...')
@@ -126,3 +132,12 @@ if __name__ == "__main__":
     ##Copy logging to model log dir
     shutil.copy(f'log/JobName.{job_id}.out', f'{log_dir}/JobName.{job_id}.out')
     shutil.copy(f'log/JobName.{job_id}.err', f'{log_dir}/JobName.{job_id}.err')
+
+
+
+###
+##Get unique classes
+#classes = [0, 0, 0, 1, 1, 2]
+#classes = filter(lambda score: score >= 70, scores)
+#
+#[aList[i] for i in myIndices]
