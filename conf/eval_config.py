@@ -1,4 +1,5 @@
 from conf import TrainConfig
+import os
 import numpy as np
 
 ##Config
