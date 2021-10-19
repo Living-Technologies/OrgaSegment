@@ -11,9 +11,9 @@ from mrcnn import utils
 #Import cellpose
 import cellpose
 
-#Import OrgaSwell functions
-from lib import OrganoidDataset
-from conf import TrainConfig
+#Import OrgaSegment functions
+from lib import OrganoidDataset, mask_projection
+from conf import EvalConfig
 
 #Import other packages
 import tensorflow as tf
@@ -33,12 +33,6 @@ if tf.test.is_gpu_available():
 else:
     logger.error(f'No GPUs available')
     exit(1)
-
-#Set config
-class EvalConfig(TrainConfig):
-    GPU_COUNT = 1
-    IMAGES_PER_GPU = 1
-    IMAGE_RESIZE_MODE = 'none'
 
 #Get Job ID
 job_id=sys.argv[1]
@@ -85,45 +79,53 @@ def main():
 
     #Create empty data frame for results
     evaluation =  pd.DataFrame({'image': pd.Series([], dtype='str'),
-                                'AP': pd.Series([], dtype=np.float32),
-                                'precisions': pd.Series([], dtype='object'),
-                                'recalls': pd.Series([], dtype='object'),
-                                'overlaps': pd.Series([], dtype='object')})
+                                'class': pd.Series([], dtype=np.int8),
+                                'ap': pd.Series([], dtype='object'),
+                                'tp': pd.Series([], dtype='object'),
+                                'fp': pd.Series([], dtype='object'),
+                                'fn': pd.Series([], dtype='object')})
 
-    # Compute VOC-Style mAP @ IoU=0.75
+    # Compute Average Precisions based on Cellpose paper
     for i in data_eval.image_ids:
         # Load image and ground truth data
         image, image_meta, gt_class_id, gt_bbox, gt_mask =\
                 modellib.load_image_gt(data_eval, config,
                                        i, use_mini_mask=False)
-        # molded_images = np.expand_dims(modellib.mold_image(image, config), 0)
         
         # Run object detection
         results = model.detect([image], verbose=1)
         r = results[0]
         
-        #for i in gt_class_id:
+        for class_id in list(set(gt_class_id)):
+            #Get gt per class id
+            gt_indices = [i for i, u in enumerate(gt_class_id) if u == class_id] #get gt indices where label is equal to i
+            gt = [gt_mask[:,:,i] for i in gt_indices] #get gt masks where label is equal to i
+            gt = mask_projection(np.stack(gt, axis=-1))
+
+            #Get prediction per class id
+            p_indices = [i for i, u in enumerate(r['class_ids']) if u == class_id] #get prediction indices where label is equal to i
+            scores = [r['scores'][i] for i in p_indices] #get scores where label is equal to i
+            p_masks = [r['masks'][:,:,i] for i in p_indices] #get prediction masks where label is equal to i
+
+            #Remove masks with a low score
+            s_indices = [i for i, u in enumerate(scores) if u >= config.CONFIDENCE_SCORE_THRESHOLD] #get prediction indices where score is higher than thresholds
+            p = [p_masks[i] for i in s_indices] #get prediction masks where score is higher than threshold
+            p = mask_projection(np.stack(p, axis=-1))
+
+            # Compute AP
+            ap, tp, fp, fn = cellpose.metrics.average_precision(gt, p, config.AP_THRESHOLDS)
         
-        # Compute
-        #cellpose.metrics.average_precision(gt_mask, )
-        # AP, precisions, recalls, overlaps =\
-        #         utils.compute_ap(gt_bbox, gt_class_id, gt_mask,
-        #                          r["rois"], r["class_ids"], r["scores"], r['masks'],
-        #                          config.EVAL_IOU)
-    
-        # info = {'image': data_eval.info(i)['path'],
-        #         'AP': AP,
-        #         'precisions': precisions,
-        #         'recalls': recalls,
-        #         'overlaps': overlaps}
-
-        # evaluation = evaluation.append(info, ignore_index=True)
-
-    #Log mean AP
-    # logger.info(f'Model: {model_name} || mAP @ IoU 0.75: {evaluation["AP"].mean()}')
+            #Combine information
+            info = {'image': data_eval.info(i)['path'],
+                    'class': class_id,
+                    'ap': ap,
+                    'tp': tp,
+                    'fp': fp,
+                    'fn': fn}
+            evaluation = evaluation.append(info, ignore_index=True)
 
     #Save results
-    # evaluation.to_csv(model_name.replace('.h5', '_evaluation.csv'), index=False)
+    evaluation.to_csv(model_name.replace('.h5', '_evaluation.csv'), index=False)
         
 if __name__ == "__main__":
     logger.info('Start evaluation...')
@@ -137,7 +139,8 @@ if __name__ == "__main__":
 
 ###
 ##Get unique classes
-#classes = [0, 0, 0, 1, 1, 2]
-#classes = filter(lambda score: score >= 70, scores)
-#
-#[aList[i] for i in myIndices]
+classes = [1, 1, 2]
+list(set(classes))
+myindices = [i for i, u in enumerate(classes) if u == 2]
+masks = ['a', 'a', 'b']
+[masks[i] for i in myindices]

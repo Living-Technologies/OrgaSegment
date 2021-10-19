@@ -8,7 +8,7 @@ logger = logging.getLogger(__file__)
 import mrcnn.model as modellib
 
 #Import OrgaSegment functions
-from lib import get_image_names
+from lib import get_image_names, mask_projection
 from conf import PredictConfig
 
 #Import other packages
@@ -103,9 +103,6 @@ def main():
         if config.COLOR_MODE == 'grayscale':
             img = img[..., np.newaxis]
 
-        #Reset mask
-        mask =  np.zeros((img.shape[0], img.shape[1]))
-
         #Predict organoids
         pred = model.detect([img], verbose=1)
         p = pred[0]
@@ -119,11 +116,6 @@ def main():
             msk = p['masks'][:,:,l].astype(np.uint8)
             size = np.sum(msk)
             num = l + 1
-            msk = np.where(msk != 0, num, msk)
-            if count == 0:
-                mask = msk
-            else:
-                mask = np.maximum(mask, msk) #Combine previous mask with new mask
 
             #Set all information
             info = {'image': i,
@@ -139,6 +131,9 @@ def main():
                     'size': size}
             results = results.append(info, ignore_index=True)
         
+        #Stack masks
+        mask = mask_projection(p['masks'])
+
         #Save mask
         imsave(mask_path, mask)
 
