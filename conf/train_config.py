@@ -72,8 +72,8 @@ class TrainConfig(Config):
     VALIDATION_STEPS = 5
 
     # OrgaSegment specific config
-    TRAIN_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20210720/train', '')
-    VAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20210720/val', '')
+    TRAIN_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20211130/train', '')
+    VAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20211130/val', '')
     MODEL_DIR = os.path.join('/hpc/umc_beekman/orgasegment/models/', '')
     PRETRAINED_WEIGHTS = '/hpc/umc_beekman/orgasegment/models/coco/mask_rcnn_coco.h5'
     EXCLUDE_LAYERS = ['conv1', 'mrcnn_class_logits', 'mrcnn_bbox_fc', 'mrcnn_bbox', 'mrcnn_mask']

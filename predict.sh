@@ -24,8 +24,7 @@ conda info --envs
 
 nvidia-smi
 
-for INPUTDIR in /hpc/umc_beekman/data_organoids/boekhout_20210806/
-do
+for INPUTDIR in /hpc/umc_beekman/data_organoids/DIS_screens/*/ ; do
     python predict_mrcnn.py $SLURM_JOB_ID $INPUTDIR
     python track.py $SLURM_JOB_ID $INPUTDIR
 done
