@@ -14,12 +14,12 @@ def mask_projection(mask_3D):
       mask::[numpy.array] - Numpy array with 2 dimenstion (y, x). Where 0=No masks and > 0 are masks.
     """
     #Create new empty mask
-    mask =  np.zeros((mask_3D.shape[0], mask_3D.shape[1]), np.unint8)
+    mask =  np.zeros((mask_3D.shape[0], mask_3D.shape[1]), np.uint8)
 
     #Process predictions
     for count, l in enumerate(range(mask_3D.shape[2])):
         #Get mask information
-        msk = mask_3D[:,:,l].astype(np.int8)
+        msk = mask_3D[:,:,l].astype(np.uint8)
         num = l + 1
         msk = np.where(msk != 0, num, msk)
         if count == 0:
