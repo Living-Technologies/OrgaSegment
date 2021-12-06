@@ -16,7 +16,7 @@ import tensorflow as tf
 import sys
 import shutil
 from skimage.io import imsave
-from skimage.color import gray2rgb, label2rgb 
+from skimage.color import label2rgb 
 import pandas as pd
 import numpy as np
 import re
@@ -139,7 +139,7 @@ def main():
 
         #Combine image and mask and create preview
         if img.shape[-1] == 1:
-            combined = label2rgb(mask, gray2rgb(img), bg_label = 0)
+            combined = label2rgb(mask, np.concatenate(img, np.zeros(img.shape[0:2] + (2,)), axis=-1), bg_label = 0)
         else:
             combined = label2rgb(mask, img, bg_label = 0)
         imsave(preview_path, combined)
