@@ -15,7 +15,7 @@ from conf import PredictConfig
 import tensorflow as tf
 import sys
 import shutil
-from skimage.io import imsave
+from skimage.io import imread, imsave
 from skimage.color import label2rgb 
 import pandas as pd
 import numpy as np
@@ -138,11 +138,11 @@ def main():
         imsave(mask_path, mask)
 
         #Combine image and mask and create preview
-        if img.shape[-1] == 1:
-            img = np.concatenate((img, np.zeros(img.shape[0:2] + (2,))), axis=-1)
-            combined = label2rgb(mask, img, bg_label = 0)
-        else:
-            combined = label2rgb(mask, img, bg_label = 0)
+        # if img.shape[-1] == 1:
+        #     img = np.concatenate((img, np.zeros(img.shape[0:2] + (2,))), axis=-1)
+        #     combined = label2rgb(mask, img, bg_label = 0)
+        # else:
+        combined = label2rgb(mask, imread(i), bg_label = 0)
         imsave(preview_path, combined)
 
     #Save results
