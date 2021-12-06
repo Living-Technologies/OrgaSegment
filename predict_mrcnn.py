@@ -139,7 +139,8 @@ def main():
 
         #Combine image and mask and create preview
         if img.shape[-1] == 1:
-            combined = label2rgb(mask, np.concatenate(img, np.zeros(img.shape[0:2] + (2,)), axis=-1), bg_label = 0)
+            img = np.concatenate((img, np.zeros(img.shape[0:2] + (2,))), axis=-1)
+            combined = label2rgb(mask, img, bg_label = 0)
         else:
             combined = label2rgb(mask, img, bg_label = 0)
         imsave(preview_path, combined)
