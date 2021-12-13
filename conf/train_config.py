@@ -29,9 +29,9 @@ class TrainConfig(Config):
     IMAGE_RESIZE_MODE = 'crop'
     IMAGE_MIN_DIM = 512
     IMAGE_MAX_DIM = 512
-    IMAGE_MIN_SCALE = 2.0
+    IMAGE_MIN_SCALE = 0
 
-    #Graysclae channel count
+    #Grayscale channel count
     IMAGE_CHANNEL_COUNT = 1
 
     # ROIs kept after non-maximum supression (training and inference)
@@ -60,7 +60,7 @@ class TrainConfig(Config):
     # If enabled, resizes instance masks to a smaller size to reduce
     # memory load. Recommended when using high-resolution images.
     USE_MINI_MASK = True
-    MINI_MASK_SHAPE = (100,100)
+    MINI_MASK_SHAPE = (80,80)
 
     # Maximum number of ground truth instances to use in one image
     MAX_GT_INSTANCES = 200
