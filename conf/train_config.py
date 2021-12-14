@@ -18,7 +18,7 @@ class TrainConfig(Config):
     
     # Number of GPU, images per GPU and batchsize
     GPU_COUNT = 4
-    IMAGES_PER_GPU = 2
+    IMAGES_PER_GPU = 1
     BATCHSIZE = GPU_COUNT * IMAGES_PER_GPU
 
     # Number of classes (including background)
@@ -60,7 +60,7 @@ class TrainConfig(Config):
     # If enabled, resizes instance masks to a smaller size to reduce
     # memory load. Recommended when using high-resolution images.
     USE_MINI_MASK = True
-    MINI_MASK_SHAPE = (56,56)
+    MINI_MASK_SHAPE = (64,64)
 
     # Maximum number of ground truth instances to use in one image
     MAX_GT_INSTANCES = 200
