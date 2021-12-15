@@ -22,7 +22,12 @@ tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 #Check Tensorflow GPU
 if tf.test.is_gpu_available():
-    logger.info(f'GPU devices: {tf.config.experimental_list_devices()}')
+    devices = tf.config.experimental.list_physical_devices('GPU')
+    logger.info(f'GPU devices: {devices}')
+    logger.info(f'Current memory growth setting for device 0: {tf.config.experimental.get_memory_growth(devices[0])}')
+    logger.info('Set memory growth TRUE')
+    for i in devices:
+        tf.config.experimental.set_memory_growth(i, True)
 else:
     logger.error(f'No GPUs available')
     exit(1)
