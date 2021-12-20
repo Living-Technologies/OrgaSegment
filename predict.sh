@@ -25,7 +25,7 @@ conda info --envs
 nvidia-smi
 
 for INPUTDIR in /hpc/umc_beekman/data_organoids/JACKPOT/*/ ; do
-    python predict_mrcnn.py $SLURM_JOB_ID $INPUTDIR
+    #python predict_mrcnn.py $SLURM_JOB_ID $INPUTDIR
     python track.py $SLURM_JOB_ID $INPUTDIR
 done
 
