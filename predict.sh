@@ -2,7 +2,7 @@
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --gpus-per-node=RTX6000:1
-#SBATCH --time=2-00:00:00
+#SBATCH --time=4-00:00:00
 #SBATCH --mem=96G
 #SBATCH --mail-user=s.vanbeuningen@umcutrecht.nl
 #SBATCH --mail-type=begin
@@ -25,7 +25,7 @@ conda info --envs
 nvidia-smi
 
 for INPUTDIR in /hpc/umc_beekman/data_organoids/JACKPOT/*/ ; do
-    #python predict_mrcnn.py $SLURM_JOB_ID $INPUTDIR
+    python predict_mrcnn.py $SLURM_JOB_ID $INPUTDIR
     python track.py $SLURM_JOB_ID $INPUTDIR
 done
 
