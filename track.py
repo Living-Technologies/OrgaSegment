@@ -46,10 +46,10 @@ def main():
 
         results['x'] = (results['x2'] + results['x1']) / 2
         results['y'] = (results['y2'] + results['y1']) / 2
-        results = results.groupby('well').apply(tp.link, search_range=20, memory=2, t_column='t').reset_index(drop=True)
+        results = results.groupby('well').apply(tp.link, search_range=50, memory=2, t_column='t').reset_index(drop=True)
         
         ## Filter out particles that are seen less than 50% of the time
-        results = results[results.groupby(['well','particle'])['t'].transform('count') >= (max(results['t']) / 2)]
+        #results = results[results.groupby(['well','particle'])['t'].transform('count') >= (max(results['t']) / 2)]
         
         #Save results
         results.to_csv(f'{data_dir}tracked.csv', index=False)
