@@ -12,6 +12,7 @@
 #SBATCH --output=log/JobName.%J.out
 
 ENV=OrgaSegment
+TRAIN_CONFIG = ./conf/OgranoidApoptosisTrainConfig20220301.py
 
 source ~/.bashrc
 
@@ -26,9 +27,9 @@ conda info --envs
 nvidia-smi
 
 ## Train model
-python train_mrcnn.py $SLURM_JOB_ID
+python train_mrcnn.py $SLURM_JOB_ID $TRAIN_CONFIG
 
 ##Eval model
-python eval_mrcnn.py $SLURM_JOB_ID None
+#python eval_mrcnn.py $SLURM_JOB_ID None $EVAL_CONFIG
 
 conda deactivate

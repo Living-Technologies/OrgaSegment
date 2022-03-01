@@ -9,7 +9,7 @@ import mrcnn.model as modellib
 
 #Import OrgaSwell functions
 from lib import OrganoidDataset
-from conf import TrainConfig
+import importlib
 
 #Import other packages
 import tensorflow as tf
@@ -35,12 +35,19 @@ else:
 
 #Get Job ID
 job_id=sys.argv[1]
+
+#Get config
+config_path=sys.argv[2]
+spec = importlib.util.spec_from_file_location('TrainConfig', config_path)
+modulevar = importlib.util.module_from_spec(spec)
+config = spec.loader.exec_module(modulevar)
+
 #Set log_dir
 log_dir = None
 
 def main():
     #Get config, display and save config
-    config = TrainConfig()
+    # config = TrainConfig()
     logger.info(config.display())
 
     #Get data
