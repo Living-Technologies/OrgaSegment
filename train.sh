@@ -12,7 +12,7 @@
 #SBATCH --output=log/JobName.%J.out
 
 ENV=OrgaSegment
-TRAIN_CONFIG = ./conf/OgranoidApoptosisTrainConfig20220301.py
+TRAIN_CONFIG=./conf/OgranoidApoptosisTrainConfig20220301.py
 
 source ~/.bashrc
 
