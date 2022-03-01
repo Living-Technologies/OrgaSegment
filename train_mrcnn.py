@@ -40,7 +40,8 @@ job_id=sys.argv[1]
 config_path=sys.argv[2]
 spec = importlib.util.spec_from_file_location('TrainConfig', config_path)
 modulevar = importlib.util.module_from_spec(spec)
-config = spec.loader.exec_module(modulevar)
+spec.loader.exec_module(modulevar)
+config = modulevar.TrainConfig()
 
 #Set log_dir
 log_dir = None
