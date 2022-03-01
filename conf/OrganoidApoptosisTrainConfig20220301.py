@@ -75,7 +75,7 @@ class TrainConfig(Config):
     TRAIN_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20220301/train', '')
     VAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20220301/val', '')
     MODEL_DIR = os.path.join('/hpc/umc_beekman/orgasegment/models/', '')
-    PRETRAINED_WEIGHTS = '/hpc/umc_beekman/orgasegment/models/organoids20211215T1200/mask_rcnn_organoids_0500.h5'
+    PRETRAINED_WEIGHTS = '/hpc/umc_beekman/orgasegment/models/organoids20211215T1200/mask_rcnn_organoids_epoch0500_final.h5'
     EXCLUDE_LAYERS = ['conv1', 'mrcnn_class_logits', 'mrcnn_bbox_fc', 'mrcnn_bbox', 'mrcnn_mask']
     IMAGE_FILTER = '_img'
     MASK_FILTER = '_masks_'
