@@ -13,7 +13,7 @@ import cellpose
 
 #Import OrgaSegment functions
 from lib import OrganoidDataset, mask_projection
-from conf import EvalConfig
+import importlib
 
 #Import other packages
 import tensorflow as tf
@@ -40,12 +40,19 @@ job_id=sys.argv[1]
 #Model
 model_path=sys.argv[2]
 
+#Get config
+config_path=sys.argv[3]
+spec = importlib.util.spec_from_file_location('EvalConfig', config_path)
+modulevar = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(modulevar)
+config = modulevar.EvalConfig()
+
 #Set log_dir
 log_dir = None
 
 def main():
     #Get config, display and save config
-    config = EvalConfig()
+    # config = EvalConfig()
     logger.info(config.display())
 
     #Get data
