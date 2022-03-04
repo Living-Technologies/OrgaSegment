@@ -37,15 +37,15 @@ else:
 #Get Job ID
 job_id=sys.argv[1]
 
-#Model
-model_path=sys.argv[2]
-
 #Get config
-config_path=sys.argv[3]
+config_path=sys.argv[2]
 spec = importlib.util.spec_from_file_location('EvalConfig', config_path)
 modulevar = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(modulevar)
 config = modulevar.EvalConfig()
+
+#Model
+model_path=sys.argv[3]
 
 #Set log_dir
 log_dir = None
