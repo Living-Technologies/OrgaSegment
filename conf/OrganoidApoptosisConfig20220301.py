@@ -68,8 +68,12 @@ class TrainConfig(Config):
     DETECTION_MAX_INSTANCES = 400
 
     # Steps per epoch and validation steps
-    STEPS_PER_EPOCH = 50
-    VALIDATION_STEPS = 5
+    STEPS_PER_EPOCH = 4 #50 steps_per_epoch = number of train samples//batch_size
+    VALIDATION_STEPS = 1 #validation_steps = number of validation samples//batch_size
+
+    #Multiprocessing
+    WORKERS = 1
+    MULTIPROCESSING = False
 
     # OrgaSegment specific config
     TRAIN_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20220301/train', '')

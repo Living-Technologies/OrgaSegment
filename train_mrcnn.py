@@ -85,13 +85,17 @@ def main():
     model.train(data_train, data_val, 
                 learning_rate=config.LEARNING_RATE,
                 epochs=100,
-                layers='heads')
+                layers='heads',
+                workers=config.WORKERS,
+                use_multiprocessing=config.MULTIPROCESSING)
 
     logger.info('Start training all layers')
     model.train(data_train, data_val, 
                 learning_rate=config.LEARNING_RATE,
                 epochs=500,
-                layers='all')
+                layers='all',
+                workers=config.WORKERS,
+                use_multiprocessing=config.MULTIPROCESSING)
 
 if __name__ == "__main__":
     logger.info('Start training...')
