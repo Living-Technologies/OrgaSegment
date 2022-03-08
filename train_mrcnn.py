@@ -86,7 +86,6 @@ def main():
                 learning_rate=config.LEARNING_RATE,
                 epochs=100,
                 layers='heads',
-                workers=config.WORKERS,
                 use_multiprocessing=config.MULTIPROCESSING)
 
     logger.info('Start training all layers')
@@ -94,7 +93,6 @@ def main():
                 learning_rate=config.LEARNING_RATE,
                 epochs=500,
                 layers='all',
-                workers=config.WORKERS,
                 use_multiprocessing=config.MULTIPROCESSING)
 
 if __name__ == "__main__":

@@ -72,8 +72,8 @@ class TrainConfig(Config):
     VALIDATION_STEPS = 1 #validation_steps = number of validation samples//batch_size
 
     #Multiprocessing
-    WORKERS = 1
-    MULTIPROCESSING = False
+    # WORKERS = 1
+    MULTIPROCESSING = True
 
     # OrgaSegment specific config
     TRAIN_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20220301/train', '')
