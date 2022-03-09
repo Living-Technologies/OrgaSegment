@@ -72,7 +72,7 @@ class TrainConfig(Config):
     VALIDATION_STEPS = 1 #validation_steps = number of validation samples//batch_size
 
     #Multiprocessing
-    # WORKERS = 1
+    WORKERS = 1
     MULTIPROCESSING = False
 
     # OrgaSegment specific config
