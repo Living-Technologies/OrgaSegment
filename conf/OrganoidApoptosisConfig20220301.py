@@ -1,5 +1,6 @@
 from mrcnn.config import Config
 import numpy as np
+import multiprocessing
 import os
 
 ##Config
@@ -27,8 +28,8 @@ class TrainConfig(Config):
     # Input image resizing
     # Random crops of size 512x512
     IMAGE_RESIZE_MODE = 'crop'
-    IMAGE_MIN_DIM = 512
-    IMAGE_MAX_DIM = 512
+    IMAGE_MIN_DIM = 256
+    IMAGE_MAX_DIM = 256
     IMAGE_MIN_SCALE = 0
 
     #Grayscale channel count
@@ -55,7 +56,7 @@ class TrainConfig(Config):
     RPN_ANCHOR_SCALES = (8, 16, 32, 64, 128)
     
     # TRAIN ROIS PER IMAGE
-    TRAIN_ROIS_PER_IMAGE = 128
+    TRAIN_ROIS_PER_IMAGE = 100
 
     # If enabled, resizes instance masks to a smaller size to reduce
     # memory load. Recommended when using high-resolution images.
@@ -72,8 +73,9 @@ class TrainConfig(Config):
     VALIDATION_STEPS = 1 #validation_steps = number of validation samples//batch_size
 
     #Multiprocessing
-    WORKERS = 1
-    MULTIPROCESSING = False
+    #WORKERS = 1
+    WORKERS = multiprocessing.cpu_count()
+    MULTIPROCESSING = True
 
     # OrgaSegment specific config
     TRAIN_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20220301/train', '')
