@@ -73,7 +73,7 @@ class TrainConfig(Config):
 
     #Multiprocessing
     # WORKERS = 1
-    MULTIPROCESSING = True
+    MULTIPROCESSING = False
 
     # OrgaSegment specific config
     TRAIN_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20220301/train', '')
