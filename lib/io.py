@@ -28,11 +28,11 @@ def get_image_names(folder, mask_filter, image_filter=None):
     if image_filter is None:
         image_filter = ''
     
-    image_names.extend(glob.glob(folder + '/*%s.png'%image_filter))
-    image_names.extend(glob.glob(folder + '/*%s.jpg'%image_filter))
-    image_names.extend(glob.glob(folder + '/*%s.jpeg'%image_filter))
-    image_names.extend(glob.glob(folder + '/*%s.tif'%image_filter))
-    image_names.extend(glob.glob(folder + '/*%s.tiff'%image_filter))
+    image_names.extend(glob.glob(folder + '/*%s*.png'%image_filter))
+    image_names.extend(glob.glob(folder + '/*%s*.jpg'%image_filter))
+    image_names.extend(glob.glob(folder + '/*%s*.jpeg'%image_filter))
+    image_names.extend(glob.glob(folder + '/*%s*.tif'%image_filter))
+    image_names.extend(glob.glob(folder + '/*%s*.tiff'%image_filter))
     image_names = natsorted(image_names)
     
     imn = []
