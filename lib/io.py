@@ -162,7 +162,6 @@ class OrganoidDataset(utils.Dataset):
     Create dataset for Mask RCNN training
     '''
     
-
     def load_data(self, data_dir, classes, image_filter='', mask_filter='', color_mode='rgb', img_bit_depth=None):
         '''Load data.
         count: number of images to generate.
