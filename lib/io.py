@@ -28,11 +28,11 @@ def get_image_names(folder, mask_filter, image_filter=None):
     if image_filter is None:
         image_filter = ''
     
-    image_names.extend(glob.glob(folder + '/*%s*.png'%image_filter))
-    image_names.extend(glob.glob(folder + '/*%s*.jpg'%image_filter))
-    image_names.extend(glob.glob(folder + '/*%s*.jpeg'%image_filter))
-    image_names.extend(glob.glob(folder + '/*%s*.tif'%image_filter))
-    image_names.extend(glob.glob(folder + '/*%s*.tiff'%image_filter))
+    image_names.extend(glob.glob(folder + '/*%s.png'%image_filter))
+    image_names.extend(glob.glob(folder + '/*%s.jpg'%image_filter))
+    image_names.extend(glob.glob(folder + '/*%s.jpeg'%image_filter))
+    image_names.extend(glob.glob(folder + '/*%s.tif'%image_filter))
+    image_names.extend(glob.glob(folder + '/*%s.tiff'%image_filter))
     image_names = natsorted(image_names)
     
     imn = []
@@ -175,8 +175,8 @@ class OrganoidDataset(utils.Dataset):
         image_names = get_image_names(data_dir, mask_filter=mask_filter, image_filter=image_filter)
     
         for i in image_names:
-            image_id = re.search(f'^{data_dir}(.*){image_filter}\..*$', i).group(1)
-        
+            image_id = re.search(f'^{data_dir}(.*){image_filter}.*\..*$', i).group(1)
+
             masks = []
             for c in (c for c in classes if os.path.isfile(f'{data_dir}{image_id}{mask_filter}{c}.png')):
                 mask = {'class': c,
