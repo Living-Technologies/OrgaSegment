@@ -28,8 +28,8 @@ class TrainConfig(Config):
     # Input image resizing
     # Random crops of size 512x512
     IMAGE_RESIZE_MODE = 'crop'
-    IMAGE_MIN_DIM = 512
-    IMAGE_MAX_DIM = 512
+    IMAGE_MIN_DIM = 1024
+    IMAGE_MAX_DIM = 1024
     IMAGE_MIN_SCALE = 0
 
     #Grayscale channel count
@@ -53,7 +53,7 @@ class TrainConfig(Config):
     MEAN_PIXEL = np.array([0])
 
     # RPN ANCHOR scales
-    RPN_ANCHOR_SCALES = (8, 16, 32, 64, 128)
+    RPN_ANCHOR_SCALES = (8, 16, 32, 64, 128, 256)
     
     # TRAIN ROIS PER IMAGE
     TRAIN_ROIS_PER_IMAGE = 100
@@ -64,9 +64,9 @@ class TrainConfig(Config):
     MINI_MASK_SHAPE = (64,64)
 
     # Maximum number of ground truth instances to use in one image
-    MAX_GT_INSTANCES = 25
+    MAX_GT_INSTANCES = 50
     # Max number of final detections per image
-    DETECTION_MAX_INSTANCES = 25
+    DETECTION_MAX_INSTANCES = 50
 
     # Steps per epoch and validation steps
     STEPS_PER_EPOCH = 18 #50 steps_per_epoch = number of train samples//batch_size
