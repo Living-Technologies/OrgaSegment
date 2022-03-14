@@ -24,9 +24,11 @@ conda info --envs
 
 nvidia-smi
 
-for INPUTDIR in /hpc/umc_beekman/data_organoids/JACKPOT/*/ ; do
-    python predict_mrcnn.py $SLURM_JOB_ID $INPUTDIR
-    python track.py $SLURM_JOB_ID $INPUTDIR
-done
+python predict_mrcnn.py $SLURM_JOB_ID '/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20220314/eval'
+
+# for INPUTDIR in /hpc/umc_beekman/data_organoids/JACKPOT/*/ ; do
+#     python predict_mrcnn.py $SLURM_JOB_ID $INPUTDIR
+#     python track.py $SLURM_JOB_ID $INPUTDIR
+# done
 
 conda deactivate
