@@ -64,13 +64,13 @@ class TrainConfig(Config):
     MINI_MASK_SHAPE = (64,64)
 
     # Maximum number of ground truth instances to use in one image
-    MAX_GT_INSTANCES = 10
+    MAX_GT_INSTANCES = 25
     # Max number of final detections per image
-    DETECTION_MAX_INSTANCES = 10
+    DETECTION_MAX_INSTANCES = 25
 
     # Steps per epoch and validation steps
-    STEPS_PER_EPOCH = 72 #50 steps_per_epoch = number of train samples//batch_size
-    VALIDATION_STEPS = 12 #validation_steps = number of validation samples//batch_size
+    STEPS_PER_EPOCH = 18 #50 steps_per_epoch = number of train samples//batch_size
+    VALIDATION_STEPS = 3 #validation_steps = number of validation samples//batch_size
 
     #Multiprocessing
     #WORKERS = 1
@@ -78,8 +78,8 @@ class TrainConfig(Config):
     MULTIPROCESSING = True
 
     # OrgaSegment specific config
-    TRAIN_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20220313/train', '')
-    VAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20220313/val', '')
+    TRAIN_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20220314/train', '')
+    VAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20220314/val', '')
     MODEL_DIR = os.path.join('/hpc/umc_beekman/orgasegment/models/', '')
     PRETRAINED_WEIGHTS = '/hpc/umc_beekman/orgasegment/models/organoids20211215T1200/mask_rcnn_organoids_epoch0500_final.h5'
     EXCLUDE_LAYERS = ['conv1', 'mrcnn_class_logits', 'mrcnn_bbox_fc', 'mrcnn_bbox', 'mrcnn_mask']
@@ -103,7 +103,7 @@ class EvalConfig(TrainConfig):
     IMAGE_RESIZE_MODE = 'none'
 
     #Eval DIR
-    EVAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20220313/eval', '')
+    EVAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20220314/eval', '')
 
     #Thresholds
     CONFIDENCE_SCORE_THRESHOLD = 0.9
