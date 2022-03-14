@@ -53,7 +53,7 @@ class TrainConfig(Config):
     MEAN_PIXEL = np.array([0])
 
     # RPN ANCHOR scales
-    RPN_ANCHOR_SCALES = (8, 16, 32, 64, 128, 256)
+    RPN_ANCHOR_SCALES = (16, 32, 64, 128, 256)
     
     # TRAIN ROIS PER IMAGE
     TRAIN_ROIS_PER_IMAGE = 100
