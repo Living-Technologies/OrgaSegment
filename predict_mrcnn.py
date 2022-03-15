@@ -93,10 +93,6 @@ def main():
     for i in images:
         logger.info(f'Processing {i}')
         image_name = re.search(f'^{input_dir}(.*)\..*$', i).group(1)
-        mask_name = f'{image_name}_masks.png'
-        mask_path = output_dir + mask_name
-        preview_name = f'{image_name}_preview.jpg'
-        preview_path = preview_dir + preview_name
 
         #Load image
         img = np.asarray(load_img(i, color_mode=config.COLOR_MODE))
@@ -113,39 +109,44 @@ def main():
         pred = model.detect([img], verbose=1)
         p = pred[0]
 
-        #Create length of predictions
-        length = len(p['rois'])
-        
-        #Process predictions
-        for count, l in enumerate(range(length)):
-            #Get mask information
-            msk = p['masks'][:,:,l].astype(np.uint8)
-            size = np.sum(msk)
-            num = l + 1
+        #Process results per class
+        for c in np.unique(p['class_ids']):
+            #Create names
+            mask_name = f'{image_name}_masks_class-{c}.png'
+            mask_path = output_dir + mask_name
+            preview_name = f'{image_name}_preview_class-{c}.jpg'
+            preview_path = preview_dir + preview_name
 
-            #Set all information
-            info = {'image': i,
-                    'mask': mask_path,
-                    'name': image_name,
-                    'id': num,
-                    'y1': p['rois'][l,0],
-                    'x1': p['rois'][l,1],
-                    'y2': p['rois'][l,2],
-                    'x2': p['rois'][l,3],
-                    'class': p['class_ids'][l],
-                    'score': p['scores'][l],
-                    'size': size}
-            results = results.append(info, ignore_index=True)
-        
-        #Stack masks
-        mask = mask_projection(p['masks'])
+            #Get mask
+            unique_class_ids = (p['class_ids'] == c).nonzero()[0]
+            mask = mask_projection(p['masks'][:,:,unique_class_ids])
 
-        #Save mask
-        imsave(mask_path, mask)
+            #Save mask
+            imsave(mask_path, mask)
 
-        #Combine image and mask and create preview
-        combined = label2rgb(mask, imread(i), bg_label = 0)
-        imsave(preview_path, combined)
+            #Combine image and mask and create preview
+            combined = label2rgb(mask, imread(i), bg_label = 0)
+            imsave(preview_path, combined)
+
+            #Process predictions
+            for count, l in enumerate(unique_class_ids):
+                #Get mask information
+                msk = p['masks'][:,:,l].astype(np.uint8)
+                size = np.sum(msk)
+
+                #Set all information
+                info = {'image': i,
+                        'mask': mask_path,
+                        'name': image_name,
+                        'id': count,
+                        'y1': p['rois'][l,0],
+                        'x1': p['rois'][l,1],
+                        'y2': p['rois'][l,2],
+                        'x2': p['rois'][l,3],
+                        'class': p['class_ids'][l],
+                        'score': p['scores'][l],
+                        'size': size}
+                results = results.append(info, ignore_index=True)
 
     #Save results
     results.to_csv(f'{output_dir}results.csv', index=False)
