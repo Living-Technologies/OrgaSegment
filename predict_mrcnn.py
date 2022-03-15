@@ -38,8 +38,15 @@ else:
 #Get Job ID
 job_id=sys.argv[1]
 
+#Get config
+config_path=sys.argv[2]
+spec = importlib.util.spec_from_file_location('PredictConfig', config_path)
+modulevar = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(modulevar)
+config = modulevar.TrainConfig()
+
 #Data folders
-input_dir=sys.argv[2]
+input_dir=sys.argv[3]
 if os.path.isdir(input_dir) == False:
     logger.error(f'Incorrect input path specified: {input_dir}')
     exit(1)

@@ -108,3 +108,22 @@ class EvalConfig(TrainConfig):
     #Thresholds
     CONFIDENCE_SCORE_THRESHOLD = 0.9
     AP_THRESHOLDS = np.arange(0.5, 1.05, 0.05)
+
+class PredictConfig(TrainConfig):
+    '''
+    Configuration for Prediction on a datsaset.
+    Derives from the base Config class and overrides values specific
+    to the organoid dataset.
+    '''
+    # Number of GPU, images per GPU and batchsize
+    GPU_COUNT = 1
+    IMAGES_PER_GPU = 1
+
+    # Input image resizing
+    IMAGE_RESIZE_MODE = 'pad64'
+
+    # OrgaSegment specific config
+    MODEL_DIR = '/hpc/umc_beekman/orgasegment/models/'
+    MODEL_NAME = 'organoid-apoptosis20220314T1417'
+    MODEL = '/hpc/umc_beekman/orgasegment/models/' + MODEL_NAME + '/mask_rcnn_organoid-apoptosis_0500.h5'
+    COLOR_MODE = 'grayscale'
