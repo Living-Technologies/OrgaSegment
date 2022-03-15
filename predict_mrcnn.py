@@ -43,7 +43,7 @@ config_path=sys.argv[2]
 spec = importlib.util.spec_from_file_location('PredictConfig', config_path)
 modulevar = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(modulevar)
-config = modulevar.TrainConfig()
+config = modulevar.PredictConfig()
 
 #Data folders
 input_dir=sys.argv[3]
