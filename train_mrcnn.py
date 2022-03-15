@@ -48,7 +48,6 @@ log_dir = None
 
 def main():
     #Get config, display and save config
-    # config = TrainConfig()
     logger.info(config.display())
 
     #Get data

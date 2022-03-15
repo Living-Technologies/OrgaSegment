@@ -9,7 +9,7 @@ import mrcnn.model as modellib
 
 #Import OrgaSegment functions
 from lib import get_image_names, mask_projection
-from conf import PredictConfig
+import importlib
 
 #Import other packages
 import tensorflow as tf
@@ -62,7 +62,6 @@ else:
 
 def main():
     #Get config, display and save config
-    config = PredictConfig()
     logger.info(config.display())
 
     #Get data
