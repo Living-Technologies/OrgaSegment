@@ -19,7 +19,7 @@ dependencies:
   - natsort=7.1.1
   - pillow=8.2.0
   - matplotlib=3.3.4
-  - numba=0.55.1
+  - numba
   - trackpy
   - pip:
     - git+https://github.com/UMCU-BeekmanLab/Mask_RCNN.git@v2.1.2
