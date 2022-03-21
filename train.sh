@@ -27,9 +27,9 @@ conda info --envs
 nvidia-smi
 
 ## Train model
-python train_mrcnn.py $SLURM_JOB_ID $CONFIG
+# python train_mrcnn.py $SLURM_JOB_ID $CONFIG
 
 ##Eval model
-#python eval_mrcnn.py $SLURM_JOB_ID $CONFIG None
+python eval_mrcnn.py $SLURM_JOB_ID $CONFIG None
 
 conda deactivate
