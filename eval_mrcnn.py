@@ -9,7 +9,7 @@ import mrcnn.model as modellib
 from mrcnn import utils
 
 #Import OrgaSegment functions
-from lib import OrganoidDataset, mask_projection, average_precision
+from lib import OrganoidDataset, mask_projection, average_precision, config_to_dict
 import importlib
 
 #Import other packages
@@ -19,6 +19,11 @@ import os
 import shutil
 import pandas as pd
 import numpy as np
+
+#Import Neptune tracking
+from dotenv import load_dotenv
+import neptune.new as neptune
+from neptune.new.integrations.tensorflow_keras import NeptuneCallback
 
 #Set Tensorflow logging
 logger.info(f'Tensorflow version: {tf.__version__}')
@@ -77,17 +82,26 @@ def main():
         model.load_weights(model_name, by_name=True)
         logger.info(f'Model loaded: {model_name}')
     
+    #Create neptune logger
+    load_dotenv()
+    run = neptune.init(project=os.getenv('NEPTUNE_PROJECT'),
+                   api_token=os.getenv('NEPTUNE_APIKEY'))
+    parameters = config_to_dict(config)
+    parameters['MODEL'] = model_name        
+    run["parameters"] = parameters
+
     #Update log_dir
     global log_dir
     log_dir = model.log_dir
 
     #Create empty data frame for results
     evaluation =  pd.DataFrame({'image': pd.Series([], dtype='str'),
-                                'class': pd.Series([], dtype=np.int8),
-                                'ap': pd.Series([], dtype='object'),
-                                'tp': pd.Series([], dtype='object'),
-                                'fp': pd.Series([], dtype='object'),
-                                'fn': pd.Series([], dtype='object')})
+                                'class': pd.Series([], dtype=np.double),
+                                'threshold': pd.Series([], dtype=np.double),
+                                'ap': pd.Series([], dtype=np.double),
+                                'tp': pd.Series([], dtype=np.double),
+                                'fp': pd.Series([], dtype=np.double),
+                                'fn': pd.Series([], dtype=np.double)})
 
     # Compute Average Precisions based on Cellpose paper
     for i in data_eval.image_ids:
@@ -120,17 +134,31 @@ def main():
             ap, tp, fp, fn = average_precision(gt, p, config.AP_THRESHOLDS)
         
             #Combine information
-            info = {'image': data_eval.info(i)['path'],
-                    'class': class_id,
-                    'ap': ap,
-                    'tp': tp,
-                    'fp': fp,
-                    'fn': fn}
-            evaluation = evaluation.append(info, ignore_index=True)
+            for t in range(config.AP_THRESHOLDS):
+                info = {'image': data_eval.info(i)['path'],
+                        'class': class_id,
+                        'threshold': round(config.AP_THRESHOLDS[t], 2),
+                        'ap': ap[t],
+                        'tp': tp[t],
+                        'fp': fp[t],
+                        'fn': fn[t]}
+                evaluation = evaluation.append(info, ignore_index=True)
+
+                run[f'eval/ID_{i}/image'] = data_eval.info(i)['path']
+                run[f'eval/ID_{i}/class_{class_id}/ap@{round(config.AP_THRESHOLDS[t], 2)}'] = ap[t]
+                run[f'eval/ID_{i}/class_{class_id}/tp@{round(config.AP_THRESHOLDS[t], 2)}'] = tp[t]
+                run[f'eval/ID_{i}/class_{class_id}/fp@{round(config.AP_THRESHOLDS[t], 2)}'] = fp[t]
+                run[f'eval/ID_{i}/class_{class_id}/fn@{round(config.AP_THRESHOLDS[t], 2)}'] = fn[t]
+
+    summary = evaluation.groupby(['class', 'threshold'], as_index=False)['ap'].mean()
+    for i in range(len(summary)):
+        run[f'eval/mAP/class_{summary["class"][i]}/mAP@{summary["threshold"][i]}']  = summary['ap'][i]
 
     #Save results
     evaluation.to_csv(model_name.replace('.h5', '_evaluation.csv'), index=False)
-        
+    
+    run.stop()
+    
 if __name__ == "__main__":
     logger.info('Start evaluation...')
     main()

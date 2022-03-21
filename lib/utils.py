@@ -28,3 +28,10 @@ def mask_projection(mask_3D):
             mask = np.maximum(mask, msk) #Combine previous mask with new mask
     
     return mask
+
+def config_to_dict(config):
+  configDict = {}
+  for a in dir(config):
+    if not a.startswith("__") and not a == "display":
+      configDict[a] = getattr(config, a)
+  return configDict

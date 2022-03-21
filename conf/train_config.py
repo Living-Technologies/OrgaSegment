@@ -21,6 +21,10 @@ class TrainConfig(Config):
     IMAGES_PER_GPU = 1
     BATCHSIZE = GPU_COUNT * IMAGES_PER_GPU
 
+    #Epochs
+    EPOCHS_HEADS = 100
+    EPOCHS_ALL_LAYERS = 500
+
     # Number of classes (including background)
     NUM_CLASSES = 1 + 1 #2  # background + 2 classes (organoid and unhealthy structure)
 

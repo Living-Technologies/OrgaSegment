@@ -8,13 +8,19 @@ logger = logging.getLogger(__file__)
 import mrcnn.model as modellib
 
 #Import OrgaSwell functions
-from lib import OrganoidDataset
+from lib import OrganoidDataset, config_to_dict
 import importlib
 
 #Import other packages
 import tensorflow as tf
 import sys
 import shutil
+
+#Import Neptune tracking
+from dotenv import load_dotenv
+import neptune.new as neptune
+from neptune.new.integrations.tensorflow_keras import NeptuneCallback
+import os
 
 #Set Tensorflow logging
 logger.info(f'Tensorflow version: {tf.__version__}')
@@ -46,9 +52,16 @@ config = modulevar.TrainConfig()
 #Set log_dir
 log_dir = None
 
-def main():
-    #Get config, display and save config
+def main():  
+    #display config
     logger.info(config.display())
+
+    #Create neptune logger
+    load_dotenv()
+    run = neptune.init(project=os.getenv('NEPTUNE_PROJECT'),
+                   api_token=os.getenv('NEPTUNE_APIKEY'))
+    run["parameters"] = config_to_dict(config)
+    neptune_cbk = NeptuneCallback(run=run, base_namespace="training")
 
     #Get data
     logger.info('Preparing data')
@@ -83,18 +96,22 @@ def main():
     logger.info('Start training heads')
     model.train(data_train, data_val, 
                 learning_rate=config.LEARNING_RATE,
-                epochs=100,
+                epochs=config.EPOCHS_HEADS,
                 layers='heads',
+                custom_callbacks=[neptune_cbk],
                 workers=config.WORKERS,
                 use_multiprocessing=config.MULTIPROCESSING)
 
     logger.info('Start training all layers')
     model.train(data_train, data_val, 
                 learning_rate=config.LEARNING_RATE,
-                epochs=500,
+                epochs=config.EPOCHS_ALL_LAYERS,
                 layers='all',
+                custom_callbacks=[neptune_cbk],
                 workers=config.WORKERS,
                 use_multiprocessing=config.MULTIPROCESSING)
+
+    run.stop()
 
 if __name__ == "__main__":
     logger.info('Start training...')
