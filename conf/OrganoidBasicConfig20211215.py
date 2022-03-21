@@ -72,6 +72,11 @@ class TrainConfig(Config):
     STEPS_PER_EPOCH = 50
     VALIDATION_STEPS = 5
 
+    #Multiprocessing
+    #WORKERS = 1
+    WORKERS = multiprocessing.cpu_count()
+    MULTIPROCESSING = True
+
     # OrgaSegment specific config
     TRAIN_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20211206/train', '')
     VAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20211206/val', '')
