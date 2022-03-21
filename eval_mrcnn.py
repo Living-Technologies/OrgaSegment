@@ -12,7 +12,7 @@ from mrcnn import utils
 import cellpose
 
 #Import OrgaSegment functions
-from lib import OrganoidDataset, mask_projection
+from lib import OrganoidDataset, mask_projection, average_precision
 import importlib
 
 #Import other packages
@@ -120,7 +120,7 @@ def main():
             p = mask_projection(np.stack(p, axis=-1))
 
             # Compute AP
-            ap, tp, fp, fn = cellpose.metrics.average_precision(gt, p, config.AP_THRESHOLDS)
+            ap, tp, fp, fn = average_precision(gt, p, config.AP_THRESHOLDS)
         
             #Combine information
             info = {'image': data_eval.info(i)['path'],
@@ -141,13 +141,3 @@ if __name__ == "__main__":
     ##Copy logging to model log dir
     shutil.copy(f'log/JobName.{job_id}.out', f'{log_dir}/JobName.{job_id}.out')
     shutil.copy(f'log/JobName.{job_id}.err', f'{log_dir}/JobName.{job_id}.err')
-
-
-
-###
-##Get unique classes
-classes = [1, 1, 2]
-list(set(classes))
-myindices = [i for i, u in enumerate(classes) if u == 2]
-masks = ['a', 'a', 'b']
-[masks[i] for i in myindices]
