@@ -11,8 +11,25 @@
 #SBATCH --error=log/JobName.%J.err
 #SBATCH --output=log/JobName.%J.out
 
+TRAIN=false
+EVAL=false
+EVALMODEL=None
+
+while getopts :c:m:te flag
+do
+    case "${flag}" in
+        t) TRAIN=true;;
+        e) EVAL=true;;
+        c) CONFIG=${OPTARG};;
+        m) EVALMODEL=${MODEL};;
+    esac
+done
+echo "TRAIN: $TRAIN";
+echo "EVAL: $EVAL";
+echo "CONFIG: $CONFIG";
+echo "EVALMODEL: $MODEL";
+
 ENV=OrgaSegment
-CONFIG=./conf/OrganoidApoptosisConfig20220301.py
 
 source ~/.bashrc
 
@@ -27,9 +44,14 @@ conda info --envs
 nvidia-smi
 
 ## Train model
-# python train_mrcnn.py $SLURM_JOB_ID $CONFIG
-
+if [ "$TRAIN" = true ] ; then
+    python train_mrcnn.py $SLURM_JOB_ID $CONFIG
+fi
+ 
 ##Eval model
-python eval_mrcnn.py $SLURM_JOB_ID $CONFIG None
+if [ "$EVAL" = true ] ; then
+    python eval_mrcnn.py $SLURM_JOB_ID $CONFIG $EVALMODEL
+fi
+
 
 conda deactivate
