@@ -8,9 +8,6 @@ logger = logging.getLogger(__file__)
 import mrcnn.model as modellib
 from mrcnn import utils
 
-#Import cellpose
-import cellpose
-
 #Import OrgaSegment functions
 from lib import OrganoidDataset, mask_projection, average_precision
 import importlib
