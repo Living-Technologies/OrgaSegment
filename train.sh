@@ -21,7 +21,7 @@ do
         t) TRAIN=true;;
         e) EVAL=true;;
         c) CONFIG=${OPTARG};;
-        m) EVALMODEL=${MODEL};;
+        m) EVALMODEL=${OPTARG};;
     esac
 done
 echo "TRAIN: $TRAIN";

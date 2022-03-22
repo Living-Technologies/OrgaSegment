@@ -85,10 +85,12 @@ def main():
     #Create neptune logger
     load_dotenv()
     run = neptune.init(project=os.getenv('NEPTUNE_PROJECT'),
-                   api_token=os.getenv('NEPTUNE_APIKEY'))
+                       api_token=os.getenv('NEPTUNE_APIKEY'),
+                       name = model_name,
+                       custom_run_id = model_name)
     parameters = config_to_dict(config)
     parameters['MODEL'] = model_name        
-    run["parameters"] = parameters
+    run['parameters'] = parameters
 
     #Update log_dir
     global log_dir
@@ -158,7 +160,7 @@ def main():
     evaluation.to_csv(model_name.replace('.h5', '_evaluation.csv'), index=False)
     
     run.stop()
-    
+
 if __name__ == "__main__":
     logger.info('Start evaluation...')
     main()

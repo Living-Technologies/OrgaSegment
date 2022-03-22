@@ -10,8 +10,24 @@
 #SBATCH --error=log/JobName.%J.err
 #SBATCH --output=log/JobName.%J.out
 
+PREDICT=false
+TRACK=false
+
+while getopts :c:f:pt flag
+do
+    case "${flag}" in
+        p) PREDICT=true;;
+        t) TRACK=true;;
+        c) CONFIG=${OPTARG};;
+        f) FOLDER=${OPTARG};;
+    esac
+done
+echo "PREDICT: $PREDICT";
+echo "TRACK: $TRACK";
+echo "CONFIG: $CONFIG";
+echo "FOLDER: $FOLDER";
+
 ENV=OrgaSegment
-CONFIG=./conf/OrganoidApoptosisConfig20220301.py
 
 source ~/.bashrc
 
@@ -25,11 +41,14 @@ conda info --envs
 
 nvidia-smi
 
-python predict_mrcnn.py $SLURM_JOB_ID $CONFIG '/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20220314/eval'
-
-# for INPUTDIR in /hpc/umc_beekman/data_organoids/JACKPOT/*/ ; do
-#     python predict_mrcnn.py $SLURM_JOB_ID $INPUTDIR
-#     python track.py $SLURM_JOB_ID $INPUTDIR
-# done
+## Predict
+if [ "$PREDICT" = true ] ; then
+    python predict_mrcnn.py $SLURM_JOB_ID $CONFIG $FOLDER
+fi
+ 
+## Track
+if [ "$TRACK" = true ] ; then
+    python track.py $SLURM_JOB_ID $FOLDER
+fi
 
 conda deactivate

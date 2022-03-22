@@ -56,13 +56,6 @@ def main():
     #display config
     logger.info(config.display())
 
-    #Create neptune logger
-    load_dotenv()
-    run = neptune.init(project=os.getenv('NEPTUNE_PROJECT'),
-                   api_token=os.getenv('NEPTUNE_APIKEY'))
-    run["parameters"] = config_to_dict(config)
-    neptune_cbk = NeptuneCallback(run=run, base_namespace="training")
-
     #Get data
     logger.info('Preparing data')
     data_train = OrganoidDataset()
@@ -91,6 +84,18 @@ def main():
     #Update log_dir
     global log_dir
     log_dir = model.log_dir
+    model_name = os.path.basename(log_dir)
+
+    #Create neptune logger
+    load_dotenv()
+    run = neptune.init(project=os.getenv('NEPTUNE_PROJECT'),
+                       api_token=os.getenv('NEPTUNE_APIKEY'),
+                       name = model_name,
+                       custom_run_id = model_name)
+    parameters = config_to_dict(config)
+    parameters['MODEL'] = model_name
+    run['parameters'] = parameters
+    neptune_cbk = NeptuneCallback(run=run, base_namespace='training')
 
     ##Train model
     logger.info('Start training heads')
