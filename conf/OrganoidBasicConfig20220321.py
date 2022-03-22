@@ -12,7 +12,7 @@ class TrainConfig(Config):
     '''
     ## MASK RCNN specific Config
     # Give the configuration a recognizable name
-    NAME = 'ORGANOIDS'
+    NAME = 'ORGANOID-BASIC'
 
     # Backbone
     BACKBONE = 'resnet101'
