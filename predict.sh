@@ -48,7 +48,7 @@ fi
  
 ## Track
 if [ "$TRACK" = true ] ; then
-    python track.py $SLURM_JOB_ID $FOLDER
+    python track.py $SLURM_JOB_ID $CONFIG $FOLDER
 fi
 
 conda deactivate

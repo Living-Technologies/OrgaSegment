@@ -53,10 +53,10 @@ if os.path.isdir(input_dir) == False:
 else:
     input_dir=os.path.join(input_dir, '')
     logger.info(f'Input dir: {input_dir}')
-    output_dir=os.path.join(input_dir, 'orgasegment', '')
+    output_dir=os.path.join(input_dir, config.MODEL_NAME, '')
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     logger.info(f'Output dir: {output_dir}')
-    preview_dir=os.path.join(input_dir, 'orgasegment', 'preview', '')
+    preview_dir=os.path.join(input_dir, config.MODEL_NAME, 'preview', '')
     Path(preview_dir).mkdir(parents=True, exist_ok=True)
     logger.info(f'Preview dir: {preview_dir}')
 

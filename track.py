@@ -12,17 +12,25 @@ import trackpy as tp
 import re
 import os
 import json
+import importlib
 
 #Get Job ID
 job_id=sys.argv[1]
 
+#Get config
+config_path=sys.argv[2]
+spec = importlib.util.spec_from_file_location('PredictConfig', config_path)
+modulevar = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(modulevar)
+config = modulevar.PredictConfig()
+
 #Data folder
-data_dir=sys.argv[2]
+data_dir=sys.argv[3]
 if os.path.isdir(data_dir) == False:
             logger.error(f'Incorrect data path specified: {data_dir}')
             exit(1)
 else:
-    data_dir=os.path.join(data_dir, 'orgasegment', '')
+    data_dir=os.path.join(data_dir, config.MODEL_NAME, '')
     logger.info(f'Data dir: {data_dir}')
 
 def main():
