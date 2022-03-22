@@ -68,10 +68,10 @@ def main():
 
     data_val = OrganoidDataset()
     data_val.load_data(config.VAL_DIR,
-                      config.CLASSES,
-                      config.IMAGE_FILTER,
-                      config.MASK_FILTER,
-                      config.COLOR_MODE)
+                       config.CLASSES,
+                       config.IMAGE_FILTER,
+                       config.MASK_FILTER,
+                       config.COLOR_MODE)
     data_val.prepare()
 
     #Compile model
@@ -84,17 +84,17 @@ def main():
     #Update log_dir
     global log_dir
     log_dir = model.log_dir
-    model_name = os.path.basename(log_dir)
+    name = os.path.basename(log_dir)
 
     #Create neptune logger
     load_dotenv()
     run = neptune.init(project=os.getenv('NEPTUNE_PROJECT'),
                        api_token=os.getenv('NEPTUNE_APIKEY'),
-                       name = model_name,
-                       custom_run_id = model_name)
+                       name = name)
     parameters = config_to_dict(config)
-    parameters['MODEL'] = model_name
+    parameters['MODEL'] = name
     run['parameters'] = parameters
+    run["sys/tags"].add(['train'])
     neptune_cbk = NeptuneCallback(run=run, base_namespace='training')
 
     ##Train model

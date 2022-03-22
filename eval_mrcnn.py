@@ -82,19 +82,21 @@ def main():
         model.load_weights(model_name, by_name=True)
         logger.info(f'Model loaded: {model_name}')
     
+    #Update log_dir
+    global log_dir
+    log_dir = model.log_dir
+    name = os.path.basename(log_dir)
+
     #Create neptune logger
     load_dotenv()
     run = neptune.init(project=os.getenv('NEPTUNE_PROJECT'),
                        api_token=os.getenv('NEPTUNE_APIKEY'),
-                       name = model_name,
-                       custom_run_id = model_name)
+                       name = name)
     parameters = config_to_dict(config)
-    parameters['MODEL'] = model_name        
+    parameters['MODEL'] = name        
     run['parameters'] = parameters
+    run["sys/tags"].add(['evaluate'])
 
-    #Update log_dir
-    global log_dir
-    log_dir = model.log_dir
 
     #Create empty data frame for results
     evaluation =  pd.DataFrame({'image': pd.Series([], dtype='str'),
