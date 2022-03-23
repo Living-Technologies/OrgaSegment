@@ -154,22 +154,22 @@ def main():
                 run[f'eval/images/ID_{i}'] = data_eval.info(i)['path']
                 #AP
                 run[f'eval/class_name={class_name}/ID_{i}/ap'].log(value=ap[t], step=round(config.AP_THRESHOLDS[t], 2))
-                run[f'eval/class_name={class_name}/ID_{i}/ap/{round(config.AP_THRESHOLDS[t], 2)}'] = ap[t]
+                run[f'eval/class_name={class_name}/ID_{i}/ap@{round(config.AP_THRESHOLDS[t], 2)}'] = ap[t]
                 #TP
                 run[f'eval/class_name={class_name}/ID_{i}/tp'].log(value=tp[t], step=round(config.AP_THRESHOLDS[t], 2))
-                run[f'eval/class_name={class_name}/ID_{i}/tp/{round(config.AP_THRESHOLDS[t], 2)}'] = tp[t]
+                run[f'eval/class_name={class_name}/ID_{i}/tp@{round(config.AP_THRESHOLDS[t], 2)}'] = tp[t]
                 #FP
                 run[f'eval/class_name={class_name}/ID_{i}/fp'].log(value=fp[t], step=round(config.AP_THRESHOLDS[t], 2))
-                run[f'eval/class_name={class_name}/ID_{i}/fp/{round(config.AP_THRESHOLDS[t], 2)}'] = fp[t]
+                run[f'eval/class_name={class_name}/ID_{i}/fp@{round(config.AP_THRESHOLDS[t], 2)}'] = fp[t]
                 #FN
                 run[f'eval/class_name={class_name}/ID_{i}/fn'].log(value=fn[t], step=round(config.AP_THRESHOLDS[t], 2))
-                run[f'eval/class_name={class_name}/ID_{i}/fn/{round(config.AP_THRESHOLDS[t], 2)}'] = fn[t]
+                run[f'eval/class_name={class_name}/ID_{i}/fn@{round(config.AP_THRESHOLDS[t], 2)}'] = fn[t]
 
  
     summary = evaluation.groupby(['class_name', 'threshold'], as_index=False)['ap'].mean()
     for i in range(len(summary)):
         run[f'eval/class_name={summary["class_name"][i]}/mAP'].log(value=summary['ap'][i], step=summary['threshold'][i])
-        run[f'eval/class_name={summary["class_name"][i]}/mAP/{summary["threshold"][i]}'] = summary['ap'][i]
+        run[f'eval/class_name={summary["class_name"][i]}/mAP@{summary["threshold"][i]}'] = summary['ap'][i]
 
     #Save results
     evaluation.to_csv(model_name.replace('.h5', '_evaluation.csv'), index=False)
