@@ -138,7 +138,7 @@ def main():
             ap, tp, fp, fn = average_precision(gt, p, config.AP_THRESHOLDS)
         
             #Combine information
-            for t in range(config.AP_THRESHOLDS):
+            for t in range(config.AP_THRESHOLDS.size):
                 info = {'image': data_eval.info(i)['path'],
                         'class': class_id,
                         'threshold': round(config.AP_THRESHOLDS[t], 2),
