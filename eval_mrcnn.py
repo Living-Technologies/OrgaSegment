@@ -100,7 +100,8 @@ def main():
 
     #Create empty data frame for results
     evaluation =  pd.DataFrame({'image': pd.Series([], dtype='str'),
-                                'class': pd.Series([], dtype=np.double),
+                                'class_id': pd.Series([], dtype=np.double),
+                                'class_name': pd.Series([], dtype='str'),
                                 'threshold': pd.Series([], dtype=np.double),
                                 'ap': pd.Series([], dtype=np.double),
                                 'tp': pd.Series([], dtype=np.double),
@@ -119,6 +120,7 @@ def main():
         r = results[0]
         
         for class_id in list(set(gt_class_id)):
+            class_name = config.CLASSES[class_id - 1]
             #Get gt per class id
             gt_indices = [i for i, u in enumerate(gt_class_id) if u == class_id] #get gt indices where label is equal to i
             gt = [gt_mask[:,:,i] for i in gt_indices] #get gt masks where label is equal to i
@@ -140,7 +142,8 @@ def main():
             #Combine information
             for t in range(config.AP_THRESHOLDS.size):
                 info = {'image': data_eval.info(i)['path'],
-                        'class': class_id,
+                        'class_id': class_id,
+                        'class_name': class_name,
                         'threshold': round(config.AP_THRESHOLDS[t], 2),
                         'ap': ap[t],
                         'tp': tp[t],
@@ -149,14 +152,14 @@ def main():
                 evaluation = evaluation.append(info, ignore_index=True)
 
                 run[f'eval/ID_{i}/image'] = data_eval.info(i)['path']
-                run[f'eval/ID_{i}/class_{class_id}/ap@{round(config.AP_THRESHOLDS[t], 2)}'] = ap[t]
-                run[f'eval/ID_{i}/class_{class_id}/tp@{round(config.AP_THRESHOLDS[t], 2)}'] = tp[t]
-                run[f'eval/ID_{i}/class_{class_id}/fp@{round(config.AP_THRESHOLDS[t], 2)}'] = fp[t]
-                run[f'eval/ID_{i}/class_{class_id}/fn@{round(config.AP_THRESHOLDS[t], 2)}'] = fn[t]
-
-    summary = evaluation.groupby(['class', 'threshold'], as_index=False)['ap'].mean()
+                neptune.log_metric(name=f'eval/class_name={class_name}/ID_{i}/ap', x=round(config.AP_THRESHOLDS[t], 2), y=ap[t])
+                neptune.log_metric(name=f'eval/class_name={class_name}/ID_{i}/tp', x=round(config.AP_THRESHOLDS[t], 2), y=tp[t])
+                neptune.log_metric(name=f'eval/class_name={class_name}/ID_{i}/fp', x=round(config.AP_THRESHOLDS[t], 2), y=fp[t])
+                neptune.log_metric(name=f'eval/class_name={class_name}/ID_{i}/fn', x=round(config.AP_THRESHOLDS[t], 2), y=fn[t])
+ 
+    summary = evaluation.groupby(['class_name', 'threshold'], as_index=False)['ap'].mean()
     for i in range(len(summary)):
-        run[f'eval/mAP/class_{summary["class"][i]}/mAP@{summary["threshold"][i]}']  = summary['ap'][i]
+        neptune.log_metric(name=f'eval/class_name={summary["class_name"][i]}/mAP', x=summary['threshold'][i], y=ap[i])
 
     #Save results
     evaluation.to_csv(model_name.replace('.h5', '_evaluation.csv'), index=False)
