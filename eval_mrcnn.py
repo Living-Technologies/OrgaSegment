@@ -152,10 +152,19 @@ def main():
                 evaluation = evaluation.append(info, ignore_index=True)
 
                 run[f'eval/ID_{i}/image'] = data_eval.info(i)['path']
-                neptune.log_metric(name=f'eval/class_name={class_name}/ID_{i}/ap', x=round(config.AP_THRESHOLDS[t], 2), y=ap[t])
-                neptune.log_metric(name=f'eval/class_name={class_name}/ID_{i}/tp', x=round(config.AP_THRESHOLDS[t], 2), y=tp[t])
-                neptune.log_metric(name=f'eval/class_name={class_name}/ID_{i}/fp', x=round(config.AP_THRESHOLDS[t], 2), y=fp[t])
-                neptune.log_metric(name=f'eval/class_name={class_name}/ID_{i}/fn', x=round(config.AP_THRESHOLDS[t], 2), y=fn[t])
+                #AP
+                run[f'eval/class_name={class_name}/ID_{i}/ap'].log(value=ap[t], step=round(config.AP_THRESHOLDS[t], 2))
+                run[f'eval/ID_{i}/class_name={class_name}/ID_{i}/ap/{round(config.AP_THRESHOLDS[t], 2)}'] = ap[t]
+                #TP
+                run[f'eval/class_name={class_name}/ID_{i}/tp'].log(value=tp[t], step=round(config.AP_THRESHOLDS[t], 2))
+                run[f'eval/ID_{i}/class_name={class_name}/ID_{i}/tp/{round(config.AP_THRESHOLDS[t], 2)}'] = tp[t]
+                #FP
+                run[f'eval/class_name={class_name}/ID_{i}/fp'].log(value=fp[t], step=round(config.AP_THRESHOLDS[t], 2))
+                run[f'eval/ID_{i}/class_name={class_name}/ID_{i}/fp/{round(config.AP_THRESHOLDS[t], 2)}'] = fp[t]
+                #FN
+                run[f'eval/class_name={class_name}/ID_{i}/fn'].log(value=fn[t], step=round(config.AP_THRESHOLDS[t], 2))
+                run[f'eval/ID_{i}/class_name={class_name}/ID_{i}/fn/{round(config.AP_THRESHOLDS[t], 2)}'] = fn[t]
+
  
     summary = evaluation.groupby(['class_name', 'threshold'], as_index=False)['ap'].mean()
     for i in range(len(summary)):
