@@ -8,7 +8,7 @@ logger = logging.getLogger(__file__)
 import mrcnn.model as modellib
 
 #Import OrgaSegment functions
-from lib import get_image_names, mask_projection
+from lib import get_image_names, mask_projection, config_to_dict
 import importlib
 
 #Import other packages
