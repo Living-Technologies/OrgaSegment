@@ -74,7 +74,8 @@ def main():
                        api_token=os.getenv('NEPTUNE_APIKEY'),
                        name = config.MODEL_NAME)
     parameters = config_to_dict(config)
-    parameters['MODEL'] = config.MODEL_NAME       
+    parameters['MODEL'] = config.MODEL_NAME   
+    parameters['INPUT_FOLDER'] = input_dir     
     run['parameters'] = parameters
     run['sys/tags'].add(['predict'])
     run['dataset/predict/input'].track_files(input_dir)
@@ -142,6 +143,7 @@ def main():
             #Combine image and mask and create preview
             combined = label2rgb(mask, imread(i), bg_label = 0)
             imsave(preview_path, combined)
+            run['predictions'].log(neptune.types.File(preview_path))
 
             #Process predictions
             for count, l in enumerate(unique_class_ids):
@@ -167,6 +169,7 @@ def main():
     results.to_csv(f'{output_dir}results.csv', index=False)
 
     run['predictions'].track_files(f'{output_dir}results.csv')
+    run['predictions'].log(neptune.types.File(f'{output_dir}results.csv'))
     run['dataset/predict/output'].track_files(output_dir)
     run.stop()
         
