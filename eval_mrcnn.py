@@ -95,7 +95,8 @@ def main():
     parameters = config_to_dict(config)
     parameters['MODEL'] = name        
     run['parameters'] = parameters
-    run["sys/tags"].add(['evaluate'])
+    run['sys/tags'].add(['evaluate'])
+    run['dataset/test'].track_files(config.EVAL_DIR)
 
 
     #Create empty data frame for results

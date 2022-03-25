@@ -94,7 +94,9 @@ def main():
     parameters = config_to_dict(config)
     parameters['MODEL'] = name
     run['parameters'] = parameters
-    run["sys/tags"].add(['train'])
+    run['sys/tags'].add(['train'])
+    run['dataset/train'].track_files(config.TRAIN_DIR)
+    run['dataset/test'].track_files(config.VAL_DIR)
     neptune_cbk = NeptuneCallback(run=run, base_namespace='training')
 
     ##Train model
@@ -116,6 +118,8 @@ def main():
                 workers=config.WORKERS,
                 use_multiprocessing=config.MULTIPROCESSING)
 
+    run['model'].track_files(model.find_last())
+    
     run.stop()
 
 if __name__ == "__main__":

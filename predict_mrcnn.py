@@ -64,6 +64,17 @@ def main():
     #Get config, display and save config
     logger.info(config.display())
 
+    #Create neptune logger
+    load_dotenv()
+    run = neptune.init(project=os.getenv('NEPTUNE_PROJECT'),
+                       api_token=os.getenv('NEPTUNE_APIKEY'),
+                       name = config.MODEL_NAME)
+    parameters = config_to_dict(config)
+    parameters['MODEL'] = config.MODEL_NAME       
+    run['parameters'] = parameters
+    run['sys/tags'].add(['predict'])
+    run['dataset/predict/input'].track_files(input_dir)
+
     #Get data
     logger.info('Get image names')
     images = get_image_names(input_dir, '_masks')
@@ -150,6 +161,10 @@ def main():
 
     #Save results
     results.to_csv(f'{output_dir}results.csv', index=False)
+
+    run['predictions'].track_files(f'{output_dir}results.csv')
+    run['dataset/predict/output'].track_files(output_dir)
+    run.stop()
         
 if __name__ == "__main__":
     logger.info('Start prediction job...')
