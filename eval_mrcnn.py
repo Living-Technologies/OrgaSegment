@@ -23,7 +23,6 @@ import numpy as np
 #Import Neptune tracking
 from dotenv import load_dotenv
 import neptune.new as neptune
-from neptune.new.integrations.tensorflow_keras import NeptuneCallback
 
 #Set Tensorflow logging
 logger.info(f'Tensorflow version: {tf.__version__}')
@@ -96,7 +95,7 @@ def main():
     parameters['MODEL'] = name        
     run['parameters'] = parameters
     run['sys/tags'].add(['evaluate'])
-    run['dataset/test'].track_files(config.EVAL_DIR)
+    run['dataset/eval'].track_files(config.EVAL_DIR)
 
 
     #Create empty data frame for results

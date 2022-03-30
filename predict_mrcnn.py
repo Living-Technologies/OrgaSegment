@@ -168,7 +168,6 @@ def main():
     #Save results
     results.to_csv(f'{output_dir}results.csv', index=False)
 
-    run['predictions'].track_files(f'{output_dir}results.csv')
     run['predictions'].log(neptune.types.File(f'{output_dir}results.csv'))
     run['dataset/predict/output'].track_files(output_dir)
     run.stop()
