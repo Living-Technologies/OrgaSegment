@@ -11,7 +11,7 @@
 #SBATCH --error=log/JobName.%J.err
 #SBATCH --output=log/JobName.%J.out
 
-ENV=cellpose-organoid
+ENV=OrgaSegment
 
 source ~/.bashrc
 
@@ -26,6 +26,6 @@ conda activate $ENV
 conda info --envs
 
 ## execute cellpose
-python paper/eval-cellpose.py
+python ./paper/eval-cellpose.py
 
 conda deactivate
