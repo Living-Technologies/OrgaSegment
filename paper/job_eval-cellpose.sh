@@ -16,6 +16,7 @@ ENV=cellpose-organoid
 source ~/.bashrc
 
 cd $SLURM_SUBMIT_DIR
+pwd
 
 echo $ENV
 nvidia-smi -q
@@ -25,6 +26,6 @@ conda activate $ENV
 conda info --envs
 
 ## execute cellpose
-python eval-OrgaSegment.py
+python paper/eval-OrgaSegment.py
 
 conda deactivate
