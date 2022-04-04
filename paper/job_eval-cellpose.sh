@@ -26,6 +26,6 @@ conda activate $ENV
 conda info --envs
 
 ## execute cellpose
-python ./paper/eval-cellpose.py
+python eval-cellpose.py
 
 conda deactivate
