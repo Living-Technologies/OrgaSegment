@@ -26,6 +26,6 @@ conda activate $ENV
 conda info --envs
 
 ## execute cellpose
-python paper/eval-OrgaSegment.py
+python paper/eval-cellpose.py
 
 conda deactivate
