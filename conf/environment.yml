@@ -27,3 +27,4 @@ dependencies:
     - opencv-python==4.5.2.54
     - neptune-client==0.15.2
     - neptune-tensorflow-keras==0.9.9
+    - streamlit==1.8.1
