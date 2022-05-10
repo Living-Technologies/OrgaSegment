@@ -24,6 +24,7 @@ dependencies:
   - python-dotenv=0.19.2
   - pip:
     - git+https://github.com/UMCU-BeekmanLab/Mask_RCNN.git@v2.1.2
+    - tensorflow-estimator==1.15.1
     - opencv-python==4.5.2.54
     - neptune-client==0.15.2
     - neptune-tensorflow-keras==0.9.9
