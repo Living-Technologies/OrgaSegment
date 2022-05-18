@@ -148,7 +148,7 @@ def main():
 
             #Save gt and mask
             imsave(f'{output_path}{image_name}_gt_class-{class_id}.png', gt)
-            imsave(f'{output_path}{image_name}_pred_class-{class_id}.png', gt)
+            imsave(f'{output_path}{image_name}_pred_class-{class_id}.png', p)
 
             # Compute AP
             ap, tp, fp, fn = average_precision(gt, p, config.AP_THRESHOLDS)
