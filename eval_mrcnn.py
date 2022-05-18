@@ -17,8 +17,11 @@ import tensorflow as tf
 import sys
 import os
 import shutil
+from skimage.io import imsave
 import pandas as pd
 import numpy as np
+from pathlib import Path
+import re
 
 #Import Neptune tracking
 from dotenv import load_dotenv
@@ -81,6 +84,10 @@ def main():
         model.load_weights(model_name, by_name=True)
         logger.info(f'Model loaded: {model_name}')
     
+    #Create output data folder
+    output_path = re.sub('mask.*\.h5', f'eval/{config.EVAL_DATASET}/', model_name)
+    Path(output_path).mkdir(parents=True, exist_ok=True)
+
     #Update log_dir
     global log_dir
     log_dir = model.log_dir
@@ -114,10 +121,13 @@ def main():
         image, image_meta, gt_class_id, gt_bbox, gt_mask =\
                 modellib.load_image_gt(data_eval, config,
                                        i, use_mini_mask=False)
-        
         # Run object detection
         results = model.detect([image], verbose=1)
         r = results[0]
+
+        #Save  eval image, gt and mask
+        image_name = re.search(f'^{config.EVAL_DIR}(.*){config.IMAGE_FILTER}\..*$', data_eval.info(i)['path']).group(1)
+        imsave(f'{output_path}{image_name}{config.IMAGE_FILTER}.jpg', image)
         
         for class_id in list(set(gt_class_id)):
             class_name = config.CLASSES[class_id - 1]
@@ -135,6 +145,10 @@ def main():
             s_indices = [i for i, u in enumerate(scores) if u >= config.CONFIDENCE_SCORE_THRESHOLD] #get prediction indices where score is higher than thresholds
             p = [p_masks[i] for i in s_indices] #get prediction masks where score is higher than threshold
             p = mask_projection(np.stack(p, axis=-1))
+
+            #Save gt and mask
+            imsave(f'{output_path}{image_name}_gt_class-{class_id}.png', gt)
+            imsave(f'{output_path}{image_name}_pred_class-{class_id}.png', gt)
 
             # Compute AP
             ap, tp, fp, fn = average_precision(gt, p, config.AP_THRESHOLDS)

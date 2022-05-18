@@ -107,7 +107,8 @@ class EvalConfig(TrainConfig):
     IMAGE_RESIZE_MODE = 'none'
 
     #Eval DIR
-    EVAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20211206/eval', '')
+    EVAL_DATASET = '20211206'
+    EVAL_DIR = os.path.join(f'/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/{EVAL_DATASET}/eval', '')
 
     #Thresholds
     CONFIDENCE_SCORE_THRESHOLD = 0.9
