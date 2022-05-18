@@ -186,7 +186,7 @@ def main():
         run[f'eval/class_name={summary["class_name"][i]}/mAP@{summary["threshold"][i]}'] = summary['ap'][i]
 
     #Save results
-    evaluation.to_csv(model_name.replace('.h5', '_evaluation.csv'), index=False)
+    evaluation.to_csv(f'{output_path}{re.search("^.*/(.*)\.h5", model_name).group(1)}_evaluation.csv', index=False)
     
     run.stop()
 
