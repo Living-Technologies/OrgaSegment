@@ -28,11 +28,11 @@ def get_image_names(folder, mask_filter, image_filter=None):
     if image_filter is None:
         image_filter = ''
     
-    image_names.extend(glob.glob(folder + '/*%s.png'%image_filter))
+    #image_names.extend(glob.glob(folder + '/*%s.png'%image_filter)) currenlty only jp(e)g support
     image_names.extend(glob.glob(folder + '/*%s.jpg'%image_filter))
     image_names.extend(glob.glob(folder + '/*%s.jpeg'%image_filter))
-    image_names.extend(glob.glob(folder + '/*%s.tif'%image_filter))
-    image_names.extend(glob.glob(folder + '/*%s.tiff'%image_filter))
+    #image_names.extend(glob.glob(folder + '/*%s.tif'%image_filter)) currenlty only jp(e)g support
+    #image_names.extend(glob.glob(folder + '/*%s.tiff'%image_filter)) currenlty only jp(e)g support
     image_names = natsorted(image_names)
     
     imn = []
@@ -43,7 +43,7 @@ def get_image_names(folder, mask_filter, image_filter=None):
     image_names = imn
 
     if len(image_names)==0:
-        raise ValueError('ERROR: no images in folder')
+        raise ValueError('ERROR: no jp(e)g images in folder')
     
     return image_names
         
@@ -62,8 +62,6 @@ def get_mask_names(folder, mask_filter):
     mask_names.extend(glob.glob(folder + '/*%s.png'%mask_filter))
     mask_names.extend(glob.glob(folder + '/*%s.jpg'%mask_filter))
     mask_names.extend(glob.glob(folder + '/*%s.jpeg'%mask_filter))
-    mask_names.extend(glob.glob(folder + '/*%s.tif'%mask_filter))
-    mask_names.extend(glob.glob(folder + '/*%s.tiff'%mask_filter))
     mask_names = natsorted(mask_names)
 
     if len(mask_names)==0:
