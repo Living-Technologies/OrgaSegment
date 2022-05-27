@@ -17,7 +17,7 @@ import tensorflow as tf
 import sys
 import os
 import shutil
-from skimage.io import imsave
+from skimage.io import imsave, imread
 from skimage.color import label2rgb 
 import pandas as pd
 import numpy as np
@@ -153,7 +153,7 @@ def main():
 
             #Combine image and mask and create preview
             preview_path = f'{output_path}{image_name}_preview_class-{class_id}.jpg'
-            combined = label2rgb(p, np.stack((image,)*3, axis=-1), bg_label = 0)
+            combined = label2rgb(p, imread(data_eval.info(i)['path']), bg_label = 0)
             imsave(preview_path, combined)
             run['preview'].log(neptune.types.File(preview_path))
 
