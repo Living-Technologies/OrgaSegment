@@ -18,6 +18,7 @@ import sys
 import os
 import shutil
 from skimage.io import imsave
+from skimage.color import label2rgb 
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -149,6 +150,12 @@ def main():
             #Save gt and mask
             imsave(f'{output_path}{image_name}_gt_class-{class_id}.png', gt)
             imsave(f'{output_path}{image_name}_pred_class-{class_id}.png', p)
+
+            #Combine image and mask and create preview
+            preview_path = f'{output_path}{image_name}_preview_class-{class_id}.jpg'
+            combined = label2rgb(p, image, bg_label = 0)
+            imsave(preview_path, combined)
+            run['preview'].log(neptune.types.File(preview_path))
 
             # Compute AP
             ap, tp, fp, fn = average_precision(gt, p, config.AP_THRESHOLDS)
