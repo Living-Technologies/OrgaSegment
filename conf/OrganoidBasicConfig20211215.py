@@ -111,7 +111,7 @@ class EvalConfig(TrainConfig):
     EVAL_DIR = os.path.join(f'/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/{EVAL_DATASET}/eval', '')
 
     #Thresholds
-    CONFIDENCE_SCORE_THRESHOLD = 0.9
+    CONFIDENCE_SCORE_THRESHOLD = 0.0
     AP_THRESHOLDS = np.arange(0.5, 1.05, 0.05)
 
 class PredictConfig(TrainConfig):
