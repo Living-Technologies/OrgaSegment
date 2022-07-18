@@ -102,7 +102,10 @@ if st.sidebar.button('Run'):
     #Run on images
     for image_count, i in enumerate(images):
         try:
-            image_name = re.search(f'^{input_dir}\(.*)\..*$', i).group(1)
+            if os.name == 'nt':
+                image_name = re.search(f'^{input_dir}\(.*)\..*$', i).group(1)
+            else: 
+                image_name = re.search(f'^{input_dir}(.*)\..*$', i).group(1)
 
             #Load image
             img = np.asarray(load_img(i, color_mode=st.session_state['model_config'].COLOR_MODE))
