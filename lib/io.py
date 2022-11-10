@@ -28,7 +28,7 @@ def get_image_names(folder, mask_filter, image_filter=None):
     if image_filter is None:
         image_filter = ''
     
-    #image_names.extend(glob.glob(folder + '/*%s.png'%image_filter)) currenlty only jp(e)g support
+    image_names.extend(glob.glob(folder + '/*%s.png'%image_filter))
     image_names.extend(glob.glob(folder + '/*%s.jpg'%image_filter))
     image_names.extend(glob.glob(folder + '/*%s.jpeg'%image_filter))
     #image_names.extend(glob.glob(folder + '/*%s.tif'%image_filter)) currenlty only jp(e)g support
@@ -43,7 +43,7 @@ def get_image_names(folder, mask_filter, image_filter=None):
     image_names = imn
 
     if len(image_names)==0:
-        raise ValueError('ERROR: no jp(e)g images in folder')
+        raise ValueError('ERROR: no jp(e)g or png images in folder')
     
     return image_names
         
