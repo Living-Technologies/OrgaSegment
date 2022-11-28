@@ -190,7 +190,7 @@ if st.sidebar.button('Run'):
         ## Calculate centers and track organoids over time
         results['x'] = (results['x2'] + results['x1']) / 2
         results['y'] = (results['y2'] + results['y1']) / 2
-        results = results.groupby('well').apply(tp.link, search_range=st.session_state['search_range'], memory=st.session_state['memory'], t_column='t').reset_index(drop=True)
+        results = results.groupby('well').apply(tp.link, search_range=int(st.session_state['search_range']), memory=int(st.session_state['memory']), t_column='t').reset_index(drop=True)
         
         #Save results
         results.to_csv(f'{output_dir}tracked.csv', index=False)
