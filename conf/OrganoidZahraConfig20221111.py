@@ -73,8 +73,8 @@ class TrainConfig(Config):
     DETECTION_MAX_INSTANCES = 50
 
     # Steps per epoch and validation steps
-    STEPS_PER_EPOCH = 18 #50 steps_per_epoch = number of train samples//batch_size
-    VALIDATION_STEPS = 3 #validation_steps = number of validation samples//batch_size
+    STEPS_PER_EPOCH = 6 #50 steps_per_epoch = number of train samples//batch_size
+    VALIDATION_STEPS = 2 #validation_steps = number of validation samples//batch_size
 
     #Multiprocessing
     #WORKERS = 1

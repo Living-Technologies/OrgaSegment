@@ -17,6 +17,7 @@ from skimage.io import imread, imsave
 from skimage.color import label2rgb 
 import pandas as pd
 import numpy as np
+import trackpy as tp
 import re
 import os
 from pathlib import Path
@@ -62,12 +63,22 @@ modulevar = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(modulevar)
 st.session_state['model_config'] = modulevar.PredictConfig()
 
+st.sidebar.subheader('Select options')
+st.session_state['predict'] = st.sidebar.checkbox('Predict')
+st.session_state['track'] = st.sidebar.checkbox('Track')
+
 st.sidebar.subheader('Select data folder')
 if st.sidebar.button('Folder Picker'):
     st.session_state['input_dir'] = filedialog.askdirectory(master=root)
 st.sidebar.text_input('Selected folder:', st.session_state['input_dir'])
 
-st.sidebar.subheader('Run model prediction')
+if st.session_state['track']:
+    st.sidebar.subheader('Select track options')
+    st.session_state['regex'] = st.sidebar.text_input('File name regex, correct if needed',  '.*(?P<WELL>[A-Z]{1}[0-9]{1,2}).*t(?P<T>[0-9]{1,2}).*')
+    st.session_state['search_range'] = st.sidebar.text_input('Tracking search range in pixels, correct if needed',  '50')
+    st.session_state['memory'] = st.sidebar.text_input('Tracking search range in pixels, correct if needed',  '0')
+
+st.sidebar.subheader('Run application')
 if st.sidebar.button('Run'):
     progress_bar = st.sidebar.progress(0)
     #Get data
@@ -80,91 +91,111 @@ if st.sidebar.button('Run'):
     preview_dir=os.path.join(input_dir, st.session_state['model'], 'preview', '')
     Path(preview_dir).mkdir(parents=True, exist_ok=True)
 
-    #Load model
-    model = modellib.MaskRCNN(mode='inference', 
-                              config=st.session_state['model_config'],
-                              model_dir='./models')
-    model.load_weights(st.session_state['model_path'], by_name=True)
+    if st.session_state['predict']:
+        #Load model
+        model = modellib.MaskRCNN(mode='inference', 
+                                config=st.session_state['model_config'],
+                                model_dir='./models')
+        model.load_weights(st.session_state['model_path'], by_name=True)
 
-    #Create empty data frame for results
-    results =  pd.DataFrame({'image': pd.Series([], dtype='str'),
-                            'mask': pd.Series([], dtype='str'),
-                            'name': pd.Series([], dtype='str'),
-                            'id': pd.Series([], dtype=np.int16),
-                            'y1':  pd.Series([], dtype=np.int16),
-                            'x1': pd.Series([], dtype=np.int16), 
-                            'y2': pd.Series([], dtype=np.int16), 
-                            'x2': pd.Series([], dtype=np.int16),
-                            'class': pd.Series([], dtype=np.int16),
-                            'score':  pd.Series([], dtype=np.float32),
-                            'size': pd.Series([], dtype=np.int16)})
+        #Create empty data frame for results
+        results =  pd.DataFrame({'image': pd.Series([], dtype='str'),
+                                'mask': pd.Series([], dtype='str'),
+                                'name': pd.Series([], dtype='str'),
+                                'id': pd.Series([], dtype=np.int16),
+                                'y1':  pd.Series([], dtype=np.int16),
+                                'x1': pd.Series([], dtype=np.int16), 
+                                'y2': pd.Series([], dtype=np.int16), 
+                                'x2': pd.Series([], dtype=np.int16),
+                                'class': pd.Series([], dtype=np.int16),
+                                'score':  pd.Series([], dtype=np.float32),
+                                'size': pd.Series([], dtype=np.int16)})
 
-    #Run on images
-    for image_count, i in enumerate(images):
-        try:
-            if os.name == 'nt':
-                image_name = re.search(f'^{input_dir}\(.*)\..*$', i).group(1)
-            else: 
-                image_name = re.search(f'^{input_dir}(.*)\..*$', i).group(1)
+        #Run on images
+        for image_count, i in enumerate(images):
+            try:
+                if os.name == 'nt':
+                    image_name = re.search(f'^{input_dir}\(.*)\..*$', i).group(1)
+                else: 
+                    image_name = re.search(f'^{input_dir}(.*)\..*$', i).group(1)
 
-            #Load image
-            img = np.asarray(load_img(i, color_mode=st.session_state['model_config'].COLOR_MODE))
-            if np.amax(img) >= 255:
-                img = ((img - np.amax(img)) * 255).astype('uint8')
+                #Load image
+                img = np.asarray(load_img(i, color_mode=st.session_state['model_config'].COLOR_MODE))
+                if np.amax(img) >= 255:
+                    img = ((img - np.amax(img)) * 255).astype('uint8')
 
-            if st.session_state['model_config'].COLOR_MODE == 'grayscale':
-                img = img[..., np.newaxis]
+                if st.session_state['model_config'].COLOR_MODE == 'grayscale':
+                    img = img[..., np.newaxis]
 
-            #Predict organoids
-            pred = model.detect([img], verbose=1)
-            p = pred[0]
-            
-            #Process results per class
-            for c in np.unique(p['class_ids']):
-                #Create names
-                mask_name = f'{image_name}_masks_class-{c}.png'
-                mask_path = output_dir + mask_name
-                preview_name = f'{image_name}_preview_class-{c}.jpg'
-                preview_path = preview_dir + preview_name
+                #Predict organoids
+                pred = model.detect([img], verbose=1)
+                p = pred[0]
+                
+                #Process results per class
+                for c in np.unique(p['class_ids']):
+                    #Create names
+                    mask_name = f'{image_name}_masks_class-{c}.png'
+                    mask_path = output_dir + mask_name
+                    preview_name = f'{image_name}_preview_class-{c}.jpg'
+                    preview_path = preview_dir + preview_name
 
-                #Get mask
-                unique_class_ids = (p['class_ids'] == c).nonzero()[0]
-                mask = mask_projection(p['masks'][:,:,unique_class_ids])
+                    #Get mask
+                    unique_class_ids = (p['class_ids'] == c).nonzero()[0]
+                    mask = mask_projection(p['masks'][:,:,unique_class_ids])
 
-                #Save mask
-                imsave(mask_path, mask)
+                    #Save mask
+                    imsave(mask_path, mask)
 
-                #Combine image and mask and create preview
-                combined = label2rgb(mask, imread(i), bg_label = 0)
-                imsave(preview_path, combined)
-                nameLocation.subheader(f'Image: {image_name}')
-                imageLocation.image(combined,use_column_width=True)
+                    #Combine image and mask and create preview
+                    combined = label2rgb(mask, imread(i), bg_label = 0)
+                    imsave(preview_path, combined)
+                    nameLocation.subheader(f'Image: {image_name}')
+                    imageLocation.image(combined,use_column_width=True)
 
-                #Process predictions
-                for count, l in enumerate(unique_class_ids):
-                    #Get mask information
-                    msk = p['masks'][:,:,l].astype(np.uint8)
-                    size = np.sum(msk)
+                    #Process predictions
+                    for count, l in enumerate(unique_class_ids):
+                        #Get mask information
+                        msk = p['masks'][:,:,l].astype(np.uint8)
+                        size = np.sum(msk)
 
-                    #Set all information
-                    info = {'image': i,
-                            'mask': mask_path,
-                            'name': image_name,
-                            'id': count,
-                            'y1': p['rois'][l,0],
-                            'x1': p['rois'][l,1],
-                            'y2': p['rois'][l,2],
-                            'x2': p['rois'][l,3],
-                            'class': p['class_ids'][l],
-                            'score': p['scores'][l],
-                            'size': size}
-                    results = results.append(info, ignore_index=True)
-            progress_bar.progress((image_count+1)/len(images))
-        except:
-            pass
+                        #Set all information
+                        info = {'image': i,
+                                'mask': mask_path,
+                                'name': image_name,
+                                'id': count,
+                                'y1': p['rois'][l,0],
+                                'x1': p['rois'][l,1],
+                                'y2': p['rois'][l,2],
+                                'x2': p['rois'][l,3],
+                                'class': p['class_ids'][l],
+                                'score': p['scores'][l],
+                                'size': size}
+                        results = results.append(info, ignore_index=True)
+                progress_bar.progress((image_count+1)/len(images))
+            except:
+                pass
 
-    #Save results
-    results.to_csv(f'{output_dir}results.csv', index=False)
+        #Save results
+        results.to_csv(f'{output_dir}results.csv', index=False)
+
+    #Track
+    if st.session_state['track']:
+        #Get data
+        results = pd.read_csv(f'{output_dir}results.csv')
+
+        #Enrich data
+        results['well'] = results['name'].apply(lambda x: re.search(st.session_state['regex'], x).group('WELL'))
+        results['t'] = results['name'].apply(lambda x: re.search(st.session_state['regex'], x).group('T'))
+        
+        ## Calculate centers and track organoids over time
+        results['x'] = (results['x2'] + results['x1']) / 2
+        results['y'] = (results['y2'] + results['y1']) / 2
+        results = results.groupby('well').apply(tp.link, search_range=st.session_state['search_range'], memory=st.session_state['memory'], t_column='t').reset_index(drop=True)
+        
+        #Save results
+        results.to_csv(f'{output_dir}tracked.csv', index=False)
+    
     st.sidebar.subheader('Done!')
+
 else:
     st.sidebar.text("Click Run to process all images.")
