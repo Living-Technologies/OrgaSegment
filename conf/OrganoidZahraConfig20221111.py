@@ -72,6 +72,16 @@ class TrainConfig(Config):
     # Max number of final detections per image
     DETECTION_MAX_INSTANCES = 50
 
+    # Learning rate and momentum
+    # The Mask RCNN paper uses lr=0.02, but on TensorFlow it causes
+    # weights to explode. Likely due to differences in optimizer
+    # implementation.
+    LEARNING_RATE = 0.001
+    LEARNING_MOMENTUM = 0.9
+
+    # Weight decay regularization
+    WEIGHT_DECAY = 0.01
+
     # Steps per epoch and validation steps
     STEPS_PER_EPOCH = 6 #50 steps_per_epoch = number of train samples//batch_size
     VALIDATION_STEPS = 2 #validation_steps = number of validation samples//batch_size
