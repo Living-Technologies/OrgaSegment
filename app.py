@@ -76,7 +76,7 @@ if st.session_state['track']:
     st.sidebar.subheader('Select track options')
     st.session_state['regex'] = st.sidebar.text_input('File name regex, correct if needed',  '.*(?P<WELL>[A-Z]{1}[0-9]{1,2}).*t(?P<T>[0-9]{1,2}).*')
     st.session_state['search_range'] = st.sidebar.text_input('Tracking search range in pixels, correct if needed',  '50')
-    st.session_state['memory'] = st.sidebar.text_input('Tracking search range in pixels, correct if needed',  '0')
+    st.session_state['memory'] = st.sidebar.text_input('Memory: the maximum number of frames duing which an organoid can vanisch, then reappear within the search range, and be considered the same organoid. Correct if needed',  '0')
 
 st.sidebar.subheader('Run application')
 if st.sidebar.button('Run'):
