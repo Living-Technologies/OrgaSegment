@@ -27,7 +27,7 @@ class TrainConfig(Config):
     EPOCHS_ALL_LAYERS = 500
 
     # Number of classes (including background)
-    NUM_CLASSES = 1 + 4  # background + 4 classes
+    NUM_CLASSES = 1 + 3  # background + 4 classes
 
     # Input image resizing
     # Random crops of size 512x512
@@ -57,10 +57,10 @@ class TrainConfig(Config):
     MEAN_PIXEL = np.array([0])
 
     # RPN ANCHOR scales
-    RPN_ANCHOR_SCALES = (16, 32, 64, 128, 256)
+    RPN_ANCHOR_SCALES = (8, 16, 32, 64, 128)
     
     # TRAIN ROIS PER IMAGE
-    TRAIN_ROIS_PER_IMAGE = 100
+    TRAIN_ROIS_PER_IMAGE = 128
 
     # If enabled, resizes instance masks to a smaller size to reduce
     # memory load. Recommended when using high-resolution images.
@@ -68,9 +68,9 @@ class TrainConfig(Config):
     MINI_MASK_SHAPE = (64,64)
 
     # Maximum number of ground truth instances to use in one image
-    MAX_GT_INSTANCES = 50
+    MAX_GT_INSTANCES = 200
     # Max number of final detections per image
-    DETECTION_MAX_INSTANCES = 50
+    DETECTION_MAX_INSTANCES = 400
 
     # Steps per epoch and validation steps
     STEPS_PER_EPOCH = 50 #steps_per_epoch = number of train samples//batch_size
@@ -85,7 +85,7 @@ class TrainConfig(Config):
     TRAIN_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20230131/train', '')
     VAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20230131/val', '')
     MODEL_DIR = os.path.join('/hpc/umc_beekman/orgasegment/models/', '')
-    PRETRAINED_WEIGHTS = '/hpc/umc_beekman/orgasegment/models/organoids20211215T1200/mask_rcnn_organoids_epoch0500_final.h5'
+    PRETRAINED_WEIGHTS = '/hpc/umc_beekman/orgasegment/models/coco/mask_rcnn_coco.h5'
     EXCLUDE_LAYERS = ['conv1', 'mrcnn_class_logits', 'mrcnn_bbox_fc', 'mrcnn_bbox', 'mrcnn_mask']
     IMAGE_FILTER = '_img'
     MASK_FILTER = '_masks_'
