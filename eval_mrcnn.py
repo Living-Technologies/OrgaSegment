@@ -119,14 +119,17 @@ def main():
     # Compute Average Precisions based on Cellpose paper
     for i in data_eval.image_ids:
         # Load image and ground truth data
+        logger.info(f'Load image {i}')
         image, image_meta, gt_class_id, gt_bbox, gt_mask =\
                 modellib.load_image_gt(data_eval, config,
                                        i, use_mini_mask=False)
         # Run object detection
+        logger.info(f'Run object detection for image {i}')
         results = model.detect([image], verbose=1)
         r = results[0]
 
         #Save  eval image, gt and mask
+        logger.info(f'Save output for image {i}')
         image_name = re.search(f'^{config.EVAL_DIR}(.*){config.IMAGE_FILTER}\..*$', data_eval.info(i)['path']).group(1)
         imsave(f'{output_path}{image_name}{config.IMAGE_FILTER}.jpg', image)
         
