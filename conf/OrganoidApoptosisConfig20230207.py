@@ -85,9 +85,9 @@ class TrainConfig(Config):
     # Loss weights for more precise optimization.
     # Can be used for R-CNN training setup.
     LOSS_WEIGHTS = {
-        "rpn_class_loss": 2.,
+        "rpn_class_loss": 5.,
         "rpn_bbox_loss": 1.,
-        "mrcnn_class_loss": 2.,
+        "mrcnn_class_loss": 5.,
         "mrcnn_bbox_loss": 1.,
         "mrcnn_mask_loss": 1.
     }
