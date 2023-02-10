@@ -107,7 +107,8 @@ def main():
                 layers='heads',
                 custom_callbacks=[neptune_cbk],
                 workers=config.WORKERS,
-                use_multiprocessing=config.MULTIPROCESSING)
+                use_multiprocessing=config.MULTIPROCESSING,
+                class_weight=config.CLASS_WEIGHTS)
 
     logger.info('Start training all layers')
     model.train(data_train, data_val, 
@@ -116,7 +117,8 @@ def main():
                 layers='all',
                 custom_callbacks=[neptune_cbk],
                 workers=config.WORKERS,
-                use_multiprocessing=config.MULTIPROCESSING)
+                use_multiprocessing=config.MULTIPROCESSING,
+                class_weight=config.CLASS_WEIGHTS)
 
     run['model'].track_files(model.find_last())
     
