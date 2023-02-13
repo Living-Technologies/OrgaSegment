@@ -110,7 +110,7 @@ class TrainConfig(Config):
     IMAGE_FILTER = '_img'
     MASK_FILTER = '_masks_'
     CLASSES = ['alive', 'dead', 'intermediate'] #, 'junk']
-    CLASS_WEIGHTS = [1, 1, 3] #Default = CLASS_WEIGHTS = None
+    CLASS_WEIGHTS = {1: 1.0, 2: 1.0, 3: 3.0} #Default = CLASS_WEIGHTS = None
     COLOR_MODE = 'grayscale'
     # COLOR_MODE = 'rgb'
     EVAL_IOU = 0.75
