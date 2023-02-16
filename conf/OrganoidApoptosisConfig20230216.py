@@ -19,7 +19,7 @@ class TrainConfig(Config):
     
     # Number of GPU, images per GPU and batchsize
     GPU_COUNT = 4
-    IMAGES_PER_GPU = 1
+    IMAGES_PER_GPU = 2
     BATCHSIZE = GPU_COUNT * IMAGES_PER_GPU
 
     #Epochs
@@ -93,8 +93,8 @@ class TrainConfig(Config):
     }
 
     # Steps per epoch and validation steps
-    STEPS_PER_EPOCH = 39 #steps_per_epoch = number of train samples//batch_size
-    VALIDATION_STEPS = 7 #validation_steps = number of validation samples//batch_size
+    STEPS_PER_EPOCH = 20 #steps_per_epoch = number of train samples//batch_size
+    VALIDATION_STEPS = 4 #validation_steps = number of validation samples//batch_size
 
     #Multiprocessing
     #WORKERS = 1
