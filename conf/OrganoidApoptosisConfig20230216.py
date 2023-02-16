@@ -32,8 +32,8 @@ class TrainConfig(Config):
     # Input image resizing
     # Random crops of size 512x512
     IMAGE_RESIZE_MODE = 'crop'
-    IMAGE_MIN_DIM = 1024
-    IMAGE_MAX_DIM = 1024
+    IMAGE_MIN_DIM = 512
+    IMAGE_MAX_DIM = 512
     IMAGE_MIN_SCALE = 0
 
     #Grayscale channel count
@@ -76,7 +76,7 @@ class TrainConfig(Config):
     # The Mask RCNN paper uses lr=0.02, but on TensorFlow it causes
     # weights to explode. Likely due to differences in optimizer
     # implementation.
-    LEARNING_RATE = 0.01 # MASSK-RCCN DEFAULT = 0.001
+    LEARNING_RATE = 0.001 # MASSK-RCCN DEFAULT = 0.001
     LEARNING_MOMENTUM = 0.9
 
     # Weight decay regularization
@@ -85,9 +85,9 @@ class TrainConfig(Config):
     # Loss weights for more precise optimization.
     # Can be used for R-CNN training setup.
     LOSS_WEIGHTS = {
-        "rpn_class_loss": 5.,
+        "rpn_class_loss": 1.,
         "rpn_bbox_loss": 1.,
-        "mrcnn_class_loss": 5.,
+        "mrcnn_class_loss": 1.,
         "mrcnn_bbox_loss": 1.,
         "mrcnn_mask_loss": 1.
     }
@@ -105,12 +105,13 @@ class TrainConfig(Config):
     TRAIN_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20230206/train', '')
     VAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid-apoptosis_labels/datasets/20230206/val', '')
     MODEL_DIR = os.path.join('/hpc/umc_beekman/orgasegment/models/', '')
-    PRETRAINED_WEIGHTS = '/hpc/umc_beekman/orgasegment/models/organoids20211215T1200/mask_rcnn_organoids_epoch0500_final.h5'
+    #PRETRAINED_WEIGHTS = '/hpc/umc_beekman/orgasegment/models/organoids20211215T1200/mask_rcnn_organoids_epoch0500_final.h5'
+    PRETRAINED_WEIGHTS = '/hpc/umc_beekman/orgasegment/models/coco/mask_rcnn_coco.h5'
     EXCLUDE_LAYERS = ['conv1', 'mrcnn_class_logits', 'mrcnn_bbox_fc', 'mrcnn_bbox', 'mrcnn_mask']
     IMAGE_FILTER = '_img'
     MASK_FILTER = '_masks_'
     CLASSES = ['alive', 'dead', 'intermediate'] #, 'junk']
-    CLASS_WEIGHTS = {1: 1.0, 2: 1.0, 3: 3.0} #Default = CLASS_WEIGHTS = None
+    CLASS_WEIGHTS = {1: 1.0, 2: 1.0, 3: 5.0} #Default = CLASS_WEIGHTS = None
     COLOR_MODE = 'grayscale'
     # COLOR_MODE = 'rgb'
     EVAL_IOU = 0.75
