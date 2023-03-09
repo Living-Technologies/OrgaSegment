@@ -151,6 +151,6 @@ class PredictConfig(TrainConfig):
 
     # OrgaSegment specific config
     MODEL_DIR = '/hpc/umc_beekman/orgasegment/models/'
-    MODEL_NAME = 'organoid-apoptosis20230301T1105'
+    MODEL_NAME = 'organoid-apoptosis20230308T1442'
     MODEL = '/hpc/umc_beekman/orgasegment/models/' + MODEL_NAME + '/mask_rcnn_organoid-apoptosis_0500.h5'
     COLOR_MODE = 'grayscale'
