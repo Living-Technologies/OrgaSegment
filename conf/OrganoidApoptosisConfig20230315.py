@@ -148,6 +148,7 @@ class PredictConfig(TrainConfig):
 
     # Input image resizing
     IMAGE_RESIZE_MODE = 'pad64'
+    USE_MINI_MASK = False
 
     # OrgaSegment specific config
     MODEL_DIR = '/hpc/umc_beekman/orgasegment/models/'
