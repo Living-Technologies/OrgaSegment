@@ -17,7 +17,7 @@ import tensorflow as tf
 import sys
 import shutil
 from skimage.io import imread, imsave
-from skimage.color import label2rgb 
+from skimage.color import label2rgb, gray2rgb 
 import pandas as pd
 import numpy as np
 import re
@@ -130,7 +130,7 @@ def main():
         preview_name = f'{image_name}_preview.png'
         preview_path = preview_dir + preview_name
 
-        preview = visualize.display_instances(img, p['rois'], p['masks'], p['class_ids'], 
+        preview = visualize.display_instances(gray2rgb(img), p['rois'], p['masks'], p['class_ids'], 
                                               config.CLASSES, p['scores'], show=False)
         preview.savefig(preview_path)
 
