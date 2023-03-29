@@ -6,6 +6,7 @@ logger = logging.getLogger(__file__)
 
 #Import Mask RCNN packages
 import mrcnn.model as modellib
+from mrcnn import visualize
 
 #Import OrgaSegment functions
 from lib import get_image_names, mask_projection, config_to_dict
@@ -125,13 +126,21 @@ def main():
         pred = model.detect([img], verbose=1)
         p = pred[0]
 
+        #Save a preview
+        preview_name = f'{image_name}_preview.png'
+        preview_path = preview_dir + preview_name
+
+        preview = visualize.display_instances(img, p['rois'], p['masks'], p['class_ids'], 
+                                              config.CLASSES, p['scores'], show=False)
+        preview.savefig(preview_path)
+
         #Process results per class
         for c in np.unique(p['class_ids']):
             #Create names
             mask_name = f'{image_name}_masks_class-{c}.png'
             mask_path = output_dir + mask_name
-            preview_name = f'{image_name}_preview_class-{c}.jpg'
-            preview_path = preview_dir + preview_name
+            #preview_name = f'{image_name}_preview_class-{c}.jpg'
+            #preview_path = preview_dir + preview_name
 
             #Get mask
             unique_class_ids = (p['class_ids'] == c).nonzero()[0]
@@ -141,9 +150,9 @@ def main():
             imsave(mask_path, mask)
 
             #Combine image and mask and create preview
-            combined = label2rgb(mask, imread(i), bg_label = 0)
-            imsave(preview_path, combined)
-            run['predictions'].log(neptune.types.File(preview_path))
+            #combined = label2rgb(mask, imread(i), bg_label = 0)
+            #imsave(preview_path, combined)
+            #run['predictions'].log(neptune.types.File(preview_path))
 
             #Process predictions
             for count, l in enumerate(unique_class_ids):
