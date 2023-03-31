@@ -131,12 +131,14 @@ def main():
         preview_path = preview_dir + preview_name
 
         img_preview = np.asarray(load_img(i, color_mode='rgb'))
+        classes_preview = config.CLASSES
+        classes_preview.insert(0, 'BG')
 
         logger.info(f'Class ids: {p["class_ids"]}')
-        logger.info(f'Class names: {config.CLASSES.insert(0, "BG")}')
+        logger.info(f'Class names: {classes_preview}')
 
         preview = visualize.display_instances(img_preview, p['rois'], p['masks'], p['class_ids'], 
-                                              config.CLASSES.insert(0, 'BG'), p['scores'], show=False)
+                                              classes_preview, p['scores'], show=False)
 
         # preview = visualize.display_instances(gray2rgb(img), p['rois'], p['masks'], p['class_ids'], 
         #                                       config.CLASSES, p['scores'], show=False)
