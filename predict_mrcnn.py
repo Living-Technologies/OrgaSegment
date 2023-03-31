@@ -130,13 +130,18 @@ def main():
         preview_name = f'{image_name}_preview.png'
         preview_path = preview_dir + preview_name
 
-        logger.info(f'Img shape: {gray2rgb(img).shape}')
-        logger.info(f'Rois type: {type(p["rois"])}')
-        logger.info(f'Masks type: {type(p["masks"])}')
-        logger.info(f'Class id type: {type(p["class_ids"])}')
+        img_preview = load_img(i, color_mode="rgb")
 
-        preview = visualize.display_instances(gray2rgb(img), p['rois'], p['masks'], p['class_ids'], 
+        logger.info(f'Img shape: {img_preview.shape}')
+        logger.info(f'Rois shape: {p["rois"].shape}')
+        logger.info(f'Masks shape: {p["masks"].shape}')
+        logger.info(f'Class id shape: {p["class_ids"].shape}')
+
+        preview = visualize.display_instances(img_preview, p['rois'], p['masks'], p['class_ids'], 
                                               config.CLASSES, p['scores'], show=False)
+
+        # preview = visualize.display_instances(gray2rgb(img), p['rois'], p['masks'], p['class_ids'], 
+        #                                       config.CLASSES, p['scores'], show=False)
         preview.savefig(preview_path)
 
         #Process results per class
