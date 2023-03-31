@@ -133,10 +133,10 @@ def main():
         img_preview = np.asarray(load_img(i, color_mode='rgb'))
 
         logger.info(f'Class ids: {p["class_ids"]}')
-        logger.info(f'Class names: {config.CLASSES}')
+        logger.info(f'Class names: {config.CLASSES.insert(0, "BG")}')
 
         preview = visualize.display_instances(img_preview, p['rois'], p['masks'], p['class_ids'], 
-                                              config.CLASSES, p['scores'], show=False)
+                                              config.CLASSES.insert(0, 'BG'), p['scores'], show=False)
 
         # preview = visualize.display_instances(gray2rgb(img), p['rois'], p['masks'], p['class_ids'], 
         #                                       config.CLASSES, p['scores'], show=False)
