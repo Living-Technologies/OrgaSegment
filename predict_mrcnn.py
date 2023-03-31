@@ -130,9 +130,9 @@ def main():
         preview_name = f'{image_name}_preview.png'
         preview_path = preview_dir + preview_name
 
-        img_preview = load_img(i, color_mode='rgb')
+        img_preview = np.asarray(load_img(i, color_mode='rgb'))
 
-        logger.info(f'Img type: {type(img_preview)}')
+        logger.info(f'Img shape: {img_preview.shape}')
         logger.info(f'Rois shape: {p["rois"].shape}')
         logger.info(f'Masks shape: {p["masks"].shape}')
         logger.info(f'Class id shape: {p["class_ids"].shape}')
