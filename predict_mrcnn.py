@@ -142,7 +142,7 @@ def main():
 
         # preview = visualize.display_instances(gray2rgb(img), p['rois'], p['masks'], p['class_ids'], 
         #                                       config.CLASSES, p['scores'], show=False)
-        preview.savefig(preview_path)
+        preview.figure.savefig(preview_path)
         run['predictions'].log(neptune.types.File(preview_path))
 
         #Process results per class
