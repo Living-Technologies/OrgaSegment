@@ -132,10 +132,8 @@ def main():
 
         img_preview = np.asarray(load_img(i, color_mode='rgb'))
 
-        logger.info(f'Img shape: {img_preview.shape}')
-        logger.info(f'Rois shape: {p["rois"].shape}')
-        logger.info(f'Masks shape: {p["masks"].shape}')
-        logger.info(f'Class id shape: {p["class_ids"].shape}')
+        logger.info(f'Class ids: {p["class_ids"]}')
+        logger.info(f'Class names: {config.CLASSES}')
 
         preview = visualize.display_instances(img_preview, p['rois'], p['masks'], p['class_ids'], 
                                               config.CLASSES, p['scores'], show=False)
