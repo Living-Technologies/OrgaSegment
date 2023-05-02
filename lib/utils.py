@@ -4,8 +4,6 @@ logger = logging.getLogger(__name__)
 
 #Import
 import numpy as np
-import io
-from PIL import Image
 import matplotlib.pyplot as plt
 from mrcnn.visualize import random_colors, patches, apply_mask, find_contours, Polygon
 
