@@ -100,7 +100,7 @@ def display_preview(image, boxes, masks, class_ids, class_names,
         else:
             caption = captions[i]
         ax.text(x1, y1 + 8, caption,
-                color='b', size=16, backgroundcolor="none")
+                color='black', size=18, backgroundcolor='none')
 
         # Mask
         mask = masks[:, :, i]
