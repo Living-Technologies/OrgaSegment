@@ -9,12 +9,11 @@ import mrcnn.model as modellib
 # import tensorflow as tf
 
 #Import OrgaSegment functions
-from lib import get_image_names, mask_projection
+from lib import get_image_names, mask_projection, display_preview
 import importlib
 
 #Import other packages
-from skimage.io import imread, imsave
-from skimage.color import label2rgb 
+from skimage.io import imsave
 import pandas as pd
 import numpy as np
 import trackpy as tp
@@ -131,13 +130,26 @@ if st.sidebar.button('Run'):
                 pred = model.detect([img], verbose=1)
                 p = pred[0]
                 
+                #Combine image and mask and create preview
+                preview_name = f'{image_name}_preview.png'
+                preview_path = preview_dir + preview_name
+                preview = display_preview(np.asarray(load_img(i, color_mode='rgb')), 
+                                          p['rois'],
+                                          p['masks'], 
+                                          p['class_ids'],  
+                                          st.session_state['model_config'].CLASSES, 
+                                          p['scores'],
+                                          figsize=(40, 40))
+                preview.savefig(preview_path, format='png', dpi=350, bbox_inches='tight', pad_inches=0)
+                
+                nameLocation.subheader(f'Image: {image_name}')
+                imageLocation.image(load_img(preview_path, color_mode='rgb'), use_column_width=True)
+
                 #Process results per class
                 for c in np.unique(p['class_ids']):
                     #Create names
                     mask_name = f'{image_name}_masks_class-{c}.png'
                     mask_path = output_dir + mask_name
-                    preview_name = f'{image_name}_preview_class-{c}.jpg'
-                    preview_path = preview_dir + preview_name
 
                     #Get mask
                     unique_class_ids = (p['class_ids'] == c).nonzero()[0]
@@ -145,12 +157,6 @@ if st.sidebar.button('Run'):
 
                     #Save mask
                     imsave(mask_path, mask)
-
-                    #Combine image and mask and create preview
-                    combined = label2rgb(mask, imread(i), bg_label = 0)
-                    imsave(preview_path, combined)
-                    nameLocation.subheader(f'Image: {image_name}')
-                    imageLocation.image(combined,use_column_width=True)
 
                     #Process predictions
                     for count, l in enumerate(unique_class_ids):
@@ -173,7 +179,7 @@ if st.sidebar.button('Run'):
                         results = results.append(info, ignore_index=True)
                 progress_bar.progress((image_count+1)/len(images))
             except:
-                pass
+               pass
 
         #Save results
         results.to_csv(f'{output_dir}results.csv', index=False)

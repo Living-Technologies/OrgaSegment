@@ -9,7 +9,7 @@ import mrcnn.model as modellib
 from mrcnn import visualize
 
 #Import OrgaSegment functions
-from lib import get_image_names, mask_projection, config_to_dict
+from lib import get_image_names, mask_projection, config_to_dict, display_preview
 import importlib
 
 #Import other packages
@@ -129,20 +129,14 @@ def main():
         #Save a preview
         preview_name = f'{image_name}_preview.png'
         preview_path = preview_dir + preview_name
-
-        img_preview = np.asarray(load_img(i, color_mode='rgb'))
-        classes_preview = config.CLASSES
-        classes_preview.insert(0, 'BG')
-
-        logger.info(f'Class ids: {p["class_ids"]}')
-        logger.info(f'Class names: {classes_preview}')
-
-        preview = visualize.display_instances(img_preview, p['rois'], p['masks'], p['class_ids'], 
-                                              classes_preview, p['scores'], show=False)
-
-        # preview = visualize.display_instances(gray2rgb(img), p['rois'], p['masks'], p['class_ids'], 
-        #                                       config.CLASSES, p['scores'], show=False)
-        preview.figure.savefig(preview_path)
+        preview = display_preview(np.asarray(load_img(i, color_mode='rgb')), 
+                                  p['rois'],
+                                  p['masks'], 
+                                  p['class_ids'],  
+                                  config.CLASSES, 
+                                  p['scores'],
+                                  figsize=(40, 40))
+        preview.savefig(preview_path, format='png', dpi=350, bbox_inches='tight', pad_inches=0)
         run['predictions'].log(neptune.types.File(preview_path))
 
         #Process results per class
@@ -150,8 +144,6 @@ def main():
             #Create names
             mask_name = f'{image_name}_masks_class-{c}.png'
             mask_path = output_dir + mask_name
-            #preview_name = f'{image_name}_preview_class-{c}.jpg'
-            #preview_path = preview_dir + preview_name
 
             #Get mask
             unique_class_ids = (p['class_ids'] == c).nonzero()[0]
@@ -159,11 +151,6 @@ def main():
 
             #Save mask
             imsave(mask_path, mask)
-
-            #Combine image and mask and create preview
-            #combined = label2rgb(mask, imread(i), bg_label = 0)
-            #imsave(preview_path, combined)
-            #run['predictions'].log(neptune.types.File(preview_path))
 
             #Process predictions
             for count, l in enumerate(unique_class_ids):
