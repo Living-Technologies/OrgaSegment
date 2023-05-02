@@ -1,6 +1,7 @@
 .vscode*
 test/*
 log/*
+development.ipynb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
