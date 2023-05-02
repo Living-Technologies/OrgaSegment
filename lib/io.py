@@ -3,8 +3,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Import functions
-import os, glob, io
-from PIL import Image
+import os, glob
 from natsort import natsorted
 import keras
 import numpy as np
