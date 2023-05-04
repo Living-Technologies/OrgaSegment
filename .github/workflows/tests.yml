@@ -28,8 +28,6 @@ jobs:
         activate-environment: test
 
     - name: Install dependencies
-      with:
-        python-version: ${{ matrix.python-version }}
       run: |
         conda env list
         python -m pip install --upgrade pip
