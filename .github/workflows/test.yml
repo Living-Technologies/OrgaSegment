@@ -1,0 +1,42 @@
+name: test
+
+on:
+  push:
+    brnaches:
+      - master
+      - publication
+  pull_request:
+    branches:
+      - master
+      - publication
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os}}
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, windows-latest]
+        python-version: ['3.6']
+
+   steps:
+     - uses: actions/checkout@v3
+
+     - name: Set up Python ${{ matrix.python-version }}
+       uses: actions/setup-python@v4
+       with:
+         python-version: ${{ matrix.python-version }}
+
+     - name: Install dependencies
+       run: |
+         python -m pip install --upgrade pip
+         python -m pip install tox-conda tox-gh-actions
+
+     - name: Test with tox
+       uses: aganders3/headless-gui@v1
+       with:
+         run: python -m tox
+       env:
+         PLATFORM: ${{ matrix.platform }}
+
+     - name: Coverage
+       uses: codecov/codecov-action@v3

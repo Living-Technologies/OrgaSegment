@@ -5,9 +5,6 @@
 #SBATCH --cpus-per-gpu=4
 #SBATCH --time=8-00:00:00
 #SBATCH --mem=320G
-#SBATCH --mail-user=s.vanbeuningen@umcutrecht.nl
-#SBATCH --mail-type=begin
-#SBATCH --mail-type=end
 #SBATCH --error=log/JobName.%J.err
 #SBATCH --output=log/JobName.%J.out
 

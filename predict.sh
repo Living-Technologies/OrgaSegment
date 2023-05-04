@@ -4,9 +4,6 @@
 #SBATCH --gpus-per-node=RTX6000:1
 #SBATCH --time=4-00:00:00
 #SBATCH --mem=96G
-#SBATCH --mail-user=s.vanbeuningen@umcutrecht.nl
-#SBATCH --mail-type=begin
-#SBATCH --mail-type=end
 #SBATCH --error=log/JobName.%J.err
 #SBATCH --output=log/JobName.%J.out
 
