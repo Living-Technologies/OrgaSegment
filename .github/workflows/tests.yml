@@ -26,15 +26,18 @@ jobs:
         auto-update-conda: true
         python-version: ${{ matrix.python-version }}
         activate-environment: test
+        auto-activate-base: false
 
     - name: Install dependencies
+      shell: bash -el {0}
       run: |
-        conda activate test
+        conda info
         conda install tox-conda tox-gh-actions --channel conda-forge
         conda list
     
     - name: Test with tox
+      shell: bash -el {0}
       run: |
-        conda actite test
+        conda info
         conda env list
         tox -vv
