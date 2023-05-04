@@ -32,7 +32,7 @@ jobs:
       shell: bash -el {0}
       run: |
         conda info
-        conda install tox-conda tox-gh-actions --channel conda-forge
+        pip install tox-conda tox-gh-actions
         conda list
     
     - name: Test with tox
