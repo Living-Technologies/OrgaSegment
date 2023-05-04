@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        platform: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest]
         python-version: ['3.6']
 
    steps:
@@ -31,11 +31,4 @@ jobs:
          python -m pip install tox-conda tox-gh-actions
 
      - name: Test with tox
-       uses: aganders3/headless-gui@v1
-       with:
-         run: python -m tox
-       env:
-         PLATFORM: ${{ matrix.platform }}
-
-     - name: Coverage
-       uses: codecov/codecov-action@v3
+       run: tox
