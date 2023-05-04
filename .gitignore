@@ -3,7 +3,6 @@ test/*
 log/*
 dev/*
 conf/misc/*
-paper/*
 conf/tox*
 
 # Byte-compiled / optimized / DLL files
