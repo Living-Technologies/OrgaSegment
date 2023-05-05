@@ -35,7 +35,7 @@ jobs:
     - name: Pylint
       shell: bash -el {0}
       run: |
-        pylint **/*.py" --disable=R,C,E0401 --output-format=colorized
+        pylint **/*.py --disable=R,C,E0401 --output-format=colorized
 
     - name: Conda install
       if: github.ref_name == 'master' || github.ref_name == 'publication'  
