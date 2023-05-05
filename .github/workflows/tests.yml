@@ -43,7 +43,6 @@ jobs:
     - name: Tox Pylint
       shell: bash -el {0}
       run: |
-        conda info
         tox -vv
 
     # - name: Tox Conda Environment
