@@ -1,0 +1,20 @@
+name: lint
+
+on: [push]
+
+jobs:
+  pylint:
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-20.04]
+        python-version: ['3.6']
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Python Pylin GitHub Action
+      uses: fylein/python-pylint-github-action@v1
+      with:
+          args: pylint --rcfile=.pylintrc ./**/*.py
