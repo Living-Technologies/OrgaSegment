@@ -39,10 +39,10 @@ jobs:
       shell: bash -el {0}
       run: |
         conda info
-        tox -vv -e pylint
+        tox -vv
 
-    - name: Tox Conda Environment
-      shell: bash -el {0}
-      run: |
-        conda info
-        tox -vv -e conda
+    # - name: Tox Conda Environment
+    #   shell: bash -el {0}
+    #   run: |
+    #     conda info
+    #     tox -vv -e conda
