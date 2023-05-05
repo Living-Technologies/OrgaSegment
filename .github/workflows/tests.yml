@@ -3,7 +3,7 @@ name: tests
 on: [push]
 
 jobs:
-  pylint:
+  test:
     runs-on: ${{ matrix.platform }}
     strategy:
       fail-fast: false
@@ -35,7 +35,7 @@ jobs:
     - name: Pylint
       shell: bash -el {0}
       run: |
-        git ls-files | grep "\\.py$" | xargs -n 1 -P 3 pylint --disable=R,C --output-format=colorized
+        pylint **/*.py" --disable=R,C,E0401 --output-format=colorized
 
     - name: Conda install
       if: github.ref_name == 'master' || github.ref_name == 'publication'  
