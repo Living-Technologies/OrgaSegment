@@ -21,13 +21,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Conda with Python ${{ matrix.python-version }}
-      uses: conda-incubator/setup-miniconda@v2
+    # - name: Set up Conda with Python ${{ matrix.python-version }}
+    #   uses: conda-incubator/setup-miniconda@v2
+    #   with:
+    #     auto-update-conda: true
+    #     python-version: ${{ matrix.python-version }}
+    #     activate-environment: test
+    #     auto-activate-base: false
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
       with:
-        auto-update-conda: true
         python-version: ${{ matrix.python-version }}
-        activate-environment: test
-        auto-activate-base: false
 
     - name: Install dependencies
       shell: bash -el {0}
