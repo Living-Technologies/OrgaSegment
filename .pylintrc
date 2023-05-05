@@ -1,4 +1,16 @@
-disable=R,C,E0401
-files-output=no
-reports=no
+[MAIN]
+recursive=yes
+
+[MESSAGES CONTROL]
+disable=
+    R,
+    C,
+    E0401,
+
+[REPORTS]
 output-format=colorized
+
+# files-output=no
+# reports=no
+
+#https://github.com/pylint-dev/pylint/blob/main/pylintrc

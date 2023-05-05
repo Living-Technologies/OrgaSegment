@@ -35,7 +35,7 @@ jobs:
     - name: Python Pylin GitHub Action
       uses: fylein/python-pylint-github-action@v1
       with:
-          args: pylint --rcfile=.pylintrc .
+          args: pylint --rcfile=.pylintrc *.py
 
 
     # - name: Pylint
