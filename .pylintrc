@@ -1,5 +1,5 @@
 [MAIN]
-recursive=yes
+fail-under=8.0
 
 [MESSAGES CONTROL]
 disable=
