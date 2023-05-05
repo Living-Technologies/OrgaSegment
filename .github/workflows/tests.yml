@@ -12,10 +12,11 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.platform }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-latest]
+        platform: [ubuntu-20.04, windows-latest]
         python-version: ['3.6']
 
     steps:
@@ -31,13 +32,11 @@ jobs:
     - name: Install dependencies
       shell: bash -el {0}
       run: |
-        conda info
+        python -m pip install --upgrade pip
         pip install tox-conda tox-gh-actions
-        conda list
     
     - name: Test with tox
       shell: bash -el {0}
       run: |
         conda info
-        conda env list
-        tox -vv
+        tox
