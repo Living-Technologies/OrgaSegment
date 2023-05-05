@@ -13,38 +13,41 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Conda with Python ${{ matrix.python-version }}
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        auto-update-conda: true
-        python-version: ${{ matrix.python-version }}
-        activate-environment: test
-        auto-activate-base: false
-
-    # - name: Set up Python ${{ matrix.python-version }}
-    #   uses: actions/setup-python@v4
+    # - name: Set up Conda with Python ${{ matrix.python-version }}
+    #   uses: conda-incubator/setup-miniconda@v2
     #   with:
+    #     auto-update-conda: true
     #     python-version: ${{ matrix.python-version }}
+    #     activate-environment: test
+    #     auto-activate-base: false
 
-    - name: Install dependencies
-      shell: bash -el {0}
-      run: |
-        python -m pip install --upgrade pip
-        pip install pylint
+    # # - name: Set up Python ${{ matrix.python-version }}
+    # #   uses: actions/setup-python@v4
+    # #   with:
+    # #     python-version: ${{ matrix.python-version }}
+
+    # - name: Install dependencies
+    #   shell: bash -el {0}
+    #   run: |
+    #     python -m pip install --upgrade pip
+    #     pip install pylint
     
-    - name: Pylint
-      shell: bash -el {0}
-      run: |
-        pylint **/*.py --disable=R,C,E0401 --output-format=colorized --files-output=no --reports=no
+    - name: Python Pylin GitHub Action
+      uses: fylein/python-pylint-github-action@v1
+      with:
+          args: pylint --rcfile=.pylintrc .
 
-    - name: Conda install
-      if: github.ref_name == 'master' || github.ref_name == 'publication'  
-      shell: bash -el {0}
-      run: |
-        conda info
-        conda env create -f conf/environment.yml
 
-    # - name: Tox Conda Environment
+    # - name: Pylint
+    #   shell: bash -el {0}
+    #   run: |
+    #     pylint . --recursive=y --disable=R,C,E0401 --output-format=colorized --files-output=no --reports=no
+
+    # - name: Conda install
+    #   if: github.ref_name == 'master' || github.ref_name == 'publication'
+    #   args: "pip install -r requirements.txt ; pylint **/*.py"
+
+    # # - name: Tox Conda Environment
     #   shell: bash -el {0}
     #   run: |
     #     conda info
