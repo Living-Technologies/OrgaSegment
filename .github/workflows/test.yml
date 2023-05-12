@@ -29,6 +29,7 @@ jobs:
       uses: mamba-org/provision-with-micromamba@main
       with:
         environment-file: conf/environment.yml
+        post_deinit: false
 
     - name: Pylint
       run: |
