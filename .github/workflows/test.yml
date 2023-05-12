@@ -1,4 +1,4 @@
-name: build
+name: test
 
 on:
   push:
@@ -11,7 +11,10 @@ on:
       - publication
 
 jobs:
-  conda-create:
+  test:
+    defaults:
+      run:
+        shell: bash -l {0}
     runs-on: ${{ matrix.platform }}
     strategy:
       fail-fast: false
@@ -21,15 +24,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    
-    - name: Set up Conda with Python ${{ matrix.python-version }}
-      uses: conda-incubator/setup-miniconda@v2
+        
+    - name: Install Conda environment with Micromamba
+      uses: mamba-org/provision-with-micromamba@main
       with:
-        auto-update-conda: true
-        activate-environment: OrgaSegment
         environment-file: conf/environment.yml
-        python-version: ${{ matrix.python-version }}
-        auto-activate-base: false
-    - run: |
+        extra-specs: |
+          python=${{ matrix.python-version }}
+
+    - name: Pylint
+      run: |
         conda info
-        conda list
+        pylint --rcfile=.pylintrc *.py **/*.py

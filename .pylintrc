@@ -4,8 +4,9 @@ fail-under=8.0
 [MESSAGES CONTROL]
 disable=
     R,
-    C,
-    E0401,
+    C
+#    ,
+#   E0401,
 
 [REPORTS]
 output-format=colorized

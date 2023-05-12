@@ -14,7 +14,5 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Python Pylin GitHub Action
-      uses: fylein/python-pylint-github-action@v1
-      with:
-          args: pylint --rcfile=.pylintrc *.py **/*.py
+    - name: Python Pylint GitHub Action
+      run: pylint --rcfile=.pylintrc *.py **/*.py
