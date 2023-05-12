@@ -1,7 +1,6 @@
 name: OrgaSegment
 channels:
   - conda-forge
-  - anaconda
 dependencies:
   - python=3.6.13
   - ipykernel=5.5.5
