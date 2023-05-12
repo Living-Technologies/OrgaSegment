@@ -29,8 +29,6 @@ jobs:
       uses: mamba-org/provision-with-micromamba@main
       with:
         environment-file: conf/environment.yml
-        extra-specs: |
-          python=${{ matrix.python-version }}
 
     - name: Pylint
       run: |
