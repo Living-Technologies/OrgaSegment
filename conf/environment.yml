@@ -1,11 +1,11 @@
-name: OrgaSegment
+name: OrgaSegment2
 channels:
   - conda-forge
 dependencies:
   - python=3.6.13
   - ipykernel=5.5.5
-  - pylint
-  - pip
+  - pylint=2.11.1
+  - pip=21.3.1
   - anaconda::tensorflow-gpu=1.15.0
   - keras=2.2.5
   - numpy=1.19.5
