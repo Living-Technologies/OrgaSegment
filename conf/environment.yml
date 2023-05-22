@@ -6,7 +6,7 @@ dependencies:
   - ipykernel=5.5.5
   - pylint
   - pip
-  - tensorflow-gpu=1.15.0
+  - anaconda::tensorflow-gpu=1.15.0
   - keras=2.2.5
   - numpy=1.19.5
   - pandas=1.1.5
