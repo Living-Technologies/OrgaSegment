@@ -28,9 +28,9 @@ jobs:
       uses: mamba-org/provision-with-micromamba@main
       with:
         environment-file: conf/environment.yml
-        post-deinit: false
         cache-env: false
         log-level: info 
+        channel-priority: flexible
 
     - name: Pylint
       run: |

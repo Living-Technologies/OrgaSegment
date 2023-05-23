@@ -1,4 +1,4 @@
-name: OrgaSegment2
+name: OrgaSegment
 channels:
   - conda-forge
   - anaconda
