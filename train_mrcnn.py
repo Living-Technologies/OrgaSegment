@@ -15,11 +15,6 @@ import importlib
 import tensorflow as tf
 import sys
 import shutil
-
-#Import Neptune tracking
-from dotenv import load_dotenv
-import neptune.new as neptune
-from neptune.new.integrations.tensorflow_keras import NeptuneCallback
 import os
 
 #Set Tensorflow logging
@@ -86,26 +81,12 @@ def main():
     log_dir = model.log_dir
     name = os.path.basename(log_dir)
 
-    #Create neptune logger
-    load_dotenv()
-    run = neptune.init(project=os.getenv('NEPTUNE_PROJECT'),
-                       api_token=os.getenv('NEPTUNE_APIKEY'),
-                       name = name)
-    parameters = config_to_dict(config)
-    parameters['MODEL'] = name
-    run['parameters'] = parameters
-    run['sys/tags'].add(['train'])
-    run['dataset/train'].track_files(config.TRAIN_DIR)
-    run['dataset/test'].track_files(config.VAL_DIR)
-    neptune_cbk = NeptuneCallback(run=run, base_namespace='training')
-
     ##Train model
     logger.info('Start training heads')
     model.train(data_train, data_val, 
                 learning_rate=config.LEARNING_RATE,
                 epochs=config.EPOCHS_HEADS,
                 layers='heads',
-                custom_callbacks=[neptune_cbk],
                 workers=config.WORKERS,
                 use_multiprocessing=config.MULTIPROCESSING,
                 class_weight=config.CLASS_WEIGHTS)
@@ -115,14 +96,9 @@ def main():
                 learning_rate=config.LEARNING_RATE,
                 epochs=config.EPOCHS_ALL_LAYERS,
                 layers='all',
-                custom_callbacks=[neptune_cbk],
                 workers=config.WORKERS,
                 use_multiprocessing=config.MULTIPROCESSING,
                 class_weight=config.CLASS_WEIGHTS)
-
-    run['model'].track_files(model.find_last())
-    
-    run.stop()
 
 if __name__ == "__main__":
     logger.info('Start training...')

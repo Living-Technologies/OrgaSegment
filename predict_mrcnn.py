@@ -25,10 +25,6 @@ import os
 from pathlib import Path
 from keras.preprocessing.image import load_img
 
-#Import Neptune tracking
-from dotenv import load_dotenv
-import neptune.new as neptune
-
 #Set Tensorflow logging
 logger.info(f'Tensorflow version: {tf.__version__}')
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
@@ -68,18 +64,6 @@ else:
 def main():
     #Get config, display and save config
     logger.info(config.display())
-
-    #Create neptune logger
-    load_dotenv()
-    run = neptune.init(project=os.getenv('NEPTUNE_PROJECT'),
-                       api_token=os.getenv('NEPTUNE_APIKEY'),
-                       name = config.MODEL_NAME)
-    parameters = config_to_dict(config)
-    parameters['MODEL'] = config.MODEL_NAME   
-    parameters['INPUT_FOLDER'] = input_dir     
-    run['parameters'] = parameters
-    run['sys/tags'].add(['predict'])
-    run['dataset/predict/input'].track_files(input_dir)
 
     #Get data
     logger.info('Get image names')
@@ -137,7 +121,6 @@ def main():
                                   p['scores'],
                                   figsize=(40, 40))
         preview.savefig(preview_path, format='png', dpi=350, bbox_inches='tight', pad_inches=0)
-        run['predictions'].log(neptune.types.File(preview_path))
 
         #Process results per class
         for c in np.unique(p['class_ids']):
@@ -174,9 +157,6 @@ def main():
 
     #Save results
     results.to_csv(f'{output_dir}results.csv', index=False)
-
-    run['dataset/predict/output'].track_files(output_dir)
-    run.stop()
         
 if __name__ == "__main__":
     logger.info('Start prediction job...')

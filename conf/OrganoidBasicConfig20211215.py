@@ -27,7 +27,7 @@ class TrainConfig(Config):
     EPOCHS_ALL_LAYERS = 500
 
     # Number of classes (including background)
-    NUM_CLASSES = 1 + 1 #2  # background + 2 classes (organoid and unhealthy structure)
+    NUM_CLASSES = 1 + 1  # background + 1 class (organoid)
 
     # Input image resizing
     # Random crops of size 512x512
@@ -82,16 +82,15 @@ class TrainConfig(Config):
     MULTIPROCESSING = True
 
     # OrgaSegment specific config
-    TRAIN_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20211206/train', '')
-    VAL_DIR = os.path.join('/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/20211206/val', '')
-    MODEL_DIR = os.path.join('/hpc/umc_beekman/orgasegment/models/', '')
-    PRETRAINED_WEIGHTS = '/hpc/umc_beekman/orgasegment/models/coco/mask_rcnn_coco.h5'
+    TRAIN_DIR = os.path.join('./data/20211206/train', '')
+    VAL_DIR = os.path.join('./data/20211206/val', '')
+    MODEL_DIR = os.path.join('./models/', '')
+    PRETRAINED_WEIGHTS = './models/coco/mask_rcnn_coco.h5'
     EXCLUDE_LAYERS = ['conv1', 'mrcnn_class_logits', 'mrcnn_bbox_fc', 'mrcnn_bbox', 'mrcnn_mask']
     IMAGE_FILTER = '_img'
     MASK_FILTER = '_masks_'
-    CLASSES = ['organoid'] #, 'unhealthy_structure']
+    CLASSES = ['organoid']
     COLOR_MODE = 'grayscale'
-    # COLOR_MODE = 'rgb'
     EVAL_IOU = 0.75
 
 ##EvalConfig
@@ -108,7 +107,7 @@ class EvalConfig(TrainConfig):
 
     #Eval DIR
     EVAL_DATASET = '20211206'
-    EVAL_DIR = os.path.join(f'/hpc/umc_beekman/labelbox_organoid_labels/dataset_organoids/{EVAL_DATASET}/eval', '')
+    EVAL_DIR = os.path.join(f'./data/{EVAL_DATASET}/eval', '')
 
     #Thresholds
     CONFIDENCE_SCORE_THRESHOLD = 0.0
@@ -128,7 +127,7 @@ class PredictConfig(TrainConfig):
     IMAGE_RESIZE_MODE = 'pad64'
 
     # OrgaSegment specific config
-    MODEL_DIR = '/hpc/umc_beekman/orgasegment/models/'
-    MODEL_NAME = 'organoids20211215T1200'
-    MODEL = '/hpc/umc_beekman/orgasegment/models/' + MODEL_NAME + '/mask_rcnn_organoids_0500.h5'
+    MODEL_DIR = './models/'
+    MODEL_NAME = 'OrganoidBasic20211215'
+    MODEL = './models/' + MODEL_NAME + '.h5'
     COLOR_MODE = 'grayscale'
