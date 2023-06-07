@@ -28,13 +28,10 @@ jobs:
       uses: mamba-org/setup-micromamba@v1
       with:
         environment-file: conf/environment.yml
-        init-shell: bash powershell
         log-level: info
         cache-environment: true
         post-cleanup: 'all' 
 
     - name: Pylint
-      shell: bash -el {0}
-      run: |
-        conda info
-        pylint --rcfile=.pylintrc *.py **/*.py
+      run: pylint --rcfile=.pylintrc *.py **/*.py
+      shell: micromamba-shell {0}
