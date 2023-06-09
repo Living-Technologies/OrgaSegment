@@ -51,7 +51,5 @@ jobs:
     
     - name: Pylint WINDOWS
       if: matrix.platform == 'windows-2019'
-      run: |
-        conda activate OrgaSegment
-        pylint --rcfile=.pylintrc *.py **/*.py
+      run: pylint --rcfile=.pylintrc *.py **/*.py
       shell: bash -el {0}
