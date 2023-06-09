@@ -40,4 +40,9 @@ Save in /models
 ## Train
 
 
+##ToDo
+* Support Tensorflow 2
+* Support Python >3.6
+* Support for Neptune model monitoring
+
 ## Credits
