@@ -24,7 +24,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
         
-    - name: Install Conda environment with Micromamba
+    - name: Install Conda environment with Micromamba LINUX
       if: matrix.platform == 'ubuntu-20.04'
       uses: mamba-org/setup-micromamba@v1
       with:
@@ -33,7 +33,7 @@ jobs:
         cache-environment: true
         post-cleanup: 'all' 
  
-    - name: Install Conda environment with Micromamba
+    - name: Install Conda environment with Micromamba WINDOWS
       if: matrix.platform == 'windows-2019'
       uses: mamba-org/setup-micromamba@v1
       with:
@@ -41,8 +41,15 @@ jobs:
         log-level: info
         cache-environment: true
         post-cleanup: 'all' 
-        create-args: pywinpty=1.1.0
+        create-args: pywinpty>=1.1.0
+        init-shell: bash
 
-    - name: Pylint
+    - name: Pylint LINUX
+      if: matrix.platform == 'ubuntu-20.04'
       run: pylint --rcfile=.pylintrc *.py **/*.py
       shell: micromamba-shell {0}
+    
+    - name: Pylint WINDOWS
+      if: matrix.platform == 'ubuntu-2019'
+      run: pylint --rcfile=.pylintrc *.py **/*.py
+      shell: bash -el {0}
