@@ -50,6 +50,8 @@ jobs:
       shell: micromamba-shell {0}
     
     - name: Pylint WINDOWS
-      if: matrix.platform == 'ubuntu-2019'
-      run: pylint --rcfile=.pylintrc *.py **/*.py
+      if: matrix.platform == 'windows-2019'
+      run: |
+        conda activate OrgaSegment
+        pylint --rcfile=.pylintrc *.py **/*.py
       shell: bash -el {0}
