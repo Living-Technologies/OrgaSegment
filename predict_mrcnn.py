@@ -26,7 +26,7 @@ from pathlib import Path
 from keras.preprocessing.image import load_img
 
 #Set Tensorflow logging
-logger.info(f'Tensorflow version: {tf.__version__}')
+logger.info(f'Tensorflow version: {tf.VERSION}')
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 #Check Tensorflow GPU

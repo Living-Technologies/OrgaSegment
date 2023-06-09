@@ -25,7 +25,7 @@ from pathlib import Path
 import re
 
 #Set Tensorflow logging
-logger.info(f'Tensorflow version: {tf.__version__}')
+logger.info(f'Tensorflow version: {tf.VERSION}')
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 #Check Tensorflow GPU
