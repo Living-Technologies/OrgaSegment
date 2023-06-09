@@ -1,5 +1,5 @@
 [MAIN]
-fail-under=8.0
+fail-under=8
 
 [MESSAGES CONTROL]
 disable=
