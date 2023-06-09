@@ -34,5 +34,7 @@ jobs:
         post-cleanup: 'all' 
 
     - name: Pylint
-      run: pylint --rcfile=.pylintrc *.py **/*.py
+      run: |
+        conda activate OrgaSegment
+        pylint --rcfile=.pylintrc *.py **/*.py
       shell: bash -el {0}
