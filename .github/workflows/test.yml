@@ -41,7 +41,7 @@ jobs:
         log-level: info
         cache-environment: true
         post-cleanup: 'all' 
-        create-args: pywinpty=0.5.2
+        create-args: pywinpty=1.1.0
 
     - name: Pylint
       run: pylint --rcfile=.pylintrc *.py **/*.py
