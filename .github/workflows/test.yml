@@ -36,5 +36,6 @@ jobs:
     - name: Pylint
       run: |
         conda activate OrgaSegment
+        conda list
         pylint --rcfile=.pylintrc *.py **/*.py
       shell: bash -el {0}
