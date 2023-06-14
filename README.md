@@ -52,6 +52,8 @@ App usage:
 * Select correct configuration (app configuration is managed in ./conf/app.conf)
 * Click Interference for organoid prediction and/or Track for organoid segmentation tracking over time
 * Select folder with brightfield microscopy images (currently only JPEG / JPG supported)
+* Set tracking settings (if applicable)
+* Run
 
 
 ## Interference / predictions using SLURM batch manager
