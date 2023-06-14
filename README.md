@@ -1,5 +1,5 @@
 # OrgaSegment
-[![tests](https://github.com/Living-Technologies/OrgaSegment/workflows/tests/badge.svg?branch=master)](https://github.com/Living-Technologies/OrgaSegment/actions)
+[![tests](https://github.com/Living-Technologies/OrgaSegment/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/Living-Technologies/OrgaSegment/actions)
 
 Organoid Segmentation based on Matterport MASK-RCNN developed to segment patient derived intestinal organoids using brightfield microscopy.
 Scientific manuscript submitted.  
