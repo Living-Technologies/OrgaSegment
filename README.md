@@ -31,7 +31,7 @@ $ mamba env create -f conf/environment.yml
 ## Download model
 
 * Download latest model from
-* Model used for publication: OrganoidBasic20211215.h5
+* Model used for publication: [OrganoidBasic20211215.h5](https://github.com/Living-Technologies/OrgaSegment/raw/5bd6a5c45c02830f908a8bc187e3631a304d1b6c/models/OrganoidBasic20211215.h5)
 * Save in /models
 
 ## Interference / predictions using OrgaSegment app
