@@ -4,14 +4,12 @@
 Organoid Segmentation based on Matterport MASK-RCNN developed to segment patient derived intestinal organoids using brightfield microscopy.
 Scientific manuscript submitted.  
 
-
->>> Image ![Overview](images/plot.png)
 ## Requirements
 
 * Linux or Windows installation
 * Conda installation with [mamba installed](https://mamba.readthedocs.io/en/latest/installation.html) in base environment
 * For interference a GPU is prefered but not required
-* For training we recommend the use og one or multiple GPUs with >15GB RAM
+* For training we recommend the use of one or multiple GPUs with >15GB RAM
 
 This code was developed and tested on Ubuntu 20.04 and Windows
 
@@ -32,15 +30,38 @@ $ mamba env create -f conf/environment.yml
 
 ## Download model
 
-Save in /models
+* Download latest model from
+* Model used for publication: OrganoidBasic20211215.h5
+* Save in /models
 
-## Run OrgaSegment app
+## Interference / predictions using OrgaSegment app
+
+Start OrgaSegment app using command line
+```sh
+$ cd OrgaSegment
+$ conda activate OrgaSegment
+$ streamlit run app.py
+```
+Or use provided scripts:
+* For linux: Run startOrgaSegmentAppLin.sh
+* For windows Run startOrgaSegmentAppWin.bat
+
+<u>Note: when running streamlit for the first time you are asked to provide contact details. You can just leave this empty using the return key (twice).</u>
+
+App usage:
+* Select correct configuration (app configuration is managed in ./conf/app.conf)
+* Click Interference for organoid prediction and/or Track for organoid segmentation tracking over time
+* Select folder with brightfield microscopy images (currently only JPEG / JPG supported)
 
 
-## Train
+## Interference / predictions using SLURM batch manager
 
 
-##ToDo
+
+## Train on HPC using SLURM batch manager
+
+
+## ToDo
 * Support Tensorflow 2
 * Support Python >3.6
 * Support for Neptune model monitoring

@@ -19,10 +19,10 @@ job_id=sys.argv[1]
 
 #Get config
 config_path=sys.argv[2]
-spec = importlib.util.spec_from_file_location('PredictConfig', config_path)
+spec = importlib.util.spec_from_file_location('TrackConfig', config_path)
 modulevar = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(modulevar)
-config = modulevar.PredictConfig()
+config = modulevar.TrackConfig()
 
 #Data folder
 data_dir=sys.argv[3]
@@ -34,37 +34,24 @@ else:
     logger.info(f'Data dir: {data_dir}')
 
 def main():
-    #Load config
-    config = f'{data_dir}track-config.json'
-    if os.path.isfile(config):
-        config = json.load(open(config))
-        regex = config['regex']
-    
-        #Get data
-        logger.info('Get Orgasegment Results')
-        results = pd.read_csv(f'{data_dir}results.csv')
+    #Get data
+    logger.info('Get Orgasegment Results')
+    results = pd.read_csv(f'{data_dir}results.csv')
 
-        #Enrich data
-        logger.info(f'Used regex: {regex}')
-        results['well'] = results['name'].apply(lambda x: re.search(regex, x).group('WELL'))
-        results['t'] = results['name'].apply(lambda x: re.search(regex, x).group('T'))
-        
-        ## Calculate centers and track organoids over time
-        logger.info('Start tracking organoids')
-
-        results['x'] = (results['x2'] + results['x1']) / 2
-        results['y'] = (results['y2'] + results['y1']) / 2
-        results = results.groupby('well').apply(tp.link, search_range=50, memory=2, t_column='t').reset_index(drop=True)
-        
-        ## Filter out particles that are seen less than 50% of the time
-        #results = results[results.groupby(['well','particle'])['t'].transform('count') >= (max(results['t']) / 2)]
-        
-        #Save results
-        results.to_csv(f'{data_dir}tracked.csv', index=False)
+    #Enrich data
+    logger.info(f'Used regex: {regex}')
+    results['well'] = results['name'].apply(lambda x: re.search(config.REGEX, x).group('WELL'))
+    results['t'] = results['name'].apply(lambda x: re.search(config.REGEX, x).group('T'))
     
-    else:
-        logger.warning(f'No tracking config detected. Results in {data_dir} will not be tracked')
-        exit(0) 
+    ## Calculate centers and track organoids over time
+    logger.info('Start tracking organoids')
+
+    results['x'] = (results['x2'] + results['x1']) / 2
+    results['y'] = (results['y2'] + results['y1']) / 2
+    results = results.groupby('well').apply(tp.link, search_range=config.SEARCH_RANGE, memory=config.MEMORY, t_column='t').reset_index(drop=True)
+    
+    #Save results
+    results.to_csv(f'{data_dir}tracked.csv', index=False)
         
 if __name__ == "__main__":
     logger.info('Start tracking job...')

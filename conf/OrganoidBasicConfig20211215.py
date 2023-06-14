@@ -131,3 +131,16 @@ class PredictConfig(TrainConfig):
     MODEL_NAME = 'OrganoidBasic20211215'
     MODEL = './models/' + MODEL_NAME + '.h5'
     COLOR_MODE = 'grayscale'
+
+class TrackConfig():
+    '''
+    Configuration for Tracking organoids over time using Trackpy.
+    '''
+    # Regex to extract WELL (multiplate well position) and T (time) information from image name, correct if needed.
+    REGEX = '.*(?P<WELL>[A-Z]{1}[0-9]{1,2}).*t(?P<T>[0-9]{1,2}).*'
+
+    # Tracking search range in pixels, correct if needed.
+    SEARCH_RANGE = 50
+
+    # Memory: the maximum number of frames duing which an organoid can vanisch, then reappear within the search range, and be considered the same organoid. Correct if needed.
+    MEMORY = 2

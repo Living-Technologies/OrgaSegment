@@ -63,7 +63,7 @@ spec.loader.exec_module(modulevar)
 st.session_state['model_config'] = modulevar.PredictConfig()
 
 st.sidebar.subheader('Select options')
-st.session_state['predict'] = st.sidebar.checkbox('Predict')
+st.session_state['predict'] = st.sidebar.checkbox('Interference')
 st.session_state['track'] = st.sidebar.checkbox('Track')
 
 st.sidebar.subheader('Select data folder')
