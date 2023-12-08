@@ -9,7 +9,7 @@ Scientific manuscript submitted.
 
 * Linux or Windows installation
 * Conda installation with [mamba installed](https://mamba.readthedocs.io/en/latest/installation.html) in base environment
-* For interference a GPU is prefered but not required
+* For inference a GPU is prefered but not required
 * For training we recommend the use of one or multiple GPUs with >15GB RAM
 
 This code was developed and tested on Ubuntu 20.04 and Windows
@@ -38,7 +38,7 @@ $ mamba env create -f conf/environment.yml
 * Save in /models
 
 ---
-## Interference / predictions using OrgaSegment app
+## Inference / predictions using OrgaSegment app
 
 Start OrgaSegment app using command line
 ```sh
@@ -54,7 +54,7 @@ Or use provided scripts:
 
 ### **App usage:**
 * Select correct configuration (app configuration is managed in ./conf/app.conf)
-* Click Interference for organoid prediction and/or Track for organoid segmentation tracking over time
+* Click Inference for organoid prediction and/or Track for organoid segmentation tracking over time
 * Select folder with brightfield microscopy images (currently only JPEG / JPG supported)
 * Set tracking settings (if applicable)
 * Run
@@ -80,25 +80,25 @@ In addition adjust the following settings:
 For more info see trackpy.link [documentation](http://soft-matter.github.io/trackpy/v0.6.1/generated/trackpy.link.html) 
 
 ---
-## Interference / predictions using SLURM batch manager
-Instead of running the interactive app you can also run interference on a compute cluster using SLURM batch manager.
+## Inference / predictions using SLURM batch manager
+Instead of running the interactive app you can also run inference on a compute cluster using SLURM batch manager.
 
 If needed adjust the SLURM cluster setting in ./predict.sh and the configuration (including tracking settings) correct model configuration file in ./conf/
 
 <u>Make sure you have installed the OrgaSegment conda environment on your SLURM cluster.</u>
 
-To run interference, execute the following on the correct node of a SLURM cluster:
+To run inference, execute the following on the correct node of a SLURM cluster:
 ```sh
 cd OrgaSegment
 sbatch predict.sh -p -t -c conf/OrganoidBasicConfig20211215.py -f /data/folder/images/
 ```
 predict.sh options:
-* -p: interference on data
+* -p: inference on data
 * -t: tracking on segmented organoids
-* -c [config file]: location of configuration file to use with interference
-* -f [data folder]: location of folder with imaging data to run interference on 
+* -c [config file]: location of configuration file to use with inference
+* -f [data folder]: location of folder with imaging data to run inference on 
 
-<u>Predict.sh can run only interference, only tracking or combined. A different configuration file can be selected if needed. 
+<u>Predict.sh can run only inference, only tracking or combined. A different configuration file can be selected if needed. 
 </u>
 
 ## Train on HPC using SLURM batch manager
@@ -152,7 +152,7 @@ If needed adjust the SLURM cluster setting in ./train.sh
 
 <u>Make sure you have installed the OrgaSegment conda environment on your SLURM cluster.</u>
 
-To run interference, execute the following on the correct node of a SLURM cluster:
+To run inference, execute the following on the correct node of a SLURM cluster:
 ```sh
 cd OrgaSegment
 sbatch train.sh -t -e -c conf/OrganoidBasicConfig20211215.py -m /models/ABC.h5
