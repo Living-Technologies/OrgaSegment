@@ -43,7 +43,7 @@ def get_image_names(folder, mask_filter, image_filter=None):
     image_names = imn
 
     if len(image_names)==0:
-        raise ValueError('ERROR: no jp(e)g or png images in folder')
+        raise ValueError('ERROR: no jp(e)g or png images in folder %s'%folder)
     
     return image_names
         
