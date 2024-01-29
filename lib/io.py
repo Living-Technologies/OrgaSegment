@@ -5,10 +5,10 @@ logger = logging.getLogger(__name__)
 #Import functions
 import os, glob
 from natsort import natsorted
-import keras
+from tensorflow import keras
 import numpy as np
 import random
-from keras.preprocessing.image import load_img
+from tensorflow.keras.preprocessing.image import load_img
 from mrcnn import utils
 import re
 import os
@@ -180,7 +180,6 @@ class OrganoidDataset(utils.Dataset):
                 mask = {'class': c,
                         'path': f'{data_dir}{image_id}{mask_filter}{c}.png'}
                 masks.append(mask)
-            
             self.add_image('organoids', image_id=image_id, path=i, color_mode=color_mode, img_bit_depth=img_bit_depth, masks=masks)
 
     def load_image(self, image_id):
@@ -237,4 +236,4 @@ class OrganoidDataset(utils.Dataset):
             
         # Map class names to class IDs.
         class_ids = np.array([self.class_names.index(i) for i in class_names])
-        return mask.astype(np.bool), class_ids.astype(np.int32)
+        return mask.astype(bool), class_ids.astype(np.int32)
