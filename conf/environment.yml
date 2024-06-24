@@ -1,10 +1,11 @@
-name: OrgaSegment
+name: OrgaSegment-mlflow
 channels:
   - conda-forge
   - anaconda
 dependencies:
   - python=3.11
   - pip:
+    - mlflow=2.14.1
     - scipy=1.11.4
     - ipython=8.18.1
     - matplotlib=3.8.2
