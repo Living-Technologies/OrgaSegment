@@ -60,6 +60,7 @@ def display_preview(image, boxes, masks, class_ids, class_names,
     else:
         assert boxes.shape[0] == masks.shape[-1] == class_ids.shape[0]
 
+    plt.close()
     # Create plot
     fig, ax = plt.subplots(1, figsize=figsize)
 
