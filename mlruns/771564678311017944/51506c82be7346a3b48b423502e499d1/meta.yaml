@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/771564678311017944/51506c82be7346a3b48b423502e499d1/artifacts
+end_time: 1719234069340
+entry_point_name: ''
+experiment_id: '771564678311017944'
+lifecycle_stage: active
+run_id: 51506c82be7346a3b48b423502e499d1
+run_name: adorable-trout-346
+run_uuid: 51506c82be7346a3b48b423502e499d1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1719234068937
+status: 4
+tags: []
+user_id: sbeuning

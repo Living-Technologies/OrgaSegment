@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/771564678311017944/e43e7659b58f4d8fb18691c6051a9045/artifacts
+end_time: 1719233389588
+entry_point_name: ''
+experiment_id: '771564678311017944'
+lifecycle_stage: active
+run_id: e43e7659b58f4d8fb18691c6051a9045
+run_name: capable-ape-239
+run_uuid: e43e7659b58f4d8fb18691c6051a9045
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1719233389254
+status: 4
+tags: []
+user_id: sbeuning

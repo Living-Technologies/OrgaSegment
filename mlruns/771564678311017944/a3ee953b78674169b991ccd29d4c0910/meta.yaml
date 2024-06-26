@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/771564678311017944/a3ee953b78674169b991ccd29d4c0910/artifacts
+end_time: 1719233592711
+entry_point_name: ''
+experiment_id: '771564678311017944'
+lifecycle_stage: active
+run_id: a3ee953b78674169b991ccd29d4c0910
+run_name: wistful-rook-290
+run_uuid: a3ee953b78674169b991ccd29d4c0910
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1719233592297
+status: 4
+tags: []
+user_id: sbeuning

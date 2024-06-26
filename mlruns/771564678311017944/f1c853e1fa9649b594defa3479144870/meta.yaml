@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/771564678311017944/f1c853e1fa9649b594defa3479144870/artifacts
+end_time: 1719230664081
+entry_point_name: ''
+experiment_id: '771564678311017944'
+lifecycle_stage: active
+run_id: f1c853e1fa9649b594defa3479144870
+run_name: powerful-fox-96
+run_uuid: f1c853e1fa9649b594defa3479144870
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1719230663784
+status: 4
+tags: []
+user_id: sbeuning

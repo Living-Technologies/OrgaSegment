@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/771564678311017944/b68c9b6cff484835ac7f7e3b97be1c3a/artifacts
+end_time: 1719233131142
+entry_point_name: ''
+experiment_id: '771564678311017944'
+lifecycle_stage: active
+run_id: b68c9b6cff484835ac7f7e3b97be1c3a
+run_name: amusing-skink-273
+run_uuid: b68c9b6cff484835ac7f7e3b97be1c3a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1719233130785
+status: 4
+tags: []
+user_id: sbeuning
