@@ -61,8 +61,8 @@ class OrgaSegment(mlflow.pyfunc.PythonModel):
             img = np.max(img, axis=2, keepdims=True)
 
         #Predict organoids
-        pred = model.detect([img], verbose=1)
-        # p = pred[0]
+        pred = self.model.detect([img], verbose=1)
+        p = pred[0]
 
         # #Process results per class
         # output = []
@@ -93,7 +93,7 @@ class OrgaSegment(mlflow.pyfunc.PythonModel):
         # output.append(result)
 
         # return output
-        return pred
+        return p
     
 ##Set MLflow tracking
 mlflow.set_tracking_uri(uri="http://127.0.0.1:8080")
@@ -109,7 +109,8 @@ config = modulevar.PredictConfig()
 # Save the function as a model
 model = OrgaSegment(config)
 with mlflow.start_run():
-    mlflow.pyfunc.log_model("model", python_model=model)
+    # mlflow.pyfunc.log_model(artifact_path='model', python_model=model, conda_env='conf/environment.yml')
+    mlflow.pyfunc.save_model(path='./models/mlflow', python_model=model, conda_env='conf/environment.yml')
     run_id = mlflow.active_run().info.run_id
 
 

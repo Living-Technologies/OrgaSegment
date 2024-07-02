@@ -4,6 +4,7 @@ log/*
 dev/*
 conf/misc/*
 conf/tox*
+mlruns/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
