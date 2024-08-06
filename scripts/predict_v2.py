@@ -19,6 +19,10 @@ import tensorflow.keras
 import gc
 import pathlib
 
+def getModelPath():
+    import importlib
+    return importlib.resources.files("models").joinpath("OrganoidBasic20211215.h5")
+
 def mergeLabels(masks):
     merged = numpy.zeros( (*masks.shape[:-1], 3), dtype="int8")
     for j in range(masks.shape[-1]):
@@ -47,7 +51,8 @@ if __name__=="__main__":
     print(config.NUM_CLASSES)
     mdl = model.MaskRCNN("inference", config, "model_path")
     #mdl.load_weights("oseg-v1.h5", by_name=True)
-    mdl.keras_model.load_weights("models/OrganoidBasic20211215.h5", by_name=True)
+    #mdl.keras_model.load_weights("models/OrganoidBasic20211215.h5", by_name=True)
+    mdl.keras_model.load_weights(getModelPath(), by_name=True)
     #mdl.keras_model.summary()
     print(mdl.keras_model.outputs)
     print(mdl.keras_model.input)
@@ -55,6 +60,9 @@ if __name__=="__main__":
     outs = []
     cum = 0
     opth = pathlib.Path("oseg-predictions")
+    if not opth.exists():
+        opth.mkdir()
+
     for f in sys.argv[1:]:
         pth = pathlib.Path(f)
 
