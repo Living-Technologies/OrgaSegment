@@ -12,6 +12,8 @@ from tensorflow.keras.preprocessing.image import load_img
 from mrcnn import utils
 import re
 import os
+import io
+import base64
 
 def get_image_names(folder, mask_filter, image_filter=None):
     """
@@ -119,6 +121,16 @@ def load_train_val_names(data_dir, image_filter=None, mask_filter='_masks', val_
 
     return train_image_names, train_label_names, val_image_names, val_label_names
 
+def array_to_base64(self, array):
+    buffer = io.BytesIO()
+    np.save(buffer, array)
+    encoded = base64.b64encode(buffer.getvalue())
+    return encoded.decode('utf-8')
+
+def base64_to_array(self, base64_string):
+    decoded = base64.b64decode(base64_string)
+    buffer = io.BytesIO(decoded)
+    return np.load(buffer, allow_pickle=True)
 
 class OrganoidGen(keras.utils.Sequence):
     """
