@@ -6,6 +6,7 @@ logger = logging.getLogger(__name__)
 import numpy as np
 import matplotlib.pyplot as plt
 from mrcnn.visualize import random_colors, patches, apply_mask, find_contours, Polygon
+import skimage as ski
 
 def mask_projection(mask_3D):
     """
@@ -39,9 +40,9 @@ def config_to_dict(config):
   return configDict
 
 def display_preview(image, boxes, masks, class_ids, class_names,
-                      scores=None, figsize=(20, 20),
-                      show_mask=True, show_bbox=True,
-                      colors=None, captions=None):
+                    scores=None, figsize=(20, 20),
+                    show_mask=True, show_bbox=True,
+                    colors=None, captions=None):
     """
     boxes: [num_instance, (y1, x1, y2, x2, class_id)] in image coordinates.
     masks: [height, width, num_instances]
@@ -77,7 +78,40 @@ def display_preview(image, boxes, masks, class_ids, class_names,
     ax.set_xlim(-10, width + 10)
     ax.axis('off')
 
-    masked_image = image.astype(np.uint32).copy()
+    def apply_mask_with_bitshifting():
+        ids = np.arange(1, N + 1)
+        ids_multi_dim = ids[np.newaxis, np.newaxis, :]
+        id_masks = masks * ids_multi_dim
+        max_projection = np.max(id_masks, axis=2)
+
+        # Encode colors into 32-bit integers
+        colors_large = (np.asarray(colors) * 255).astype(np.uint32)
+        encoded_colors = (colors_large[:, 0] << 16) | (colors_large[:, 1] << 8) | colors_large[:, 2]
+
+        # Initialize the masked image with zeros (32-bit to store encoded color values)
+        masked_image = np.zeros(max_projection.shape, dtype=np.uint32)
+
+        # Apply bitwise operations to generate the masked_image
+        for i in range(1, N + 1):
+            mask = (max_projection == i)
+            masked_image[mask] = encoded_colors[i - 1]
+
+        # Decode the masked image back into 3 separate color channels (RGB)
+        red_channel = (masked_image >> 16) & 0xFF
+        green_channel = (masked_image >> 8) & 0xFF
+        blue_channel = masked_image & 0xFF
+
+        max_projection_rgb = np.stack((red_channel, green_channel, blue_channel), axis=2).astype(np.uint32)
+
+        # Blend the result with the original image using the alpha value
+        # Blend is done using bitshifts, assuming alpha =0.25 is used the operations are as follows:
+        # masked image = 0.75 * image + 0.25 * max_projection_rgb
+        masked_image = np.right_shift(image,2) * 3 + np.right_shift(max_projection_rgb,2)
+        return masked_image
+
+
+    masked_image = apply_mask_with_bitshifting()
+
     for i in range(N):
         color = colors[i]
 
@@ -103,22 +137,5 @@ def display_preview(image, boxes, masks, class_ids, class_names,
         ax.text(x1, y1 + 8, caption,
                 color='black', size=18, backgroundcolor='none')
 
-        # Mask
-        mask = masks[:, :, i]
-        if show_mask:
-            masked_image = apply_mask(masked_image, mask, color, alpha=0.25)
-
-        # Mask Polygon
-        # Pad to ensure proper polygons for masks that touch image edges.
-        padded_mask = np.zeros(
-            (mask.shape[0] + 2, mask.shape[1] + 2), dtype=np.uint8)
-        padded_mask[1:-1, 1:-1] = mask
-        contours = find_contours(padded_mask, 0.5)
-        for verts in contours:
-            # Subtract the padding and flip (y, x) to (x, y)
-            verts = np.fliplr(verts) - 1
-            p = Polygon(verts, facecolor="none", edgecolor=color)
-            ax.add_patch(p)
-    
     ax.imshow(masked_image.astype(np.uint8))
     return fig

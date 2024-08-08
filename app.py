@@ -140,7 +140,7 @@ if st.sidebar.button('Run'):
                                           st.session_state['model_config'].CLASSES, 
                                           p['scores'],
                                           figsize=(40, 40))
-                preview.savefig(preview_path, format='png', dpi=350, bbox_inches='tight', pad_inches=0)
+                preview.savefig(preview_path, format='png', dpi='figure', bbox_inches='tight', pad_inches=0)
                 
                 nameLocation.subheader(f'Image: {image_name}')
                 imageLocation.image(load_img(preview_path, color_mode='rgb'), use_column_width=True)
