@@ -13,9 +13,6 @@ import sys
 import os
 logger = CSVLogger(exp_name="my_exp")
 
-#Get Job ID
-job_id = sys.argv[1]
-os.mkdir('models/'+job_id)
 #Get config
 config_path = sys.argv[2]
 spec = importlib.util.spec_from_file_location("TrainConfig", config_path)
@@ -59,6 +56,9 @@ def main():
     params = [p for p in model.parameters() if p.requires_grad]
     optimizer_head = torch.optim.SGD(params, lr=0.005, momentum=0.9, weight_decay=0.0005)
 
+    job_id = sys.argv[1]
+    os.mkdir('models/' + job_id)
+
     # train head only
     train_loop(model=model,
                optimizer=optimizer_head,
@@ -80,6 +80,7 @@ def main():
 
 
 def train_loop(model, optimizer,epochs,image_ids,data_train):
+
     for epoch in tqdm(range(epochs)):
         for id in tqdm(image_ids):
             image = np.asarray([data_train.load_image(id)])
@@ -101,6 +102,7 @@ def train_loop(model, optimizer,epochs,image_ids,data_train):
             losses.backward()
             optimizer.step()
         if epoch % 10 == 0:
+            job_id = sys.argv[1]
             now = datetime.now()  # current date and time
             timestamp = now.strftime("%Y_%m_%dT%H-%M-%S")
             file_path = f"models/{job_id}/Organoids_{timestamp}_epoch_{epoch}.p"

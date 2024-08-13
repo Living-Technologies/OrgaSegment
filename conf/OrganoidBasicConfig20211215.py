@@ -82,8 +82,8 @@ class TrainConfig(Config):
     MULTIPROCESSING = True
 
     # OrgaSegment specific config
-    TRAIN_DIR = os.path.join('./data/20211206/train', '')
-    VAL_DIR = os.path.join('./data/20211206/val', '')
+    TRAIN_DIR = os.path.join('./data/trainTest/train', '')
+    VAL_DIR = os.path.join('./data/trainTest/val', '')
     MODEL_DIR = os.path.join('./models/', '')
     PRETRAINED_WEIGHTS = './models/coco/mask_rcnn_coco.h5'
     EXCLUDE_LAYERS = ['conv1', 'mrcnn_class_logits', 'mrcnn_bbox_fc', 'mrcnn_bbox', 'mrcnn_mask']
