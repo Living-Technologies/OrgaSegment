@@ -13,7 +13,7 @@ import logging
 import math
 import random
 import numpy as np
-import tensorflow as tf
+# import tensorflow as tf
 import scipy
 import skimage.color
 import skimage.io
@@ -22,6 +22,7 @@ import urllib.request
 import shutil
 import warnings
 from distutils.version import LooseVersion
+import torch
 
 # URL from which to download the latest COCO trained weights
 COCO_MODEL_URL = "https://github.com/matterport/Mask_RCNN/releases/download/v2.0/mask_rcnn_coco.h5"
@@ -184,8 +185,10 @@ def box_refinement_graph(box, gt_box):
     """Compute refinement needed to transform box to gt_box.
     box and gt_box are [N, (y1, x1, y2, x2)]
     """
-    box = tf.cast(box, tf.float32)
-    gt_box = tf.cast(gt_box, tf.float32)
+    box = box.type(torch.float32)
+    gt_box = gt_box.type(torch.float32)
+    # box = tf.cast(box, tf.float32)
+    # gt_box = tf.cast(gt_box, tf.float32)
 
     height = box[:, 2] - box[:, 0]
     width = box[:, 3] - box[:, 1]
@@ -199,10 +202,10 @@ def box_refinement_graph(box, gt_box):
 
     dy = (gt_center_y - center_y) / height
     dx = (gt_center_x - center_x) / width
-    dh = tf.math.log(gt_height / height)
-    dw = tf.math.log(gt_width / width)
+    dh = torch.math.log(gt_height / height)
+    dw = torch.math.log(gt_width / width)
 
-    result = tf.stack([dy, dx, dh, dw], axis=1)
+    result = torch.stack([dy, dx, dh, dw], dim=1)
     return result
 
 
@@ -829,7 +832,7 @@ def batch_slice(inputs, graph_fn, batch_size, names=None):
     if names is None:
         names = [None] * len(outputs)
 
-    result = [tf.stack(o, axis=0, name=n)
+    result = [torch.stack(o, dim=0)
               for o, n in zip(outputs, names)]
     if len(result) == 1:
         result = result[0]

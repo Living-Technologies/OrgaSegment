@@ -5,15 +5,18 @@ logger = logging.getLogger(__name__)
 #Import functions
 import os, glob
 from natsort import natsorted
-from tensorflow import keras
+# from tensorflow import keras
 import numpy as np
 import random
-from tensorflow.keras.preprocessing.image import load_img
+# from tensorflow.keras.preprocessing.image import load_img
 from mrcnn import utils
 import re
 import os
 import io
 import base64
+import torch
+from PIL import Image
+
 
 def get_image_names(folder, mask_filter, image_filter=None):
     """
@@ -132,7 +135,7 @@ def base64_to_array(self, base64_string):
     buffer = io.BytesIO(decoded)
     return np.load(buffer, allow_pickle=True)
 
-class OrganoidGen(keras.utils.Sequence):
+class OrganoidGen(torch.utils.data.Dataset):
     """
     Helper to iterate over the data (as Numpy arrays).
     https://keras.io/examples/vision/oxford_pets_image_segmentation/
@@ -155,12 +158,12 @@ class OrganoidGen(keras.utils.Sequence):
         batch_label_paths = self.label_paths[i : i + self.batch_size]
         x = np.zeros((self.batch_size,) + self.img_size + (1,), dtype='float32')
         for j, path in enumerate(batch_image_paths):
-            img = load_img(path, target_size=self.img_size, color_mode='grayscale')
+            img = Image.open(path)
             img = np.asarray(img) / ((2 ** self.bit))
             x[j] = np.expand_dims(img, 2)
         y = np.zeros((self.batch_size,) + self.img_size + (1,), dtype='uint16')
         for j, path in enumerate(batch_label_paths):
-            img = load_img(path, target_size=self.img_size, color_mode='grayscale')
+            img = Image.open(path)
             y[j] = np.expand_dims(img, 2)
             # Ground truth labels are 1, 2, 3. Subtract one to make them 0, 1, 2:
             # y[j] -= 1
@@ -201,7 +204,7 @@ class OrganoidDataset(utils.Dataset):
         specs in image_info.
         """
         info = self.image_info[image_id]
-        img = load_img(info['path'], color_mode=info['color_mode'])
+        img = Image.open(info['path'])
         
         #Convert to a 0-1 scale
         if info['img_bit_depth']:
@@ -236,7 +239,7 @@ class OrganoidDataset(utils.Dataset):
         
         #Split masks into numpy dimensions
         for i in masks:
-            msk = load_img(i['path'], color_mode='grayscale')
+            msk = Image.open(i['path'])
             msk = np.asarray(msk)
             for u in (u for u in np.unique(msk) if u > 0):
                 m = np.where(msk == u, 1, 0)
