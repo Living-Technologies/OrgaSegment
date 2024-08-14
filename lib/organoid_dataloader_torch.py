@@ -2,12 +2,11 @@ import torch
 import numpy as np
 import math
 class OrganoidDataset_torch(torch.utils.data.Dataset):
-    def __init__(self,dataset,batch_size,device):
+    def __init__(self,dataset,batch_size):
 
         self.data = dataset
         self.batch_size = batch_size
         self.images_counter = 0
-        self.device = device
         self.n_images = len(self.data.image_ids)
 
     def __len__(self):
@@ -30,13 +29,13 @@ class OrganoidDataset_torch(torch.utils.data.Dataset):
         v_min, v_max = np.min(image), np.max(image)
         new_min, new_max = 0, 1
         image = (image - v_min) / (v_max - v_min) * (new_max - new_min) + new_min
-        image = torch.tensor(image, dtype=torch.float32,device=self.device)
+        image = torch.tensor(image, dtype=torch.float32)
 
         masks, labels = self.data.load_mask(image_id)
         bboxes = self.extract_bboxes(masks)
-        target = {'masks': torch.tensor(masks, device=self.device),
-                   'labels': torch.tensor(labels, dtype=torch.int64, device=self.device),
-                   'boxes': torch.tensor(bboxes, device=self.device)}
+        target = {'masks': torch.tensor(masks),
+                   'labels': torch.tensor(labels, dtype=torch.int64),
+                   'boxes': torch.tensor(bboxes)}
 
         return image,target
 
