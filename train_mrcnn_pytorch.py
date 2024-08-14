@@ -4,13 +4,13 @@ import torch
 from torchvision.models.detection import MaskRCNN
 from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
 from lib.io import OrganoidDataset
-from mrcnn.utils import extract_bboxes
-import numpy as np
 from tqdm import tqdm
 from torchrl.record import CSVLogger
 import importlib
 import sys
 import os
+from lib.organoid_dataloader_torch import OrganoidDataset_torch
+
 logger = CSVLogger(exp_name="my_exp")
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -25,6 +25,9 @@ config = modulevar.TrainConfig()
 log_dir = None
 
 def main():
+    job_id = sys.argv[1]
+    os.mkdir('models/' + job_id)
+
     # Get data
     data_train = OrganoidDataset()
     data_train.load_data(config.TRAIN_DIR,
@@ -47,8 +50,6 @@ def main():
     backbone = resnet_fpn_backbone('resnet101', pretrained=True)
     model = MaskRCNN(backbone, num_classes=config.NUM_CLASSES).float().to(device=device)
 
-    # Train model
-    image_ids = data_train.image_ids
 
     # Freeze all layers except the heads
     for param in model.backbone.parameters():
@@ -57,14 +58,14 @@ def main():
     params = [p for p in model.parameters() if p.requires_grad]
     optimizer_head = torch.optim.SGD(params, lr=0.005, momentum=0.9, weight_decay=0.0005)
 
-    job_id = sys.argv[1]
-    os.mkdir('models/' + job_id)
+
+
+    data_train=OrganoidDataset_torch(data_train,4,device=device)
 
     # train head only
     train_loop(model=model,
                optimizer=optimizer_head,
                epochs=config.EPOCHS_HEADS,
-               image_ids=image_ids,
                data_train=data_train)
 
     # Unfreeze parameters
@@ -76,38 +77,28 @@ def main():
     train_loop(model=model,
                optimizer=optimizer_all,
                epochs=config.EPOCHS_ALL_LAYERS,
-               image_ids=image_ids,
                data_train=data_train)
 
 
-def train_loop(model, optimizer,epochs,image_ids,data_train):
+def train_loop(model, optimizer,epochs,data_train):
 
     for epoch in tqdm(range(epochs)):
-        for id in tqdm(image_ids):
-            image = np.asarray([data_train.load_image(id)])
-            image = np.transpose(image, (0, 3, 1, 2))
-
-            v_min, v_max = np.min(image), np.max(image)
-            new_min, new_max = 0, 1
-            image = (image - v_min) / (v_max - v_min) * (new_max - new_min) + new_min
-            image = torch.tensor(image, dtype=torch.float32)
-
-            masks, labels = data_train.load_mask(id)
-            bboxes = extract_bboxes(masks)
-            target = [{'masks': torch.tensor(masks,device=device), 'labels': torch.tensor(labels, dtype=torch.int64,device=device),
-                       'boxes': torch.tensor(bboxes,device=device)}]
-
-            loss_dict = model(image.to(device=device), target)
+        for item in tqdm(range(len(data_train))):
+            batch,labels = data_train[item]
+            loss_dict = model(batch, labels)
             losses = sum(loss for loss in loss_dict.values())
             optimizer.zero_grad()
             losses.backward()
             optimizer.step()
+
+
         if epoch % 10 == 0:
             job_id = sys.argv[1]
             now = datetime.now()  # current date and time
             timestamp = now.strftime("%Y_%m_%dT%H-%M-%S")
             file_path = f"models/{job_id}/Organoids_{timestamp}_epoch_{epoch}.p"
             torch.save(model.state_dict(), file_path)
+        data_train.images_counter= 0
 
 
 if __name__ == "__main__":
