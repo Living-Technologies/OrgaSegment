@@ -1,3 +1,5 @@
+import copy
+
 import streamlit as st
 import tkinter as tk
 from tkinter import filedialog
@@ -21,7 +23,7 @@ import re
 import os
 from pathlib import Path
 from keras.preprocessing.image import load_img
-
+import traceback
 #Get app config
 config = configparser.ConfigParser()
 config.sections()
@@ -133,10 +135,10 @@ if st.sidebar.button('Run'):
                 #Combine image and mask and create preview
                 preview_name = f'{image_name}_preview.png'
                 preview_path = preview_dir + preview_name
-                preview = display_preview(np.asarray(load_img(i, color_mode='rgb')), 
+                preview = display_preview(np.asarray(load_img(i, color_mode='rgb')),
                                           p['rois'],
-                                          p['masks'], 
-                                          p['class_ids'],  
+                                          p['masks'],
+                                          p['class_ids'],
                                           st.session_state['model_config'].CLASSES, 
                                           p['scores'],
                                           figsize=(40, 40))
@@ -176,10 +178,13 @@ if st.sidebar.button('Run'):
                                 'class': p['class_ids'][l],
                                 'score': p['scores'][l],
                                 'size': size}
-                        results = results.append(info, ignore_index=True)
+
+                        info = pd.DataFrame([info])
+                        results = pd.concat([results, info], ignore_index=True)
+                        # results = results.append(info, ignore_index=True)
                 progress_bar.progress((image_count+1)/len(images))
             except:
-               pass
+               print(traceback.format_exc())
 
         #Save results
         results.to_csv(f'{output_dir}results.csv', index=False)
