@@ -13,6 +13,7 @@ import sys
 import os
 logger = CSVLogger(exp_name="my_exp")
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #Get config
 config_path = sys.argv[2]
 spec = importlib.util.spec_from_file_location("TrainConfig", config_path)
@@ -44,7 +45,7 @@ def main():
     # Prepare model
 
     backbone = resnet_fpn_backbone('resnet101', pretrained=True)
-    model = MaskRCNN(backbone, num_classes=config.NUM_CLASSES).float()
+    model = MaskRCNN(backbone, num_classes=config.NUM_CLASSES).float().to(device=device)
 
     # Train model
     image_ids = data_train.image_ids
@@ -93,10 +94,10 @@ def train_loop(model, optimizer,epochs,image_ids,data_train):
 
             masks, labels = data_train.load_mask(id)
             bboxes = extract_bboxes(masks)
-            target = [{'masks': torch.tensor(masks), 'labels': torch.tensor(labels, dtype=torch.int64),
-                       'boxes': torch.tensor(bboxes)}]
+            target = [{'masks': torch.tensor(masks,device=device), 'labels': torch.tensor(labels, dtype=torch.int64,device=device),
+                       'boxes': torch.tensor(bboxes,device=device)}]
 
-            loss_dict = model(image, target)
+            loss_dict = model(image.to(device=device), target)
             losses = sum(loss for loss in loss_dict.values())
             optimizer.zero_grad()
             losses.backward()
