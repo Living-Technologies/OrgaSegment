@@ -1,26 +1,28 @@
+import time
+
 import torch
 from torchvision.models.detection import MaskRCNN
 from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
 from lib.io import OrganoidDataset
 from tqdm import tqdm
-from torchrl.record import CSVLogger
+from torch.utils.tensorboard import SummaryWriter
 import importlib
 import sys
 from lib.organoid_dataloader_torch import OrganoidDataset_torch
 from datetime import datetime
 
-logger = CSVLogger(exp_name="my_exp")
+# Initialize TensorBoard SummaryWriter
+log_dir = f"runs/{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+writer = SummaryWriter(log_dir=log_dir)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-#Get config
+
+# Get config
 config_path = sys.argv[2]
 spec = importlib.util.spec_from_file_location("TrainConfig", config_path)
 modulevar = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(modulevar)
 config = modulevar.TrainConfig()
-
-#Set log_dir
-log_dir = None
 
 def main():
     job_id = sys.argv[1]
@@ -44,10 +46,8 @@ def main():
     data_val.prepare()
 
     # Prepare model
-
     backbone = resnet_fpn_backbone('resnet101', pretrained=True)
     model = MaskRCNN(backbone, num_classes=config.NUM_CLASSES).float().to(device=device)
-
 
     # Freeze all layers except the heads
     for param in model.backbone.parameters():
@@ -56,11 +56,9 @@ def main():
     params = [p for p in model.parameters() if p.requires_grad]
     optimizer_head = torch.optim.SGD(params, lr=0.005, momentum=0.9, weight_decay=0.0005)
 
+    data_train = OrganoidDataset_torch(data_train, config.BATCH_SIZE)
 
-
-    data_train=OrganoidDataset_torch(data_train,config.BATCH_SIZE)
-
-    # train head only
+    # Train head only
     train_loop(model=model,
                optimizer=optimizer_head,
                epochs=config.EPOCHS_HEADS,
@@ -77,12 +75,15 @@ def main():
                epochs=config.EPOCHS_ALL_LAYERS,
                data_train=data_train)
 
+    # Close TensorBoard writer
+    writer.close()
 
-def train_loop(model, optimizer,epochs,data_train):
-
+def train_loop(model, optimizer, epochs, data_train):
     for epoch in tqdm(range(epochs)):
+        epoch_loss = 0
         for item in tqdm(range(len(data_train))):
             batch,labels = data_train[item]
+
             batch = [batch.to(device=device) for batch in batch]
             labels = [{k: v.to(device) for k, v in label.items()} for label in labels]
             loss_dict = model(batch, labels)
@@ -90,7 +91,11 @@ def train_loop(model, optimizer,epochs,data_train):
             optimizer.zero_grad()
             losses.backward()
             optimizer.step()
+            epoch_loss += losses.item()
 
+        # Log metrics to TensorBoard
+        avg_loss = epoch_loss / len(data_train)
+        writer.add_scalar('Loss/train', avg_loss, epoch)
 
         if epoch % 10 == 0:
             job_id = sys.argv[1]
@@ -98,7 +103,9 @@ def train_loop(model, optimizer,epochs,data_train):
             timestamp = now.strftime("%Y_%m_%dT%H-%M-%S")
             file_path = f"models/{job_id}/Organoids_{timestamp}_epoch_{epoch}.p"
             torch.save(model.state_dict(), file_path)
-        data_train.images_counter= 0
+            # Log model checkpoint to TensorBoard
+            writer.add_text('Checkpoint', f"Model saved at {file_path}", epoch)
+        data_train.images_counter = 0
 
 if __name__ == "__main__":
     main()

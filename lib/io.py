@@ -204,7 +204,10 @@ class OrganoidDataset(utils.Dataset):
         specs in image_info.
         """
         info = self.image_info[image_id]
-        img = Image.open(info['path'])
+        if info['color_mode'] == 'grayscale':
+            img = Image.open(info['path']).convert('L')
+        else:
+            img = Image.open(info['path']).convert('RGB')
         
         #Convert to a 0-1 scale
         if info['img_bit_depth']:
@@ -215,7 +218,6 @@ class OrganoidDataset(utils.Dataset):
         #Set extra axis if color mode is grayscale
         if info['color_mode'] == 'grayscale':
             img = img[..., np.newaxis]
-        
         return img
 
     def info(self, image_id):
@@ -225,18 +227,18 @@ class OrganoidDataset(utils.Dataset):
             return info
         else:
             super(self.__class__).image_reference(self, image_id)
-    
+
     def load_mask(self, image_id):
         """
         Generate instance masks for shapes of the given image ID.
         """
         info = self.image_info[image_id]
-        
+
         masks = info['masks']
 
         mask = None
         class_names = []
-        
+
         #Split masks into numpy dimensions
         for i in masks:
             msk = Image.open(i['path'])
@@ -248,7 +250,39 @@ class OrganoidDataset(utils.Dataset):
                 else:
                     mask = np.dstack((mask, m))
                 class_names.append(i['class'])
-            
+
         # Map class names to class IDs.
         class_ids = np.array([self.class_names.index(i) for i in class_names])
         return mask.astype(bool), class_ids.astype(np.int32)
+
+    def load_mask_new(self, image_id):
+        """
+        Generate instance masks for shapes of the given image ID.
+        """
+        info = self.image_info[image_id]
+        masks_info = info['masks']
+
+        # List to accumulate individual masks and corresponding class names
+        masks_list = []
+        class_names = []
+
+        # Split masks into numpy dimensions
+        for mask_info in masks_info:
+            msk = np.asarray(Image.open(mask_info['path']))
+            unique_values = np.unique(msk)
+
+            # Create a binary mask for each unique value greater than zero
+            for u in unique_values:
+                if u > 0:
+                    binary_mask = (msk == u).astype(bool)
+                    masks_list.append(binary_mask)
+                    class_names.append(mask_info['class'])
+
+        # Stack all the masks along a new axis to form a 3D array
+        masks = np.stack(masks_list, axis=-1)
+
+        # Map class names to class IDs
+        class_ids = np.array([self.class_names.index(name) for name in class_names], dtype=np.int32)
+
+        return masks, class_ids
+

@@ -1,6 +1,11 @@
 import torch
 import numpy as np
 import math
+import time
+
+from matplotlib import pyplot as plt
+
+
 class OrganoidDataset_torch(torch.utils.data.Dataset):
     def __init__(self,dataset,batch_size):
 
@@ -16,28 +21,31 @@ class OrganoidDataset_torch(torch.utils.data.Dataset):
         images = []
         targets = []
         for _ in range(self.batch_size):
-            image,target = self.load_image(self.images_counter)
+            image, target = self.load_image(self.images_counter)
+
             images.append(image)
             targets.append(target)
+
             self.images_counter += 1
             if self.images_counter == self.n_images:
                 break
         return images,targets
-    def load_image(self,image_id):
-        image = np.asarray(self.data.load_image(image_id))
-        image = np.transpose(image, (2, 0, 1))
-        v_min, v_max = np.min(image), np.max(image)
-        new_min, new_max = 0, 1
-        image = (image - v_min) / (v_max - v_min) * (new_max - new_min) + new_min
-        image = torch.tensor(image, dtype=torch.float32)
 
-        masks, labels = self.data.load_mask(image_id)
+    def load_image(self, image_id):
+        image = self.data.load_image(image_id)
+        image = torch.tensor(image, dtype=torch.float32).permute(2, 0, 1)
+        image = (image - image.min()) / (image.max() - image.min())
+
+        # masks, labels = self.data.load_mask(image_id)
+        masks, labels = self.data.load_mask_new(image_id)
         bboxes = self.extract_bboxes(masks)
-        target = {'masks': torch.tensor(masks),
-                   'labels': torch.tensor(labels, dtype=torch.int64),
-                   'boxes': torch.tensor(bboxes)}
 
-        return image,target
+        target = {
+            'masks': torch.tensor(masks),
+            'labels': torch.tensor(labels, dtype=torch.int64),
+            'boxes': torch.tensor(bboxes)
+        }
+        return image, target
 
     def extract_bboxes(self,mask):
         """Compute bounding boxes from masks.
