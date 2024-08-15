@@ -27,7 +27,7 @@ config = modulevar.TrainConfig()
 def main():
     job_id = sys.argv[1]
     create_unique_folder(job_id)
-    
+
     # Get data
     data_train = OrganoidDataset()
     data_train.load_data(config.TRAIN_DIR,
@@ -115,12 +115,12 @@ def create_unique_folder(base_name):
     counter = 0
 
     # Keep modifying the folder name until a non-existing one is found
-    while os.path.exists(folder_name):
+    while os.path.exists('./models/'+folder_name):
         counter += 1
         folder_name = f"{base_name}{'_new' * counter}"
 
     # Create the folder
-    os.makedirs(folder_name)
+    os.makedirs('./models/'+folder_name)
     print(f"Folder created: {folder_name}")
 if __name__ == "__main__":
     main()
