@@ -1,5 +1,8 @@
 #Init logger
 import logging
+
+from matplotlib import pyplot as plt
+
 logger = logging.getLogger(__name__)
 
 #Import functions
@@ -16,6 +19,7 @@ import io
 import base64
 import torch
 from PIL import Image
+from itertools import repeat
 
 
 def get_image_names(folder, mask_filter, image_filter=None):
@@ -229,61 +233,39 @@ class OrganoidDataset(utils.Dataset):
         else:
             super(self.__class__).image_reference(self, image_id)
 
-    def load_mask(self, image_id):
+    def load_mask(self,image_id):
         """
         Generate instance masks for shapes of the given image ID.
         """
         info = self.image_info[image_id]
 
-        masks = info['masks']
-
-        mask = None
-        class_names = []
-
-        #Split masks into numpy dimensions
-        for i in masks:
-            msk = Image.open(i['path'])
-            msk = np.asarray(msk)
-            for u in (u for u in np.unique(msk) if u > 0):
-                m = np.where(msk == u, 1, 0)
-                if not isinstance(mask, np.ndarray):
-                    mask = m
-                else:
-                    mask = np.dstack((mask, m))
-                class_names.append(i['class'])
-
-        # Map class names to class IDs.
-        class_ids = np.array([self.class_names.index(i) for i in class_names])
-        return mask.astype(bool), class_ids.astype(np.int32)
-
-    def load_mask_new(self, image_id):
-        """
-        Generate instance masks for shapes of the given image ID.
-        """
-        info = self.image_info[image_id]
         masks_info = info['masks']
-
-        # List to accumulate individual masks and corresponding class names
-        masks_list = []
         class_names = []
-
-        # Split masks into numpy dimensions
         for mask_info in masks_info:
             msk = np.asarray(Image.open(mask_info['path']))
-            unique_values = np.unique(msk)
+            # Step 1: Find the unique values and create a mapping from value to index
+            unique_values, inverse_indices = np.unique(msk, return_inverse=True)
 
-            # Create a binary mask for each unique value greater than zero
-            for u in unique_values:
-                if u > 0:
-                    binary_mask = (msk == u).astype(bool)
-                    masks_list.append(binary_mask)
-                    class_names.append(mask_info['class'])
+            # Step 2: Filter out zero value indices
+            non_zero_mask = msk != 0
+            non_zero_indices = inverse_indices[non_zero_mask.flatten()]
+            non_zero_row_indices, non_zero_col_indices = np.nonzero(non_zero_mask)
 
-        # Stack all the masks along a new axis to form a 3D array
-        masks = np.stack(masks_list, axis=-1)
+            # Adjust the unique values and inverse indices to exclude zeros
+            unique_values = unique_values[unique_values != 0]
+            num_classes = len(unique_values)
+
+            # Step 3: Initialize a 3D array with the shape (height, width, number_of_classes)
+            height, width = msk.shape
+            binary_masks = np.zeros((height, width, num_classes), dtype=bool)
+
+            # Step 4: Set the binary masks using advanced indexing
+            binary_masks[non_zero_row_indices, non_zero_col_indices, non_zero_indices - 1] = True
+            class_names.extend(repeat(mask_info['class'], num_classes))
 
         # Map class names to class IDs
         class_ids = np.array([self.class_names.index(name) for name in class_names], dtype=np.int32)
 
-        return masks, class_ids
+        return binary_masks,class_ids
+
 

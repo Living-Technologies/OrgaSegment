@@ -32,50 +32,21 @@ class OrganoidDataset_torch(torch.utils.data.Dataset):
         return images,targets
 
     def load_image(self, image_id):
-
         image = self.data.load_image(image_id)
         image = torch.tensor(image, dtype=torch.float32).permute(2, 0, 1)
         image = (image - image.min()) / (image.max() - image.min())
-
-        masks, labels = self.data.load_mask_new(image_id)
-
-        bboxes = self.extract_bboxes_new(masks)
-        # bboxes = self.extract_bboxes(masks)
-
+        masks, labels = self.data.load_mask(image_id)
+        bboxes = self.extract_bboxes(masks)
         target = {
             'masks': torch.tensor(masks),
             'labels': torch.tensor(labels, dtype=torch.int64),
             'boxes': torch.tensor(bboxes)
         }
-
         return image, target
 
-    def extract_bboxes(self,mask):
-        """Compute bounding boxes from masks.
-        mask: [height, width, num_instances]. Mask pixels are either 1 or 0.
 
-        Returns: bbox array [num_instances, (y1, x1, y2, x2)].
-        """
-        boxes = np.zeros([mask.shape[-1], 4], dtype=np.int32)
-        for i in range(mask.shape[-1]):
-            m = mask[:, :, i]
-            # Bounding box.
-            horizontal_indicies = np.where(np.any(m, axis=0))[0]
-            vertical_indicies = np.where(np.any(m, axis=1))[0]
-            if horizontal_indicies.shape[0]:
-                x1, x2 = horizontal_indicies[[0, -1]]
-                y1, y2 = vertical_indicies[[0, -1]]
-                # x2 and y2 should not be part of the box. Increment by 1.
-                x2 += 1
-                y2 += 1
-            else:
-                # No mask for this instance. Might happen due to
-                # resizing or cropping. Set bbox to zeros
-                x1, x2, y1, y2 = 0, 0, 0, 0
-            boxes[i] = np.array([y1, x1, y2, x2])
-        return boxes.astype(np.int32)
 
-    def extract_bboxes_new(self, mask):
+    def extract_bboxes(self, mask):
         """Compute bounding boxes from masks.
 
         mask: [height, width, num_instances]. Mask pixels are either 1 or 0.
