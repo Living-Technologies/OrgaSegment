@@ -218,6 +218,7 @@ class OrganoidDataset(utils.Dataset):
         #Set extra axis if color mode is grayscale
         if info['color_mode'] == 'grayscale':
             img = img[..., np.newaxis]
+
         return img
 
     def info(self, image_id):
