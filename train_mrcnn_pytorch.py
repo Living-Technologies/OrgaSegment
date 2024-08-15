@@ -10,7 +10,7 @@ import importlib
 import sys
 from lib.organoid_dataloader_torch import OrganoidDataset_torch
 from datetime import datetime
-
+import os
 # Initialize TensorBoard SummaryWriter
 log_dir = f"runs/{datetime.now().strftime('%Y%m%d-%H%M%S')}"
 writer = SummaryWriter(log_dir=log_dir)
@@ -26,8 +26,8 @@ config = modulevar.TrainConfig()
 
 def main():
     job_id = sys.argv[1]
-    # os.mkdir('models/' + job_id)
-
+    create_unique_folder(job_id)
+    
     # Get data
     data_train = OrganoidDataset()
     data_train.load_data(config.TRAIN_DIR,
@@ -107,5 +107,20 @@ def train_loop(model, optimizer, epochs, data_train):
             writer.add_text('Checkpoint', f"Model saved at {file_path}", epoch)
         data_train.images_counter = 0
 
+def create_unique_folder(base_name):
+    # Start with the base name
+    folder_name = base_name
+
+    # Initialize a counter to track the number of "_new" additions
+    counter = 0
+
+    # Keep modifying the folder name until a non-existing one is found
+    while os.path.exists(folder_name):
+        counter += 1
+        folder_name = f"{base_name}{'_new' * counter}"
+
+    # Create the folder
+    os.makedirs(folder_name)
+    print(f"Folder created: {folder_name}")
 if __name__ == "__main__":
     main()
