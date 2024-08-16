@@ -26,7 +26,7 @@ config = modulevar.TrainConfig()
 
 def main():
     job_id = sys.argv[1]
-    create_unique_folder(job_id)
+    save_folder = create_unique_folder(job_id)
 
     # Get data
     data_train = OrganoidDataset()
@@ -54,34 +54,43 @@ def main():
         param.requires_grad = False
 
     params = [p for p in model.parameters() if p.requires_grad]
-    optimizer_head = torch.optim.SGD(params, lr=0.005, momentum=0.9, weight_decay=0.0005)
+    optimizer_head = torch.optim.SGD(params, lr=0.001, momentum=0.9, weight_decay=0.0005)
 
     data_train = OrganoidDataset_torch(data_train, config.BATCH_SIZE)
-
+    total_epoch = 0
     # Train head only
-    train_loop(model=model,
-               optimizer=optimizer_head,
-               epochs=config.EPOCHS_HEADS,
-               data_train=data_train)
+    total_epoch = train_loop(model=model,
+                optimizer=optimizer_head,
+                epochs=config.EPOCHS_HEADS,
+                data_train=data_train,
+                save_folder=save_folder,
+                total_epochs=total_epoch)
 
     # Unfreeze parameters
     for param in model.backbone.parameters():
         param.requires_grad = True
-    optimizer_all = torch.optim.SGD(model.parameters(), lr=0.005, momentum=0.9, weight_decay=0.0005)
+    optimizer_all = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9, weight_decay=0.0005)
 
     # Train entire model
     train_loop(model=model,
-               optimizer=optimizer_all,
-               epochs=config.EPOCHS_ALL_LAYERS,
-               data_train=data_train)
+                optimizer=optimizer_all,
+                epochs=config.EPOCHS_ALL_LAYERS,
+                data_train=data_train,
+                save_folder=save_folder,
+                total_epochs=total_epoch)
+
+    now = datetime.now()  # current date and time
+    timestamp = now.strftime("%Y_%m_%d")
+    file_path = f"models/{save_folder}/Organoids_{timestamp}_END.p"
+    torch.save(model.state_dict(), file_path)
 
     # Close TensorBoard writer
     writer.close()
 
-def train_loop(model, optimizer, epochs, data_train):
+def train_loop(model, optimizer, epochs, data_train,save_folder,total_epochs):
     for epoch in tqdm(range(epochs)):
         epoch_loss = 0
-        for item in tqdm(range(len(data_train))):
+        for item in range(len(data_train)):
             batch,labels = data_train[item]
 
             batch = [batch.to(device=device) for batch in batch]
@@ -98,14 +107,16 @@ def train_loop(model, optimizer, epochs, data_train):
         writer.add_scalar('Loss/train', avg_loss, epoch)
 
         if epoch % 10 == 0:
-            job_id = sys.argv[1]
             now = datetime.now()  # current date and time
             timestamp = now.strftime("%Y_%m_%dT%H-%M-%S")
-            file_path = f"models/{job_id}/Organoids_{timestamp}_epoch_{epoch}.p"
+            file_path = f"models/{save_folder}/Organoids_{timestamp}_epoch_{total_epochs}.p"
             torch.save(model.state_dict(), file_path)
             # Log model checkpoint to TensorBoard
             writer.add_text('Checkpoint', f"Model saved at {file_path}", epoch)
         data_train.images_counter = 0
+        total_epochs += 1
+    return total_epochs
+
 
 def create_unique_folder(base_name):
     # Start with the base name
@@ -122,5 +133,6 @@ def create_unique_folder(base_name):
     # Create the folder
     os.makedirs('./models/'+folder_name)
     print(f"Folder created: {folder_name}")
+    return folder_name
 if __name__ == "__main__":
     main()

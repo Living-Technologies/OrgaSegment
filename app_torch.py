@@ -5,13 +5,14 @@ import os
 import configparser
 
 #Import Mask RCNN packages
-import mrcnn.model as modellib
+# import mrcnn.model as modellib
 # import tensorflow as tf
-
+from torchvision.models.detection import MaskRCNN
+from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
 #Import OrgaSegment functions
 from lib import get_image_names, mask_projection, display_preview
 import importlib
-
+import torch
 #Import other packages
 from skimage.io import imsave
 import pandas as pd
@@ -20,12 +21,16 @@ import trackpy as tp
 import re
 import os
 from pathlib import Path
-from keras.preprocessing.image import load_img
+from PIL import Image
+import traceback
+
+# from keras.preprocessing.image import load_img
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 #Get app config
 config = configparser.ConfigParser()
 config.sections()
-config.read('./conf/app.conf')
+config.read('./conf/torch.conf')
 config.sections()
 
 # Check if 'input_dir' already exists in session_state
@@ -92,10 +97,16 @@ if st.sidebar.button('Run'):
 
     if st.session_state['predict']:
         #Load model
-        model = modellib.MaskRCNN(mode='inference', 
-                                config=st.session_state['model_config'],
-                                model_dir='./models')
-        model.load_weights(st.session_state['model_path'], by_name=True)
+        # model = modellib.MaskRCNN(mode='inference',
+        #                         config=st.session_state['model_config'],
+        #                         model_dir='./models')
+
+        backbone = resnet_fpn_backbone('resnet101', pretrained=True)
+        model = MaskRCNN(backbone, num_classes=st.session_state['model_config'].NUM_CLASSES).float().to(device=device)
+        model.load_state_dict(torch.load(st.session_state['model_path']))
+        model.eval()
+
+        # model.load_weights(st.session_state['model_path'], by_name=True)
 
         #Create empty data frame for results
         results =  pd.DataFrame({'image': pd.Series([], dtype='str'),
@@ -119,31 +130,40 @@ if st.sidebar.button('Run'):
                     image_name = re.search(f'^{input_dir}(.*)\..*$', i).group(1)
 
                 #Load image
-                img = np.asarray(load_img(i, color_mode=st.session_state['model_config'].COLOR_MODE))
-                if np.amax(img) >= 255:
-                    img = ((img - np.amax(img)) * 255).astype('uint8')
+                if st.session_state['model_config'].COLOR_MODE == 'grayscale':
+                    img = np.asarray(Image.open(i).convert('L'),dtype=np.float32)
+                else:
+                    img = np.asarray(Image.open(i).convert('RGB'),dtype=np.float32)
+                # img = np.asarray(load_img(i, color_mode=st.session_state['model_config'].COLOR_MODE))
+
+
+                img = np.asarray(img) / 256
+
 
                 if st.session_state['model_config'].COLOR_MODE == 'grayscale':
-                    img = img[..., np.newaxis]
-
+                    img = img[np.newaxis, :, :]
                 #Predict organoids
-                pred = model.detect([img], verbose=1)
+                # pred = model.detect([img], verbose=1)
+                pred = model([torch.from_numpy(img).to(device=device)])
+                # pred = pred.cpu().numpy()
+                pred = [{k: v.detach().cpu().numpy() for k, v in predictions.items()} for predictions in pred]
+                print(pred)
                 p = pred[0]
                 
                 #Combine image and mask and create preview
                 preview_name = f'{image_name}_preview.png'
                 preview_path = preview_dir + preview_name
-                preview = display_preview(np.asarray(load_img(i, color_mode='rgb')), 
-                                          p['rois'],
+                preview = display_preview(np.asarray(Image.open(i).convert('RGB')),
+                                          p['boxes'],
                                           p['masks'], 
-                                          p['class_ids'],  
+                                          p['labels'],
                                           st.session_state['model_config'].CLASSES, 
                                           p['scores'],
                                           figsize=(40, 40))
                 preview.savefig(preview_path, format='png', dpi='figure', bbox_inches='tight', pad_inches=0)
                 
                 nameLocation.subheader(f'Image: {image_name}')
-                imageLocation.image(load_img(preview_path, color_mode='rgb'), use_column_width=True)
+                imageLocation.image(Image.open(i).convert('RGB'), use_column_width=True)
 
                 #Process results per class
                 for c in np.unique(p['class_ids']):
@@ -179,7 +199,7 @@ if st.sidebar.button('Run'):
                         results = results.append(info, ignore_index=True)
                 progress_bar.progress((image_count+1)/len(images))
             except:
-               pass
+               print(traceback.format_exc())
 
         #Save results
         results.to_csv(f'{output_dir}results.csv', index=False)
