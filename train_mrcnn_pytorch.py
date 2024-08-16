@@ -105,7 +105,7 @@ def train_loop(model, optimizer, epochs, data_train,save_folder,total_epochs):
 
         # Log metrics to TensorBoard
         avg_loss = epoch_loss / len(data_train)
-        writer.add_scalar('Loss/train', avg_loss, epoch)
+        writer.add_scalar('Loss/train', avg_loss, total_epochs)
 
         if epoch % 10 == 0:
             now = datetime.now()  # current date and time
