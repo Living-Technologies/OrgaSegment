@@ -3,6 +3,7 @@ import time
 import torch
 from torchvision.models.detection import MaskRCNN
 from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
+from torchvision.models.resnet import ResNet101_Weights
 from lib.io import OrganoidDataset
 from tqdm import tqdm
 from torch.utils.tensorboard import SummaryWriter
@@ -46,7 +47,7 @@ def main():
     data_val.prepare()
 
     # Prepare model
-    backbone = resnet_fpn_backbone('resnet101', pretrained=True)
+    backbone = resnet_fpn_backbone('resnet101', weights=ResNet101_Weights.DEFAULT)
     model = MaskRCNN(backbone, num_classes=config.NUM_CLASSES).float().to(device=device)
 
     # Freeze all layers except the heads
@@ -108,7 +109,7 @@ def train_loop(model, optimizer, epochs, data_train,save_folder,total_epochs):
 
         if epoch % 10 == 0:
             now = datetime.now()  # current date and time
-            timestamp = now.strftime("%Y_%m_%dT%H-%M-%S")
+            timestamp = now.strftime("%Y_%m_%d")
             file_path = f"models/{save_folder}/Organoids_{timestamp}_epoch_{total_epochs}.p"
             torch.save(model.state_dict(), file_path)
             # Log model checkpoint to TensorBoard
