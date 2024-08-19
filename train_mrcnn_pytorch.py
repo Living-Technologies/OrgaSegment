@@ -2,6 +2,7 @@ import time
 
 import torch
 from torchvision.models.detection import MaskRCNN
+from torchvision.models.detection.anchor_utils import AnchorGenerator
 from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
 from torchvision.models.resnet import ResNet101_Weights
 from lib.io import OrganoidDataset
@@ -47,8 +48,24 @@ def main():
     data_val.prepare()
 
     # Prepare model
+
+    anchor_generator = AnchorGenerator(
+        sizes=(config.RPN_ANCHOR_SCALES,),  # RPN_ANCHOR_SCALES
+        aspect_ratios=((0.5, 1.0, 2.0),) * len(config.RPN_ANCHOR_SCALES)
+    )
+
+
     backbone = resnet_fpn_backbone('resnet101', weights=ResNet101_Weights.DEFAULT)
-    model = MaskRCNN(backbone, num_classes=config.NUM_CLASSES).float().to(device=device)
+    model = (MaskRCNN(backbone,
+                      num_classes=config.NUM_CLASSES,
+                      rpn_post_nms_top_n_train=config.POST_NMS_ROIS_TRAINING,
+                      rpn_post_nms_top_n_test=config.POST_NMS_ROIS_INFERENCE,
+                      rpn_nms_thresh=config.RPN_NMS_THRESHOLD,
+                      rpn_batch_size_per_image=config.RPN_TRAIN_ANCHORS_PER_IMAGE,
+                      anchor_generator=anchor_generator,
+                      box_batch_size_per_image=config.TRAIN_ROIS_PER_IMAGE,
+                      box_detections_per_img=config.DETECTION_MAX_INSTANCES
+                      ).float().to(device=device))
 
     # Freeze all layers except the heads
     for param in model.backbone.parameters():

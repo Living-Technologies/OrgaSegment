@@ -147,7 +147,7 @@ if st.sidebar.button('Run'):
                 pred = model([torch.from_numpy(img).to(device=device)])
                 # pred = pred.cpu().numpy()
                 pred = [{k: v.detach().cpu().numpy() for k, v in predictions.items()} for predictions in pred]
-                print(pred)
+                # print(pred)
                 p = pred[0]
                 
                 #Combine image and mask and create preview
@@ -155,7 +155,7 @@ if st.sidebar.button('Run'):
                 preview_path = preview_dir + preview_name
                 preview = display_preview(np.asarray(Image.open(i).convert('RGB')),
                                           p['boxes'],
-                                          p['masks'], 
+                                          np.squeeze(p['masks'].transpose((2, 3, 1, 0))),
                                           p['labels'],
                                           st.session_state['model_config'].CLASSES, 
                                           p['scores'],
@@ -166,13 +166,13 @@ if st.sidebar.button('Run'):
                 imageLocation.image(Image.open(i).convert('RGB'), use_column_width=True)
 
                 #Process results per class
-                for c in np.unique(p['class_ids']):
+                for c in np.unique(p['labels']):
                     #Create names
                     mask_name = f'{image_name}_masks_class-{c}.png'
                     mask_path = output_dir + mask_name
 
                     #Get mask
-                    unique_class_ids = (p['class_ids'] == c).nonzero()[0]
+                    unique_class_ids = (p['labels'] == c).nonzero()[0]
                     mask = mask_projection(p['masks'][:,:,unique_class_ids])
 
                     #Save mask
@@ -189,14 +189,15 @@ if st.sidebar.button('Run'):
                                 'mask': mask_path,
                                 'name': image_name,
                                 'id': count,
-                                'y1': p['rois'][l,0],
-                                'x1': p['rois'][l,1],
-                                'y2': p['rois'][l,2],
-                                'x2': p['rois'][l,3],
-                                'class': p['class_ids'][l],
+                                'x1': p['boxes'][l,0],
+                                'y1': p['boxes'][l,1],
+                                'x2': p['boxes'][l,2],
+                                'y2': p['boxes'][l,3],
+                                'class': p['labels'][l],
                                 'score': p['scores'][l],
                                 'size': size}
-                        results = results.append(info, ignore_index=True)
+                        info = pd.DataFrame([info])
+                        results = pd.concat([results, info], ignore_index=True)
                 progress_bar.progress((image_count+1)/len(images))
             except:
                print(traceback.format_exc())
