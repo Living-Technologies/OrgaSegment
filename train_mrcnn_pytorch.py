@@ -131,19 +131,23 @@ def train_loop(model, optimizer, epochs, data_train,save_folder,total_epochs,dat
 
         if epoch % 10 == 0:
             val_loss = 0
+            try:
+                with torch.no_grad():
+                    val_indices = np.random.choice(len(data_val),5,replace=False)
+                    for val_index in val_indices:
+                        batch,labels = data_val[val_index]
+                        batch = [batch.to(device=device) for batch in batch]
+                        labels = [{k: v.to(device) for k, v in label.items()} for label in labels]
+                        loss_dict = model(batch, labels)
+                        losses = sum(loss for loss in loss_dict.values())
+                        val_loss+= losses.item()
 
-            with torch.no_grad():
-                val_indices = np.random.choice(len(data_val),5,replace=False)
-                for val_index in val_indices:
-                    batch,labels = data_val[val_index]
-                    batch = [batch.to(device=device) for batch in batch]
-                    labels = [{k: v.to(device) for k, v in label.items()} for label in labels]
-                    loss_dict = model(batch, labels)
-                    losses = sum(loss for loss in loss_dict.values())
-                    val_loss+= losses.item()
-
-            avg_val_loss = val_loss / len(data_val)
-            writer.add_scalar('Loss/val', avg_val_loss, epoch)
+                avg_val_loss = val_loss / len(data_val)
+                writer.add_scalar('Loss/val', avg_val_loss, epoch)
+            except Exception as e:
+                print(e)
+                print('indices',val_indices)
+                print('Failed index',val_index)
 
             now = datetime.now()  # current date and time
             timestamp = now.strftime("%Y_%m_%d")
