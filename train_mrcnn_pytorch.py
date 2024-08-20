@@ -1,5 +1,6 @@
 import time
 
+import numpy as np
 import torch
 from torchvision.models.detection import MaskRCNN
 from torchvision.models.detection.anchor_utils import AnchorGenerator
@@ -75,6 +76,8 @@ def main():
     optimizer_head = torch.optim.SGD(params, lr=0.001, momentum=0.9, weight_decay=0.0005)
 
     data_train = OrganoidDataset_torch(data_train, config.BATCH_SIZE)
+    data_val = OrganoidDataset_torch(data_val, 1)
+
     total_epoch = 0
     # Train head only
     total_epoch = train_loop(model=model,
@@ -82,7 +85,8 @@ def main():
                 epochs=config.EPOCHS_HEADS,
                 data_train=data_train,
                 save_folder=save_folder,
-                total_epochs=total_epoch)
+                total_epochs=total_epoch,
+                data_val=data_val)
 
     # Unfreeze parameters
     for param in model.backbone.parameters():
@@ -91,11 +95,12 @@ def main():
 
     # Train entire model
     train_loop(model=model,
-                optimizer=optimizer_all,
-                epochs=config.EPOCHS_ALL_LAYERS,
-                data_train=data_train,
-                save_folder=save_folder,
-                total_epochs=total_epoch)
+               optimizer=optimizer_all,
+               epochs=config.EPOCHS_ALL_LAYERS,
+               data_train=data_train,
+               save_folder=save_folder,
+               total_epochs=total_epoch,
+               data_val=data_val)
 
     now = datetime.now()  # current date and time
     timestamp = now.strftime("%Y_%m_%d")
@@ -105,7 +110,7 @@ def main():
     # Close TensorBoard writer
     writer.close()
 
-def train_loop(model, optimizer, epochs, data_train,save_folder,total_epochs):
+def train_loop(model, optimizer, epochs, data_train,save_folder,total_epochs,data_val):
     for epoch in tqdm(range(epochs)):
         epoch_loss = 0
         for item in range(len(data_train)):
@@ -125,6 +130,21 @@ def train_loop(model, optimizer, epochs, data_train,save_folder,total_epochs):
         writer.add_scalar('Loss/train', avg_loss, total_epochs)
 
         if epoch % 10 == 0:
+            val_loss = 0
+
+            with torch.no_grad():
+                val_indices = np.random.choice(len(data_val),5,replace=False)
+                for val_index in val_indices:
+                    batch,labels = data_val[val_index]
+                    batch = [batch.to(device=device) for batch in batch]
+                    labels = [{k: v.to(device) for k, v in label.items()} for label in labels]
+                    loss_dict = model(batch, labels)
+                    losses = sum(loss for loss in loss_dict.values())
+                    val_loss+= losses.item()
+
+            avg_val_loss = val_loss / len(data_val)
+            writer.add_scalar('Loss/val', avg_val_loss, epoch)
+
             now = datetime.now()  # current date and time
             timestamp = now.strftime("%Y_%m_%d")
             file_path = f"models/{save_folder}/Organoids_{timestamp}_epoch_{total_epochs}.p"
@@ -133,6 +153,8 @@ def train_loop(model, optimizer, epochs, data_train,save_folder,total_epochs):
             writer.add_text('Checkpoint', f"Model saved at {file_path}", epoch)
         data_train.images_counter = 0
         total_epochs += 1
+
+
     return total_epochs
 
 
