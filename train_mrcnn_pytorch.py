@@ -1,7 +1,9 @@
 import time
+import traceback
 
 import numpy as np
 import torch
+from matplotlib import pyplot as plt
 from torchvision.models.detection import MaskRCNN
 from torchvision.models.detection.anchor_utils import AnchorGenerator
 from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
@@ -113,21 +115,45 @@ def main():
 def train_loop(model, optimizer, epochs, data_train,save_folder,total_epochs,data_val):
     for epoch in tqdm(range(epochs)):
         epoch_loss = 0
+        loss_classifier = 0
+        loss_box_reg= 0
+        loss_mask = 0
+        loss_objectness = 0
+        loss_rpn_box_reg = 0
+
         for item in range(len(data_train)):
             batch,labels = data_train[item]
-
             batch = [batch.to(device=device) for batch in batch]
             labels = [{k: v.to(device) for k, v in label.items()} for label in labels]
+
             loss_dict = model(batch, labels)
+
             losses = sum(loss for loss in loss_dict.values())
             optimizer.zero_grad()
             losses.backward()
             optimizer.step()
+
             epoch_loss += losses.item()
+            loss_classifier = loss_dict['loss_classifier'].item()
+            loss_box_reg = loss_dict['loss_box_reg'].item()
+            loss_mask = loss_dict['loss_mask'].item()
+            loss_objectness = loss_dict['loss_objectness'].item()
+            loss_rpn_box_reg = loss_dict['loss_rpn_box_reg'].item()
 
         # Log metrics to TensorBoard
-        avg_loss = epoch_loss / len(data_train)
+        avg_loss = epoch_loss / (len(data_train)*data_train.batch_size)
+        avg_loss_classifier = loss_classifier / (len(data_train)*data_train.batch_size)
+        avg_loss_box_reg = loss_box_reg / (len(data_train)*data_train.batch_size)
+        avg_loss_mask = loss_mask / (len(data_train)*data_train.batch_size)
+        avg_loss_objectness = loss_objectness / (len(data_train)*data_train.batch_size)
+        avg_loss_rpn_box_reg = loss_rpn_box_reg / (len(data_train)*data_train.batch_size)
+
         writer.add_scalar('Loss/train', avg_loss, total_epochs)
+        writer.add_scalar('Loss/classifier', avg_loss_classifier, total_epochs)
+        writer.add_scalar('Loss/box_reg', avg_loss_box_reg, total_epochs)
+        writer.add_scalar('Loss/mask', avg_loss_mask, total_epochs)
+        writer.add_scalar('Loss/objectness', avg_loss_objectness, total_epochs)
+        writer.add_scalar('Loss/rpn_box_reg', avg_loss_rpn_box_reg, total_epochs)
 
         if epoch % 10 == 0:
             val_loss = 0
@@ -144,8 +170,8 @@ def train_loop(model, optimizer, epochs, data_train,save_folder,total_epochs,dat
 
                 avg_val_loss = val_loss / len(data_val)
                 writer.add_scalar('Loss/val', avg_val_loss, epoch)
-            except Exception as e:
-                print(e)
+            except Exception:
+                print(traceback.print_exc())
                 print('indices',val_indices)
                 print('Failed index',val_index)
 
@@ -156,6 +182,7 @@ def train_loop(model, optimizer, epochs, data_train,save_folder,total_epochs,dat
             # Log model checkpoint to TensorBoard
             writer.add_text('Checkpoint', f"Model saved at {file_path}", epoch)
         data_train.images_counter = 0
+        data_val.images_counter = 0
         total_epochs += 1
 
 

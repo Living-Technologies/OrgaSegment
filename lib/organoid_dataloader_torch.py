@@ -49,33 +49,27 @@ class OrganoidDataset_torch(torch.utils.data.Dataset):
     def extract_bboxes(self, mask):
         """Compute bounding boxes from masks.
 
-        mask: [height, width, num_instances]. Mask pixels are either 1 or 0.
+        mask: [ num_instances, height, width]. Mask pixels are either 1 or 0.
 
         Returns: bbox array [num_instances, (y1, x1, y2, x2)].
         """
-        height, width, num_instances = mask.shape
+        num_instances, height, width = mask.shape
 
-        # Initialize the output array
         boxes = np.zeros((num_instances, 4), dtype=np.int32)
 
-        # Compute row and column indices where masks are present
-        row_nonzero = np.any(mask, axis=1)  # Shape: [height, num_instances]
-        col_nonzero = np.any(mask, axis=0)  # Shape: [width, num_instances]
+        row_nonzero = np.any(mask, axis=2)
+        col_nonzero = np.any(mask, axis=1)
 
-        # Find first and last non-zero indices in rows and columns
-        y1 = np.argmax(row_nonzero, axis=0)  # First non-zero row for each instance
-        y2 = height - np.argmax(row_nonzero[::-1], axis=0) - 1  # Last non-zero row
-        x1 = np.argmax(col_nonzero, axis=0)  # First non-zero column
-        x2 = width - np.argmax(col_nonzero[::-1], axis=0) - 1  # Last non-zero column
+        y1 = np.argmax(row_nonzero, axis=1)
+        y2 = height - np.argmax(row_nonzero[:, ::-1], axis=1) - 1
+        x1 = np.argmax(col_nonzero, axis=1)
+        x2 = width - np.argmax(col_nonzero[:, ::-1], axis=1) - 1
 
-        # Handle cases where there are no non-zero rows or columns
-        empty_instance = ~np.any(row_nonzero, axis=0) | ~np.any(col_nonzero, axis=0)
+        empty_instance = ~np.any(row_nonzero, axis=1) | ~np.any(col_nonzero, axis=1)
         boxes[empty_instance] = [0, 0, 0, 0]
 
         boxes[:, 0] = y1
         boxes[:, 1] = x1
-
-        # Increment y2 and x2 by 1 to include the last pixel in the bounding box
         boxes[:, 2] = y2 + 1
         boxes[:, 3] = x2 + 1
 

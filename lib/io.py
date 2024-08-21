@@ -257,15 +257,18 @@ class OrganoidDataset(utils.Dataset):
 
             # Step 3: Initialize a 3D array with the shape (height, width, number_of_classes)
             height, width = msk.shape
-            binary_masks = np.zeros((height, width, num_classes), dtype=bool)
+            binary_masks = np.zeros((num_classes,height, width), dtype=np.uint8)
+            # binary_masks = np.zeros((height, width,num_classes), dtype=np.uint8)
+
 
             # Step 4: Set the binary masks using advanced indexing
-            binary_masks[non_zero_row_indices, non_zero_col_indices, non_zero_indices - 1] = True
+            binary_masks[non_zero_indices - 1,non_zero_row_indices, non_zero_col_indices] = 1
+            # binary_masks[non_zero_row_indices, non_zero_col_indices,non_zero_indices - 1] = 1
+
             class_names.extend(repeat(mask_info['class'], num_classes))
 
         # Map class names to class IDs
         class_ids = np.array([self.class_names.index(name) for name in class_names], dtype=np.int32)
-
         return binary_masks,class_ids
 
 
