@@ -157,6 +157,21 @@ def train_loop(model, optimizer, epochs, data_train, save_folder, total_epochs, 
                         losses = sum(loss for loss in loss_dict.values())
                         val_loss += losses.item()
 
+                avg_val_loss = epoch_loss / 5
+                avg_val_loss_classifier = loss_classifier / 5
+                avg_val_loss_box_reg = loss_box_reg / 5
+                avg_val_loss_mask = loss_mask / 5
+                avg_val_loss_objectness = loss_objectness / 5
+                avg_val_loss_rpn_box_reg = loss_rpn_box_reg / 5
+
+                writer.add_scalar('Loss/val', avg_val_loss, total_epochs)
+                writer.add_scalar('Loss/val_classifier', avg_val_loss_classifier, total_epochs)
+                writer.add_scalar('Loss/val_box_reg', avg_val_loss_box_reg, total_epochs)
+                writer.add_scalar('Loss/val_mask', avg_val_loss_mask, total_epochs)
+                writer.add_scalar('Loss/val_objectness', avg_val_loss_objectness, total_epochs)
+                writer.add_scalar('Loss/val_rpn_box_reg', avg_val_loss_rpn_box_reg, total_epochs)
+
+
                 avg_val_loss = val_loss / len(data_val)
                 writer.add_scalar('Loss/val', avg_val_loss, epoch)
             except Exception:
