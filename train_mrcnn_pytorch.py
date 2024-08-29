@@ -56,7 +56,6 @@ def main():
     data_val.prepare()
 
     # Prepare model
-
     model = prepare_model()
 
     # Freeze all layers except the heads
@@ -262,8 +261,26 @@ def prepare_model():
         box_predictor=roi_heads.box_predictor,
         mask_roi_pool=roi_heads.mask_roi_pool,
         mask_head=roi_heads.mask_head,
-        mask_predictor=roi_heads.mask_predictor
+        mask_predictor=roi_heads.mask_predictor,
+        pretrained=True
     ).to(device=device)
+
+
+    reset_layers = ['backbone.body.conv1.weight',
+                    'roi_heads.box_predictor.cls_score.weight',
+                    'roi_heads.box_predictor.cls_score.bias',
+                    'roi_heads.box_predictor.bbox_pred.weight',
+                    'roi_heads.box_predictor.bbox_pred.bias',
+                    'roi_heads.mask_predictor.mask_fcn_logits.weight',
+                    'roi_heads.mask_predictor.mask_fcn_logits.bias']
+
+    # Reset specified layers
+    for layer_name in reset_layers:
+        if 'weight' in layer_name:
+            torch.nn.init.kaiming_normal_(model.state_dict()[layer_name], mode='fan_out', nonlinearity='relu')
+        elif 'bias' in layer_name:
+            torch.nn.init.constant_(model.state_dict()[layer_name], 0)
+
     return model
 
 
