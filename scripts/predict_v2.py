@@ -21,6 +21,7 @@ import pathlib
 
 def getModelPath():
     import importlib
+    print(importlib.resources.files("models").joinpath("OrganoidBasic20211215.h5"))
     return importlib.resources.files("models").joinpath("OrganoidBasic20211215.h5")
 
 def mergeLabels(masks):

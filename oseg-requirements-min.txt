@@ -1,0 +1,11 @@
+scipy==1.11.4 
+ipython==8.18.1 
+matplotlib==3.8.2 
+trackpy==0.6.1 
+natsort==8.4.0 
+opencv-python==4.8.1.78 
+scikit-image==0.22.0 
+numba==0.58.1 
+tensorflow[and-cuda]==2.15.1 
+altair==4.0.0
+
