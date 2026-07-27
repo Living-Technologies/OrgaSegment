@@ -39,7 +39,7 @@ def main():
     results = pd.read_csv(f'{data_dir}results.csv')
 
     #Enrich data
-    logger.info(f'Used regex: {regex}')
+    logger.info(f'Used regex: {config.REGEX}')
     results['well'] = results['name'].apply(lambda x: re.search(config.REGEX, x).group('WELL'))
     results['t'] = results['name'].apply(lambda x: re.search(config.REGEX, x).group('T'))
     
